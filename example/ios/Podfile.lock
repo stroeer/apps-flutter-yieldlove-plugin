@@ -1,0 +1,22 @@
+PODS:
+  - AppsFlutterYieldloveSDK (0.0.1):
+    - Flutter
+  - Flutter (1.0.0)
+
+DEPENDENCIES:
+  - AppsFlutterYieldloveSDK (from `.symlinks/plugins/AppsFlutterYieldloveSDK/ios`)
+  - Flutter (from `Flutter`)
+
+EXTERNAL SOURCES:
+  AppsFlutterYieldloveSDK:
+    :path: ".symlinks/plugins/AppsFlutterYieldloveSDK/ios"
+  Flutter:
+    :path: Flutter
+
+SPEC CHECKSUMS:
+  AppsFlutterYieldloveSDK: 441fb60367cd09c846f89c181b19f11f6378a5c7
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+
+PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+
+COCOAPODS: 1.9.2
