@@ -1,0 +1,114 @@
+package com.example.AppsFlutterYieldloveSDK
+
+import android.app.Activity
+import android.content.Context
+import android.os.Handler
+import android.util.Log
+import android.view.View
+import android.view.ViewGroup
+import com.yieldlove.adIntegration.Yieldlove
+import io.flutter.plugin.common.BinaryMessenger
+import io.flutter.plugin.common.MethodCall
+import io.flutter.plugin.common.MethodChannel
+import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+import io.flutter.plugin.common.MethodChannel.Result
+import io.flutter.plugin.platform.PlatformView
+import java.util.*
+
+class YieldlovePlatformView internal constructor(val context: Context?,
+                                                 val messenger: BinaryMessenger?,
+                                                 id: Int,
+                                                 params: Map<String, Any>?,
+                                                 containerView: View?)
+    : PlatformView, MethodCallHandler {
+
+    companion object {
+            var activity: Activity? = null
+    }
+
+    private var tomoAdView: TomoAdView? = null
+    private lateinit var methodChannel: MethodChannel
+    private var platformThreadHandler: Handler? = null
+
+    init {
+
+
+        //if (params!!.containsKey(JS_CHANNEL_NAMES_FIELD)) {
+        //    registerJavaScriptChannelNames(params!![JS_CHANNEL_NAMES_FIELD] as List<String?>?)
+        //}
+        //updateAutoMediaPlaybackPolicy(params!!["autoMediaPlaybackPolicy"] as Int?)
+        if (params?.containsKey("one") == true) {
+            val userAgent = params["one"] as String?
+            Log.e("app-platform-view", "${userAgent}")
+        }
+        //if (params!!.containsKey("initialUrl")) {
+        //    val url = params!!["initialUrl"] as String?
+        //    webView.loadUrl(url)
+        //}
+
+
+        Yieldlove.setAccountId("t-online")
+        Yieldlove.setApplicationName("t-online");
+
+        val addSizes = Arrays.asList(Size(320, 50), Size(320, 75), Size(320, 150), Size(300, 250), Size(37, 31))
+        tomoAdView = createAdView(context, Ad("rubrik_b3", addSizes, null), "https://www.google.com", null)
+
+        platformThreadHandler = Handler(context!!.mainLooper)
+        methodChannel = MethodChannel(messenger, "de.stroeer.plugins/adview_$id")
+        methodChannel.setMethodCallHandler(this)
+    }
+
+    private fun createAdView(context1: Context?, ad: Ad, contentUrl: String?, layoutParams: ViewGroup.LayoutParams?): TomoAdView? {
+        if (context1 == null) return null
+
+        val height: Int? = AdParameter.dimensions[ad.adUnitId]
+        if (height != null && height > 0) {
+            // layoutParams.height = height TODO arty
+        }
+        val isVisible = if (height != null && height > 0) View.VISIBLE else View.GONE
+        return TomoAdView(
+                context = context1,
+                visible = View.VISIBLE,
+                backgroundColorRes = R.color.moduleBackground
+        ).apply {
+            yieldloveAdView(ad = ad)
+            // TODO arty layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+            this.contentUrl = contentUrl
+            //visibility = View.GONE TODO arty
+            //loadAd(context1)
+        }
+    }
+
+
+    override fun getView(): View? {
+        return tomoAdView
+    }
+
+    override fun onMethodCall(methodCall: MethodCall, result: MethodChannel.Result) {
+        when (methodCall.method) {
+            "setText" -> setText(methodCall, result)
+            "showAd" -> showAd(methodCall, result)
+            "hideAd" -> hideAd(methodCall, result)
+            else -> result.notImplemented()
+        }
+    }
+
+    private fun showAd(methodCall: MethodCall, result: MethodChannel.Result) {
+        tomoAdView?.loadAd(activity)
+        tomoAdView?.show()
+    }
+
+    private fun hideAd(methodCall: MethodCall, result: MethodChannel.Result) {
+        tomoAdView?.hide()
+    }
+
+
+    private fun setText(methodCall: MethodCall, result: MethodChannel.Result) {
+        val text = methodCall.arguments as String
+        //textView.setText(text)
+        result.success(null)
+    }
+
+    override fun dispose() {
+    }
+}

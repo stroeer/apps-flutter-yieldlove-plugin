@@ -1,8 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:AppsFlutterYieldloveSDK/AppsFlutterYieldloveSDK.dart';
+import 'package:AppsFlutterYieldloveSDK/src/ad_view_provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -39,9 +41,15 @@ class _MyAppState extends State<MyApp> {
 
     setState(() {
       _platformVersion = platformVersion;
+      _yieldloveAdController = YieldloveAdController._(0);
     });
   }
 
+  YieldloveAdController _yieldloveAdController;
+
+  void _onLoadAd() {
+    _yieldloveAdController.showAd();
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -49,10 +57,45 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text('Yieldlove native ad view:'),
+              Center(
+                  child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 30.0),
+                      width: 300.0,
+                      height: 300.0,
+                      child: YieldloveAdView(adParamsParcel: AdParamsParcel(one: "fuck", two: "me"),)
+                  )
+              ),
+              RaisedButton(onPressed: _onLoadAd, child:
+                Text('Load ad'),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 500),
+                child: Text('bottom view'),
+              ),
+            ],
+          ),
         ),
       ),
     );
+  }
+}
+
+class YieldloveAdController {
+  YieldloveAdController._(int id) : _channel = new MethodChannel('de.stroeer.plugins/adview_$id');
+
+  final MethodChannel _channel;
+
+  Future<void> showAd() async {
+    return _channel.invokeMethod('showAd');
+  }
+
+  Future<void> hideAd() async {
+    return _channel.invokeMethod('hideAd');
   }
 }
