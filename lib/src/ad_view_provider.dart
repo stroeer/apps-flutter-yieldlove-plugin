@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 
+import '../YieldloveWrapper.dart';
 import 'base_yield_ad_view.dart';
 
 class AdCreationParams {
@@ -11,6 +12,8 @@ class AdCreationParams {
   String adKeyword;
   String adContentUrl;
   List<AdSize> adSizes;
+  bool adIsRelease = false;
+  bool useTestAds = false;
 
   AdCreationParams({@required this.adId, @required this.adSizes, this.adKeyword, this.adContentUrl});
 
@@ -19,11 +22,13 @@ class AdCreationParams {
       'ad_id': this.adId,
       'ad_keyword': this.adKeyword,
       'ad_content_url': this.adContentUrl,
-      'ad_sizes': _adSizesToStringList()
+      'ad_sizes': _adSizesToStringList(),
+      'ad_is_release': adIsRelease,
+      'use_test_ads': useTestAds,
     };
   }
 
-  List<String> _adSizesToStringList() => adSizes.map((e) => '${e.width}x${e.height}').toList(); //.join(';')
+  List<String> _adSizesToStringList() => adSizes.map((e) => '${e.width}x${e.height}').toList();
 }
 
 class AdSize {
@@ -36,12 +41,13 @@ class AdSize {
 class YieldloveAdView extends StatefulWidget {
 
   final AdCreationParams adParamsParcel;
+  final MobileAdListener listener;
 
   const YieldloveAdView({
     Key key,
     this.gestureRecognizers,
     this.adParamsParcel,
-    /// TODO add adController that is passed once the ad view is created.
+    this.listener,
   })  : super(key: key);
 
   static BaseYieldAdView _adView;
@@ -78,6 +84,7 @@ class _YieldloveAdViewState extends State<YieldloveAdView> {
       context: context,
       gestureRecognizers: widget.gestureRecognizers,
       creationParams: widget.adParamsParcel,
+      listener: widget.listener,
     );
   }
 

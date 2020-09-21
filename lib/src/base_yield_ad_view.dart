@@ -3,12 +3,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 
+import '../YieldloveWrapper.dart';
+
 abstract class BaseYieldAdView {
 
   Widget build({
     BuildContext context,
     Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers,
     AdCreationParams creationParams,
+    MobileAdListener listener,
   });
 
 }

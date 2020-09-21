@@ -13,7 +13,6 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.platform.PlatformView
-import java.util.*
 
 class YieldlovePlatformView internal constructor(val context: Context?,
                                                  val messenger: BinaryMessenger?,
@@ -35,26 +34,35 @@ class YieldlovePlatformView internal constructor(val context: Context?,
         var adKeyword: String? = "ad_keyword"
         var adContentUrl: String? = "ad_content_url"
         var adSizes: List<Size> = emptyList()
+        var adIsRelease: Boolean = false
+        var useTestAds: Boolean = false
 
         if (params?.containsKey("ad_id") == true) {
             adId = params["ad_id"] as String
             adKeyword = params["ad_keyword"] as String?
             adContentUrl = params["ad_content_url"] as String?
+            adIsRelease = params["ad_is_release"] as Boolean
+            useTestAds = params["use_test_ads"] as Boolean
             adSizes = (params["ad_sizes"] as List<String>).map { e -> Size(e.split("x")[0].toInt(), e.split("x")[1].toInt()) }
-            Log.e("app-platform-view", "Ad(id=${adId}, keyword=${adKeyword}, contentUrl=${adContentUrl}, adSizes=${adSizes} ")
+            Log.v("app-platform-view", "Ad(id=${adId}, keyword=${adKeyword}, contentUrl=${adContentUrl}, adSizes=${adSizes}, adIsRelease=${adIsRelease}, adIsTest=${useTestAds}")
 
 
         }
 
-        //val addSizes = Arrays.asList(Size(320, 50), Size(320, 75), Size(320, 150), Size(300, 250), Size(37, 31))
-        tomoAdView = createAdView(context, Ad(adId, adSizes, adKeyword), adContentUrl, null)
+        tomoAdView = createAdView(context, Ad(adId, adSizes, adKeyword), adContentUrl, null, adIsRelease, useTestAds)
 
         platformThreadHandler = Handler(context!!.mainLooper)
         methodChannel = MethodChannel(messenger, "de.stroeer.plugins/adview_$id")
         methodChannel.setMethodCallHandler(this)
     }
 
-    private fun createAdView(context1: Context?, ad: Ad, contentUrl: String?, layoutParams: ViewGroup.LayoutParams?): TomoAdView? {
+    private fun createAdView(context1: Context?,
+                             ad: Ad,
+                             contentUrl: String?,
+                             layoutParams: ViewGroup.LayoutParams?,
+                             isRelease: Boolean = false,
+                             useTestAds: Boolean = true
+    ): TomoAdView? {
         if (context1 == null) return null
 
         val height: Int? = AdParameter.dimensions[ad.adUnitId]
@@ -70,6 +78,10 @@ class YieldlovePlatformView internal constructor(val context: Context?,
             yieldloveAdView(ad = ad)
             // TODO arty layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
             this.contentUrl = contentUrl
+            this.isRelease = isRelease
+            this.useTestAds = useTestAds
+
+
             //visibility = View.GONE TODO arty
             //loadAd(context1)
         }

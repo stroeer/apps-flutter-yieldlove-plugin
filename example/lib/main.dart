@@ -73,11 +73,15 @@ class _MyAppState extends State<MyApp> {
                       width: 300.0,
                       height: 300.0,
                       child: YieldloveAdView(
-                        adParamsParcel: AdCreationParams('rubrik_b3',
-                            adKeyword: null,
+                        adParamsParcel: AdCreationParams(
+                            adId: 'rubrik_b3',
                             adSizes: [AdSize(320, 50), AdSize(320, 75), AdSize(320, 150), AdSize(300, 250), AdSize(37, 31)],
+                            adKeyword: null,
                             adContentUrl: 'https://www.google.com'
                         ),
+                        listener: (MobileAdEvent event) {
+                          print("BannerAd event $event");
+                        },
                         // TODO pass controller
                       ),
                   )

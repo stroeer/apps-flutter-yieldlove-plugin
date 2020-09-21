@@ -21,26 +21,20 @@ import com.yieldlove.adIntegration.AdFormats.YieldloveBannerAdView
 import com.yieldlove.adIntegration.AdUnit.YieldloveAdUnit
 import com.yieldlove.adIntegration.Yieldlove
 import com.yieldlove.adIntegration.exceptions.YieldloveException
-import com.example.AppsFlutterYieldloveSDK.R
 
 
 // TODO params to extract: USE_TEST_AD_TAGS, isRelease, adModel
 
-class TomoAdView : ConstraintLayout, AdClickListener2 {
+class TomoAdView : ConstraintLayout, AdLongClickListener {
 
     @LayoutRes
     private val layout: Int = R.layout.tomo_ad_view
-
     private var adView : ViewGroup? = null
 
-    var USE_TEST_AD_TAGS = false // TODO arty
-
-    var isVisible = false
-
     var contentUrl: String? = null
-
-override    fun isRelease() = false // TODO arty
-
+    var isVisible = false
+    var isRelease = false
+    var useTestAds = false
 
     private val testAdUnitId = "/4444/m.app.dev.test/start_b1"
 
@@ -72,7 +66,7 @@ override    fun isRelease() = false // TODO arty
 
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.AdViewAttrs)
         val adLayout = attributes.getResourceId(R.styleable.AdViewAttrs_layout, layout)
-       // visibility = View.GONE
+        visibility = View.GONE
         View.inflate(context, adLayout, this)
     }
 
@@ -86,8 +80,8 @@ override    fun isRelease() = false // TODO arty
 
     private fun prepareDfpAdView(parentView: View, adModel: Ad, adWithLines: Boolean = false) {
         return prepareDfpAdView(parentView,
-                adId = if (USE_TEST_AD_TAGS) testAdUnitId else adModel.adUnitId,
-                adSizes = if (USE_TEST_AD_TAGS) testAdSizes else adModel.adSizes
+                adId = if (useTestAds) testAdUnitId else adModel.adUnitId,
+                adSizes = if (useTestAds) testAdSizes else adModel.adSizes
         )
     }
 
@@ -151,14 +145,14 @@ override    fun isRelease() = false // TODO arty
             }
             Yieldlove.getInstance().publisherAdRequestBuilder = builder
 
-            if (!isRelease()) {
+            if (!isRelease) {
                 val randomValuesForPrint = "random-session = ${LifecycleListener.sessionRandom}, random-pi = ${LifecycleListener.screenRandom}, pi-counter = $pageViewCounter"
                 if (adKeyword != null && contentUrl != null) {
                     Log.v("tomo-app-ad", "Loading ad $adUnitId: configId = $configId, contentUrl = $contentUrl, tagKeyword = $adKeyword, $randomValuesForPrint")
                 } else if (contentUrl != null) {
-                    if (!isRelease()) Log.v("tomo-app-ad", "Loading ad $adUnitId: configId = $configId, contentUrl = $contentUrl, $randomValuesForPrint")
+                    if (!isRelease) Log.v("tomo-app-ad", "Loading ad $adUnitId: configId = $configId, contentUrl = $contentUrl, $randomValuesForPrint")
                 } else if (contentUrl == null && adKeyword == null) {
-                    if (!isRelease()) Log.e("tomo-app-ad", "Loading ad $adUnitId: configId = $configId, but contentUrl is null!")
+                    if (!isRelease) Log.e("tomo-app-ad", "Loading ad $adUnitId: configId = $configId, but contentUrl is null!")
                 }
             }
 
@@ -203,11 +197,13 @@ override    fun isRelease() = false // TODO arty
     fun show() {
         if (adView == null || adUnitId == null) return
 
-        //findViewById<View>(R.id.ad_placeholder)?.visibility = View.GONE TODO arty
+        findViewById<View>(R.id.ad_placeholder)?.visibility = View.GONE
 
         visibility = View.VISIBLE
         isVisible = true
-        addOnAdClickListener(this, adUnitId!!)
+        if (!isRelease) {
+            addOnAdClickListener(this, adUnitId!!)
+        }
 
         adView?.post {
             if (height > 0) {
@@ -218,8 +214,8 @@ override    fun isRelease() = false // TODO arty
     }
 
     fun hide() {
-        // visibility = View.GONE TODO arty
-        // isVisible = true TODO arty
+        visibility = View.GONE
+        isVisible = false
     }
 
     private fun insertRecommendedTargeting(adUnit: YieldloveAdUnit) {
@@ -270,18 +266,13 @@ override    fun isRelease() = false // TODO arty
         adUnit.addCustomTargeting("adslot", "topmobile$adSlot")
         adUnit.addCustomTargeting("as", "topmobile$adSlot")
 
-        if (!isRelease()) Log.v("tomo-app-ad", "af: '$af', adslot: 'topmobile$adSlot', as: 'topmobile$adSlot'")
+        if (!isRelease) Log.v("tomo-app-ad", "af: '$af', adslot: 'topmobile$adSlot', as: 'topmobile$adSlot'")
     }
 }
 
-interface AdClickListener2 {
+interface AdLongClickListener {
 
-    fun isRelease() = false // TODO arty
     fun addOnAdClickListener(layout: View, adUnitId: String) {
-        if (isRelease()) {
-            return
-        }
-
         layout.setOnLongClickListener {
             Snackbar.make(layout, adUnitId, Snackbar.LENGTH_LONG)
                     .setAction("adUnitId kopieren") {

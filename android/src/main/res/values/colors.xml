@@ -31,5 +31,5 @@
     <color name="adTomoViewBackground">@color/white</color>
 
 
-    <color name="moduleBackground">@color/magenta</color>
+    <color name="moduleBackground">@color/white</color>
 </resources>

@@ -1,3 +1,4 @@
+import 'package:AppsFlutterYieldloveSDK/YieldloveWrapper.dart';
 import 'package:AppsFlutterYieldloveSDK/src/ad_view_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -15,7 +16,8 @@ class AndroidYieldAdView implements BaseYieldAdView {
   @override Widget build({
     BuildContext context,
     Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers,
-    AdCreationParams creationParams
+    AdCreationParams creationParams,
+    MobileAdListener listener,
   }) {
     return GestureDetector(
       // intercept long press event.
