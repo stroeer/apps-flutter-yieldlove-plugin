@@ -4,15 +4,18 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-import 'abstract_view_platform.dart';
+import 'base_yield_ad_view.dart';
 
-class AndroidYieldloveAdView implements ViewPlatform {
+class AndroidYieldAdView implements BaseYieldAdView {
 
-  @override
-  Widget build({
+  final Function onPlatformViewCreatedCallback;
+
+  AndroidYieldAdView({this.onPlatformViewCreatedCallback});
+
+  @override Widget build({
     BuildContext context,
     Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers,
-    AdParamsParcel params
+    AdCreationParams creationParams
   }) {
     return GestureDetector(
       // intercept long press event.
@@ -21,11 +24,13 @@ class AndroidYieldloveAdView implements ViewPlatform {
       child: AndroidView(
         viewType: 'de.stroeer.plugins/yieldlove_ad_view',
         onPlatformViewCreated: (int id) {
-
+          if (onPlatformViewCreatedCallback != null) {
+            onPlatformViewCreatedCallback();
+          }
         },
         gestureRecognizers: gestureRecognizers,
         layoutDirection: TextDirection.rtl,
-        creationParams: params.toMap(),
+        creationParams: creationParams.toMap(),
         creationParamsCodec: const StandardMessageCodec(),
       ),
     );

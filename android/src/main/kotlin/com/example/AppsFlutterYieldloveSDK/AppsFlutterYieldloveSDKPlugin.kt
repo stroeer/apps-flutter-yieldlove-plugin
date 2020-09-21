@@ -2,24 +2,46 @@ package com.example.AppsFlutterYieldloveSDK
 
 import android.util.Log
 import androidx.annotation.NonNull
+import com.yieldlove.adIntegration.Yieldlove
 import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.embedding.engine.plugins.activity.ActivityAware
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.Registrar
-import io.flutter.embedding.engine.plugins.activity.ActivityAware
-import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
+import java.lang.Exception
 
 /** AppsFlutterYieldloveSDKPlugin */
 class AppsFlutterYieldloveSDKPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
-  override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-    if (call.method == "getPlatformVersion") {
-      result.success("Android ${android.os.Build.VERSION.RELEASE}")
+  override fun onMethodCall(call: MethodCall, result: Result) {
+
+    // val id: String? = call.argument("id")
+    when (call.method) {
+      "initialize" -> callInitialize(call, result)
+      "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
+      // TBD "loadBannerAd" -> callInitialize(call, result)
+      // TBD "loadInterstitialAd" -> callInitialize(call, result)
+      else -> result.notImplemented()
+    }
+  }
+
+  private fun callInitialize(call: MethodCall, result: Result) {
+    val appId: String? = call.argument("appId")
+    if (appId == null || appId.isEmpty()) {
+      result.error("no_app_id", "a null or empty AdMob appId was provided", null)
+      return
     } else {
-      result.notImplemented()
+      try {
+        Yieldlove.setApplicationName("t-online");
+        Yieldlove.setAccountId("t-online")
+        result.success(true)
+      } catch (e: Exception) {
+        result.error("initialization_failed", "Yieldlove SDK initialization failed: ${e.message}", null)
+      }
     }
   }
 

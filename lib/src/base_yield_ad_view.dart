@@ -3,12 +3,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 
-abstract class ViewPlatform {
+abstract class BaseYieldAdView {
 
   Widget build({
     BuildContext context,
     Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers,
-    AdParamsParcel params,
+    AdCreationParams creationParams,
   });
 
 }

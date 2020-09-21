@@ -31,27 +31,23 @@ class YieldlovePlatformView internal constructor(val context: Context?,
     private var platformThreadHandler: Handler? = null
 
     init {
+        var adId: String = "rubrik_b3"
+        var adKeyword: String? = "ad_keyword"
+        var adContentUrl: String? = "ad_content_url"
+        var adSizes: List<Size> = emptyList()
+
+        if (params?.containsKey("ad_id") == true) {
+            adId = params["ad_id"] as String
+            adKeyword = params["ad_keyword"] as String?
+            adContentUrl = params["ad_content_url"] as String?
+            adSizes = (params["ad_sizes"] as List<String>).map { e -> Size(e.split("x")[0].toInt(), e.split("x")[1].toInt()) }
+            Log.e("app-platform-view", "Ad(id=${adId}, keyword=${adKeyword}, contentUrl=${adContentUrl}, adSizes=${adSizes} ")
 
 
-        //if (params!!.containsKey(JS_CHANNEL_NAMES_FIELD)) {
-        //    registerJavaScriptChannelNames(params!![JS_CHANNEL_NAMES_FIELD] as List<String?>?)
-        //}
-        //updateAutoMediaPlaybackPolicy(params!!["autoMediaPlaybackPolicy"] as Int?)
-        if (params?.containsKey("one") == true) {
-            val userAgent = params["one"] as String?
-            Log.e("app-platform-view", "${userAgent}")
         }
-        //if (params!!.containsKey("initialUrl")) {
-        //    val url = params!!["initialUrl"] as String?
-        //    webView.loadUrl(url)
-        //}
 
-
-        Yieldlove.setAccountId("t-online")
-        Yieldlove.setApplicationName("t-online");
-
-        val addSizes = Arrays.asList(Size(320, 50), Size(320, 75), Size(320, 150), Size(300, 250), Size(37, 31))
-        tomoAdView = createAdView(context, Ad("rubrik_b3", addSizes, null), "https://www.google.com", null)
+        //val addSizes = Arrays.asList(Size(320, 50), Size(320, 75), Size(320, 150), Size(300, 250), Size(37, 31))
+        tomoAdView = createAdView(context, Ad(adId, adSizes, adKeyword), adContentUrl, null)
 
         platformThreadHandler = Handler(context!!.mainLooper)
         methodChannel = MethodChannel(messenger, "de.stroeer.plugins/adview_$id")

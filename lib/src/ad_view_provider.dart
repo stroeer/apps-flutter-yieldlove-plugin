@@ -3,24 +3,39 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 
-import 'abstract_view_platform.dart';
+import 'base_yield_ad_view.dart';
 
-class AdParamsParcel {
-  String one;
-  String two;
+class AdCreationParams {
 
-  AdParamsParcel({this.one, this.two});
+  String adId;
+  String adKeyword;
+  String adContentUrl;
+  List<AdSize> adSizes;
+
+  AdCreationParams({@required this.adId, @required this.adSizes, this.adKeyword, this.adContentUrl});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'one': this.one,
-      'two': this.two,
+      'ad_id': this.adId,
+      'ad_keyword': this.adKeyword,
+      'ad_content_url': this.adContentUrl,
+      'ad_sizes': _adSizesToStringList()
     };
   }
+
+  List<String> _adSizesToStringList() => adSizes.map((e) => '${e.width}x${e.height}').toList(); //.join(';')
 }
+
+class AdSize {
+  int width;
+  int height;
+
+  AdSize(this.width, this.height);
+}
+
 class YieldloveAdView extends StatefulWidget {
 
-  final AdParamsParcel adParamsParcel;
+  final AdCreationParams adParamsParcel;
 
   const YieldloveAdView({
     Key key,
@@ -29,27 +44,23 @@ class YieldloveAdView extends StatefulWidget {
     /// TODO add adController that is passed once the ad view is created.
   })  : super(key: key);
 
-  static ViewPlatform _platform;
+  static BaseYieldAdView _adView;
 
-  static set platform(ViewPlatform platform) {
-    _platform = platform;
-  }
-
-  static ViewPlatform get platform {
-    if (_platform == null) {
+  static BaseYieldAdView get view {
+    if (_adView == null) {
       final  defaultTargetPlatform = TargetPlatform.android; // TODO arty
       switch (defaultTargetPlatform) {
         case TargetPlatform.android:
-          _platform = AndroidYieldloveAdView();
+          _adView = AndroidYieldAdView();
           break;
         case TargetPlatform.iOS:
-          _platform = AndroidYieldloveAdView(); // TODO arty
+          _adView = AndroidYieldAdView(); // TODO arty
           break;
         default:
           throw UnsupportedError("Trying to use the default view implementation for $defaultTargetPlatform but there isn't a default one");
       }
     }
-    return _platform;
+    return _adView;
   }
 
   /// Which gestures should be consumed by our view.
@@ -63,10 +74,10 @@ class _YieldloveAdViewState extends State<YieldloveAdView> {
 
   @override
   Widget build(BuildContext context) {
-    return YieldloveAdView.platform.build(
+    return YieldloveAdView.view.build(
       context: context,
       gestureRecognizers: widget.gestureRecognizers,
-      params: widget.adParamsParcel,
+      creationParams: widget.adParamsParcel,
     );
   }
 

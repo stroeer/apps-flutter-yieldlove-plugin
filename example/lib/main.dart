@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:AppsFlutterYieldloveSDK/AppsFlutterYieldloveSDK.dart';
+import 'package:AppsFlutterYieldloveSDK/YieldloveWrapper.dart';
 import 'package:AppsFlutterYieldloveSDK/src/ad_view_provider.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await YieldloveWrapper.instance.initialize(appId: "t-online").then((value) {
+    print("app-widget: initialized = ${value}");
+  });
   runApp(MyApp());
 }
 
@@ -29,7 +33,7 @@ class _MyAppState extends State<MyApp> {
     String platformVersion;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
-      platformVersion = await AppsFlutterYieldloveSDK.platformVersion;
+      platformVersion = 'undefined';
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }
@@ -68,7 +72,14 @@ class _MyAppState extends State<MyApp> {
                       padding: EdgeInsets.symmetric(vertical: 30.0),
                       width: 300.0,
                       height: 300.0,
-                      child: YieldloveAdView(adParamsParcel: AdParamsParcel(one: "fuck", two: "me"),)
+                      child: YieldloveAdView(
+                        adParamsParcel: AdCreationParams('rubrik_b3',
+                            adKeyword: null,
+                            adSizes: [AdSize(320, 50), AdSize(320, 75), AdSize(320, 150), AdSize(300, 250), AdSize(37, 31)],
+                            adContentUrl: 'https://www.google.com'
+                        ),
+                        // TODO pass controller
+                      ),
                   )
               ),
               RaisedButton(onPressed: _onLoadAd, child:
