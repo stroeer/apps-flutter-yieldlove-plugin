@@ -13,9 +13,7 @@ class YieldloveWrapper {
 
   static YieldloveWrapper get instance => _instance;
 
-  YieldloveWrapper.private(MethodChannel channel) : _channel = channel {
-    _channel.setMethodCallHandler(_handleMethod);
-  }
+  YieldloveWrapper.private(MethodChannel channel) : _channel = channel;
 
   static final String testAppId = Platform.isAndroid
       ? 'ca-app-pub-3940256099942544~3347511713'
@@ -45,23 +43,6 @@ class YieldloveWrapper {
     });
   }
 
-  Future<dynamic> _handleMethod(MethodCall call) {
-    assert(call.arguments is Map);
-    final Map<dynamic, dynamic> argumentsMap = call.arguments;
-
-    final int id = argumentsMap['id'];
-
-    // TODO
-    // if (id != null && MobileAd._allAds[id] != null) {
-    //   final MobileAd ad = MobileAd._allAds[id];
-    //   final MobileAdEvent mobileAdEvent = _methodToMobileAdEvent[call.method];
-    //   if (mobileAdEvent != null && ad.listener != null) {
-    //     ad.listener(mobileAdEvent);
-    //   }
-    // }
-
-    return Future<dynamic>.value(null);
-  }
 }
 
 

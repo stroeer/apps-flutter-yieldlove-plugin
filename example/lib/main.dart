@@ -21,11 +21,24 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
+  YieldloveAdView _yieldloveAdView;
 
   @override
   void initState() {
     super.initState();
     initPlatformState();
+    _yieldloveAdView = YieldloveAdView(
+      adParamsParcel: AdCreationParams(
+          adId: 'rubrik_b3',
+          adSizes: [AdSize(320, 50), AdSize(320, 75), AdSize(320, 150), AdSize(300, 250), AdSize(37, 31)],
+          adKeyword: null,
+          adContentUrl: 'https://www.google.com'
+      ),
+      listener: (MobileAdEvent event) {
+        print("BannerAd event $event");
+      },
+      // TODO pass controller
+    );
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -45,7 +58,7 @@ class _MyAppState extends State<MyApp> {
 
     setState(() {
       _platformVersion = platformVersion;
-      _yieldloveAdController = YieldloveAdController._(0);
+      _yieldloveAdController = YieldloveAdController(0);
     });
   }
 
@@ -70,20 +83,9 @@ class _MyAppState extends State<MyApp> {
               Center(
                   child: Container(
                       padding: EdgeInsets.symmetric(vertical: 30.0),
-                      width: 300.0,
-                      height: 300.0,
-                      child: YieldloveAdView(
-                        adParamsParcel: AdCreationParams(
-                            adId: 'rubrik_b3',
-                            adSizes: [AdSize(320, 50), AdSize(320, 75), AdSize(320, 150), AdSize(300, 250), AdSize(37, 31)],
-                            adKeyword: null,
-                            adContentUrl: 'https://www.google.com'
-                        ),
-                        listener: (MobileAdEvent event) {
-                          print("BannerAd event $event");
-                        },
-                        // TODO pass controller
-                      ),
+                      width: 350.0,
+                      height: 450.0,
+                      child: _yieldloveAdView
                   )
               ),
               RaisedButton(onPressed: _onLoadAd, child:
@@ -99,18 +101,12 @@ class _MyAppState extends State<MyApp> {
       ),
     );
   }
-}
 
-class YieldloveAdController {
-  YieldloveAdController._(int id) : _channel = new MethodChannel('de.stroeer.plugins/adview_$id');
 
-  final MethodChannel _channel;
-
-  Future<void> showAd() async {
-    return _channel.invokeMethod('showAd');
+  @override
+  void dispose() {
+    _yieldloveAdView?.dispose();
+    super.dispose();
   }
 
-  Future<void> hideAd() async {
-    return _channel.invokeMethod('hideAd');
-  }
 }

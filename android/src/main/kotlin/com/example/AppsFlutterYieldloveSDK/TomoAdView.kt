@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
+import android.os.Message
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.Log
@@ -22,8 +23,6 @@ import com.yieldlove.adIntegration.AdUnit.YieldloveAdUnit
 import com.yieldlove.adIntegration.Yieldlove
 import com.yieldlove.adIntegration.exceptions.YieldloveException
 
-
-// TODO params to extract: USE_TEST_AD_TAGS, isRelease, adModel
 
 class TomoAdView : ConstraintLayout, AdLongClickListener {
 
@@ -55,6 +54,8 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
 
     private var adKeyword: String? = null
 
+    var adEventListener: ((YieldAdEvent) -> Unit)? = null
+
     constructor(context: Context, visible: Int = View.VISIBLE, backgroundColorRes: Int) : super(context) {
         visibility = visible
         setBackgroundColor(resources.getColor(backgroundColorRes))
@@ -70,11 +71,10 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
         View.inflate(context, adLayout, this)
     }
 
-    fun yieldloveAdView(ad: Ad? = null, isTestAd: Boolean = false) {
+    fun init(ad: Ad? = null, isTestAd: Boolean = false) {
         if (ad != null) {
             adKeyword = ad.keyword
             if (isTestAd) prepareTestDfpAdView(this) else prepareDfpAdView(this, ad)
-            //loadAd(null)
         }
     }
 
@@ -128,9 +128,9 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
             }
             val adUnit = YieldloveAdUnit(adUnitId, configId, adSizes)
 
-            adUnit.addCustomTargeting("rse", LifecycleListener.sessionRandom.toString()) // random session
-            adUnit.addCustomTargeting("rpi", LifecycleListener.screenRandom.toString()) // random pi
-            val pageViewCounter = if (LifecycleListener.screenCounter > 99) "100+" else LifecycleListener.screenCounter.toString()
+            adUnit.addCustomTargeting("rse", SessionValuesProvider.sessionRandom.toString()) // random session
+            adUnit.addCustomTargeting("rpi", SessionValuesProvider.screenRandom.toString()) // random pi
+            val pageViewCounter = if (SessionValuesProvider.screenCounter > 99) "100+" else SessionValuesProvider.screenCounter.toString()
             adUnit.addCustomTargeting("pvc", pageViewCounter) // page view counter
 
             insertRecommendedTargeting(adUnit)
@@ -146,7 +146,7 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
             Yieldlove.getInstance().publisherAdRequestBuilder = builder
 
             if (!isRelease) {
-                val randomValuesForPrint = "random-session = ${LifecycleListener.sessionRandom}, random-pi = ${LifecycleListener.screenRandom}, pi-counter = $pageViewCounter"
+                val randomValuesForPrint = "random-session = ${SessionValuesProvider.sessionRandom}, random-pi = ${SessionValuesProvider.screenRandom}, pi-counter = $pageViewCounter"
                 if (adKeyword != null && contentUrl != null) {
                     Log.v("tomo-app-ad", "Loading ad $adUnitId: configId = $configId, contentUrl = $contentUrl, tagKeyword = $adKeyword, $randomValuesForPrint")
                 } else if (contentUrl != null) {
@@ -159,34 +159,37 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
             YieldloveBannerAd(adUnit, activityContext, object: YieldloveBannerAdListener {
                 override fun onAdInit(banner: YieldloveBannerAdView?) {
                     adView?.addView(banner?.adView)
+                    adEventListener?.invoke(YieldAdEvent.OnAdInit())
                 }
 
                 override fun onAdLeftApplication(banner: YieldloveBannerAdView?) {
-                    // ;
+                    adEventListener?.invoke(YieldAdEvent.OnAdLeftApplication())
                 }
 
                 override fun onAdRequestBuild(): PublisherAdRequest.Builder? {
+                    adEventListener?.invoke(YieldAdEvent.OnAdRequestBuild())
                     val extras = Bundle().apply {
                         putString("npa", "1")
                     }
-                    return PublisherAdRequest.Builder()
-                            .addNetworkExtrasBundle(AdMobAdapter::class.java, extras)
+                    return PublisherAdRequest.Builder().addNetworkExtrasBundle(AdMobAdapter::class.java, extras)
                 }
 
                 override fun onAdFailedToLoad(banner: YieldloveBannerAdView?, errorCode: Int) {
+                    adEventListener?.invoke(YieldAdEvent.OnAdFailedToLoad(message = errorCode.toString()))
                     hide()
                 }
 
                 override fun onAdLoaded(banner: YieldloveBannerAdView?) {
+                    adEventListener?.invoke(YieldAdEvent.OnAdLoaded())
                     show()
                 }
 
                 override fun onAdOpened(banner: YieldloveBannerAdView?) {
-                    // ;
+                    adEventListener?.invoke(YieldAdEvent.OnAdOpened())
                 }
 
                 override fun onAdClosed(banner: YieldloveBannerAdView?) {
-                    // ;
+                    adEventListener?.invoke(YieldAdEvent.OnAdClosed())
                 }
             })
         } catch (e: YieldloveException) {

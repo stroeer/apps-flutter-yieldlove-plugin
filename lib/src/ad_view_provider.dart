@@ -1,6 +1,7 @@
 import 'package:AppsFlutterYieldloveSDK/src/yieldlove_android.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import '../YieldloveWrapper.dart';
@@ -74,6 +75,47 @@ class YieldloveAdView extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() => _YieldloveAdViewState();
+
+  Future<bool> dispose() {
+    //return _invokeBooleanMethod("disposeAd", <String, dynamic>{'id': id}); TODO
+  }
+
+}
+
+
+class YieldloveAdController {
+
+  YieldloveAdController(int id) : _channel = new MethodChannel('de.stroeer.plugins/adview_$id') {
+    _channel.setMethodCallHandler(_handleMethod);
+  }
+
+  final MethodChannel _channel;
+
+  Future<void> showAd() async {
+    return _channel.invokeMethod('showAd');
+  }
+
+  Future<void> hideAd() async {
+    return _channel.invokeMethod('hideAd');
+  }
+
+  Future<dynamic> _handleMethod(MethodCall call) {
+    assert(call.arguments is Map);
+    final Map<dynamic, dynamic> argumentsMap = call.arguments;
+
+    final int id = argumentsMap['id'];
+
+    switch (call.method) {
+      case 'onAdEvent':
+        final adEventType = call.arguments["adEventType"];
+        final errorMessage = call.arguments["error"];
+        print("app-widget: $id: onAdEvent($adEventType) with errorMessage=$errorMessage ");
+        break;
+      default:
+        print('TestFairy: Ignoring invoke from native. This normally shouldn\'t happen.');
+    }
+    return Future<dynamic>.value(null);
+  }
 }
 
 class _YieldloveAdViewState extends State<YieldloveAdView> {

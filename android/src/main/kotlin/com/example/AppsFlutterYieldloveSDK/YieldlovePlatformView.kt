@@ -1,5 +1,6 @@
 package com.example.AppsFlutterYieldloveSDK
 
+import android.R.id
 import android.app.Activity
 import android.content.Context
 import android.os.Handler
@@ -13,10 +14,12 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.platform.PlatformView
+import java.util.*
 
-class YieldlovePlatformView internal constructor(val context: Context?,
-                                                 val messenger: BinaryMessenger?,
-                                                 id: Int,
+
+class YieldlovePlatformView internal constructor(context: Context?,
+                                                 messenger: BinaryMessenger?,
+                                                 val id: Int,
                                                  params: Map<String, Any>?,
                                                  containerView: View?)
     : PlatformView, MethodCallHandler {
@@ -26,13 +29,13 @@ class YieldlovePlatformView internal constructor(val context: Context?,
     }
 
     private var tomoAdView: TomoAdView? = null
-    private lateinit var methodChannel: MethodChannel
+    private var methodChannel: MethodChannel
     private var platformThreadHandler: Handler? = null
 
     init {
         var adId: String = "rubrik_b3"
-        var adKeyword: String? = "ad_keyword"
-        var adContentUrl: String? = "ad_content_url"
+        var adKeyword: String? = null
+        var adContentUrl: String? = null
         var adSizes: List<Size> = emptyList()
         var adIsRelease: Boolean = false
         var useTestAds: Boolean = false
@@ -45,8 +48,6 @@ class YieldlovePlatformView internal constructor(val context: Context?,
             useTestAds = params["use_test_ads"] as Boolean
             adSizes = (params["ad_sizes"] as List<String>).map { e -> Size(e.split("x")[0].toInt(), e.split("x")[1].toInt()) }
             Log.v("app-platform-view", "Ad(id=${adId}, keyword=${adKeyword}, contentUrl=${adContentUrl}, adSizes=${adSizes}, adIsRelease=${adIsRelease}, adIsTest=${useTestAds}")
-
-
         }
 
         tomoAdView = createAdView(context, Ad(adId, adSizes, adKeyword), adContentUrl, null, adIsRelease, useTestAds)
@@ -75,18 +76,20 @@ class YieldlovePlatformView internal constructor(val context: Context?,
                 visible = View.VISIBLE,
                 backgroundColorRes = R.color.moduleBackground
         ).apply {
-            yieldloveAdView(ad = ad)
-            // TODO arty layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+            init(ad = ad)
+            // TODO arty layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT TODO
             this.contentUrl = contentUrl
             this.isRelease = isRelease
             this.useTestAds = useTestAds
-
-
-            //visibility = View.GONE TODO arty
-            //loadAd(context1)
+            this.visibility = View.GONE
+            this.adEventListener = { event ->
+                when (event) {
+                    is YieldAdEvent.OnAdFailedToLoad -> methodChannel.invokeMethod("onAdEvent", argumentsMap("adEventType", event.name, "error", event.message));
+                    else -> methodChannel.invokeMethod("onAdEvent", argumentsMap("adEventType", event.toString()));
+                }
+            }
         }
     }
-
 
     override fun getView(): View? {
         return tomoAdView
@@ -94,7 +97,6 @@ class YieldlovePlatformView internal constructor(val context: Context?,
 
     override fun onMethodCall(methodCall: MethodCall, result: MethodChannel.Result) {
         when (methodCall.method) {
-            "setText" -> setText(methodCall, result)
             "showAd" -> showAd(methodCall, result)
             "hideAd" -> hideAd(methodCall, result)
             else -> result.notImplemented()
@@ -102,21 +104,39 @@ class YieldlovePlatformView internal constructor(val context: Context?,
     }
 
     private fun showAd(methodCall: MethodCall, result: MethodChannel.Result) {
+        // val text = methodCall.arguments as String
         tomoAdView?.loadAd(activity)
         tomoAdView?.show()
+        result.success(true)
     }
 
     private fun hideAd(methodCall: MethodCall, result: MethodChannel.Result) {
         tomoAdView?.hide()
-    }
-
-
-    private fun setText(methodCall: MethodCall, result: MethodChannel.Result) {
-        val text = methodCall.arguments as String
-        //textView.setText(text)
-        result.success(null)
+        result.success(true)
     }
 
     override fun dispose() {
+
     }
+
+    private fun argumentsMap(vararg args: Any): Map<String, Any>? {
+        val arguments: MutableMap<String, Any> = HashMap()
+        arguments["id"] = id
+        var i = 0
+        while (i < args.size) {
+            arguments[args[i].toString()] = args[i + 1]
+            i += 2
+        }
+        return arguments
+    }
+}
+
+sealed class YieldAdEvent(val name: String) {
+    class OnAdInit(): YieldAdEvent("onAdInit")
+    class OnAdLeftApplication(): YieldAdEvent("onAdLeftApplication")
+    class OnAdRequestBuild(): YieldAdEvent("onAdRequestBuild")
+    class OnAdFailedToLoad(val message: String): YieldAdEvent("onAdFailedToLoad")
+    class OnAdLoaded(): YieldAdEvent("onAdLoaded")
+    class OnAdOpened(): YieldAdEvent("onAdOpened")
+    class OnAdClosed(): YieldAdEvent("onAdClosed")
 }
