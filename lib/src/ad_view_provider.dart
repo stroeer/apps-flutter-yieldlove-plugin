@@ -1,10 +1,12 @@
+import 'dart:io';
+
 import 'package:AppsFlutterYieldloveSDK/src/yieldlove_android.dart';
+import 'package:AppsFlutterYieldloveSDK/src/yieldlove_ios.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-import '../YieldloveWrapper.dart';
 import 'base_yield_ad_view.dart';
 
 class AdCreationParams {
@@ -77,20 +79,16 @@ class _YieldloveAdViewState extends State<YieldloveAdView> {
   BaseYieldAdView getBaseYieldAdView() {
     BaseYieldAdView _adView;
     if (_adView == null) {
-      final  defaultTargetPlatform = TargetPlatform.android; // TODO arty
-      switch (defaultTargetPlatform) {
-        case TargetPlatform.android:
-          _adView = AndroidYieldAdView(onPlatformViewCreatedCallback: (int id) {
-            widget.onPlatformViewCreated(YieldloveAdController(id));
-          });
-          break;
-        case TargetPlatform.iOS:
-          _adView = AndroidYieldAdView(onPlatformViewCreatedCallback: (int id) {
-            YieldloveAdController(id); // TODO Patrick
-          });
-          break;
-        default:
-          throw UnsupportedError("Trying to use the default view implementation for $defaultTargetPlatform but there isn't a default one");
+      if (Platform.isAndroid) {
+        _adView = AndroidYieldAdView(onPlatformViewCreatedCallback: (int id) {
+          widget.onPlatformViewCreated(YieldloveAdController(id));
+        });
+      } else if (Platform.isIOS) {
+        _adView = IosYieldAdView(onPlatformViewCreatedCallback: (int id) {
+          widget.onPlatformViewCreated(YieldloveAdController(id));
+        });
+      } else {
+        throw UnsupportedError("Trying to use the default view implementation for $defaultTargetPlatform but there isn't a default one");
       }
     }
     return _adView;
