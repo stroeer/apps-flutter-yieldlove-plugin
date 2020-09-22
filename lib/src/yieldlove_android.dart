@@ -27,7 +27,7 @@ class AndroidYieldAdView implements BaseYieldAdView {
         viewType: 'de.stroeer.plugins/yieldlove_ad_view',
         onPlatformViewCreated: (int id) {
           if (onPlatformViewCreatedCallback != null) {
-            onPlatformViewCreatedCallback();
+            onPlatformViewCreatedCallback(id);
           }
         },
         gestureRecognizers: gestureRecognizers,

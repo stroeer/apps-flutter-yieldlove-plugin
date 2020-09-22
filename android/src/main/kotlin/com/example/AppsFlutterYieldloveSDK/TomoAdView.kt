@@ -1,12 +1,13 @@
 package com.example.AppsFlutterYieldloveSDK
 
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
-import android.os.Message
 import android.text.TextUtils
 import android.util.AttributeSet
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -55,6 +56,8 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
     private var adKeyword: String? = null
 
     var adEventListener: ((YieldAdEvent) -> Unit)? = null
+    var adSizeCallback: ((Int?, Int?) -> Unit)? = null
+    var screenHeight = 0 // required to determine screen pixel ratio
 
     constructor(context: Context, visible: Int = View.VISIBLE, backgroundColorRes: Int) : super(context) {
         visibility = visible
@@ -97,12 +100,7 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
 
     fun loadAd(activityContext: Context?) {
         adView?.removeAllViews()
-
-        val height = AdParameter.dimensions["${adUnitId!!}-height"]
-        if (height != null && height > 0) {
-            val width = AdParameter.dimensions["${adUnitId!!}-width"]!!
-            findViewById<View>(R.id.ad_placeholder)?.layoutParams = LayoutParams(width, height)
-        }
+        determineScreenDimensions(context = activityContext)
         findViewById<View>(R.id.ad_placeholder)?.visibility = View.VISIBLE
         adView?.visibility = View.VISIBLE
 
@@ -197,6 +195,15 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
         }
     }
 
+    fun sendDimensionsToFlutter() {
+        // we need this inner container bc outer container ALWAYS takes all available space ("match_parent")
+        // regardless of what sizes you declare in XML. Therefore we cannot reliably determine size
+        // for the ad view without this trick
+        val yadHeight = findViewById<View>(R.id.yieldlove_ad_inner_container)?.getHeight()
+        val yadMeasuredHeight = findViewById<View>(R.id.yieldlove_ad_inner_container)?.getMeasuredHeight()
+        adSizeCallback?.invoke(screenHeight, yadMeasuredHeight)
+    }
+
     fun show() {
         if (adView == null || adUnitId == null) return
 
@@ -209,11 +216,23 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
         }
 
         adView?.post {
-            if (height > 0) {
-                AdParameter.dimensions["${adUnitId!!}-height"] = height
-                AdParameter.dimensions["${adUnitId!!}-width"] = width
-            }
+            sendDimensionsToFlutter()
+
         }
+    }
+
+    //override fun onMeasure ( widthMeasureSpec: Int, heightMeasureSpec: Int) {
+    //    val mode = View.MeasureSpec.getMode(heightMeasureSpec)
+    //    val height = View.MeasureSpec.getSize(heightMeasureSpec)
+    //    Log.d("app-widget", "tomo ad layout pass: mode=${mode}     height=${height}")
+    //    super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+    //}
+
+    private fun determineScreenDimensions(context: Context?) {
+        val displayMetrics = DisplayMetrics()
+        (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
+        screenHeight = displayMetrics.heightPixels
+        // screenWidth = displayMetrics.widthPixels
     }
 
     fun hide() {

@@ -65,12 +65,6 @@ class YieldlovePlatformView internal constructor(context: Context?,
                              useTestAds: Boolean = true
     ): TomoAdView? {
         if (context1 == null) return null
-
-        val height: Int? = AdParameter.dimensions[ad.adUnitId]
-        if (height != null && height > 0) {
-            // layoutParams.height = height TODO arty
-        }
-        val isVisible = if (height != null && height > 0) View.VISIBLE else View.GONE
         return TomoAdView(
                 context = context1,
                 visible = View.VISIBLE,
@@ -82,6 +76,9 @@ class YieldlovePlatformView internal constructor(context: Context?,
             this.isRelease = isRelease
             this.useTestAds = useTestAds
             this.visibility = View.GONE
+            this.adSizeCallback = { screenHeight, adHeight ->
+                methodChannel.invokeMethod("adSizeDetermined", argumentsMap("screenHeight", screenHeight ?: 0, "adHeight", adHeight ?: 0))
+            }
             this.adEventListener = { event ->
                 when (event) {
                     is YieldAdEvent.OnAdFailedToLoad -> methodChannel.invokeMethod("onAdEvent", argumentsMap("adEventType", event.name, "error", event.message));

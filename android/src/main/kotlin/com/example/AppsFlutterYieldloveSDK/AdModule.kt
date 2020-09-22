@@ -10,9 +10,3 @@ class Ad(val id: String, val possibleSizes: List<Size>, val keyword: String? = n
     val adUnitId: String = "$AD_UNIT_PREFIX/$id"
     val adSizes : Array<AdSize> = possibleSizes.map { AdSize(it.width, it.height) }.toTypedArray()
 }
-
-class AdParameter {
-    companion object {
-        val dimensions = mutableMapOf<String, Int>()
-    }
-}

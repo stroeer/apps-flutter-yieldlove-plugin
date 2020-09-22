@@ -16,7 +16,7 @@ class AdCreationParams {
   bool adIsRelease = false;
   bool useTestAds = false;
 
-  AdCreationParams({@required this.adId, @required this.adSizes, this.adKeyword, this.adContentUrl});
+  AdCreationParams({@required this.adId, @required this.adSizes, this.adKeyword, this.adContentUrl, this.useTestAds, this.adIsRelease});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -43,32 +43,15 @@ class YieldloveAdView extends StatefulWidget {
 
   final AdCreationParams adParamsParcel;
   final MobileAdListener listener;
+  final Function onPlatformViewCreated;
 
-  const YieldloveAdView({
+  YieldloveAdView({
     Key key,
     this.gestureRecognizers,
     this.adParamsParcel,
     this.listener,
+    this.onPlatformViewCreated,
   })  : super(key: key);
-
-  static BaseYieldAdView _adView;
-
-  static BaseYieldAdView get view {
-    if (_adView == null) {
-      final  defaultTargetPlatform = TargetPlatform.android; // TODO arty
-      switch (defaultTargetPlatform) {
-        case TargetPlatform.android:
-          _adView = AndroidYieldAdView();
-          break;
-        case TargetPlatform.iOS:
-          _adView = AndroidYieldAdView(); // TODO arty
-          break;
-        default:
-          throw UnsupportedError("Trying to use the default view implementation for $defaultTargetPlatform but there isn't a default one");
-      }
-    }
-    return _adView;
-  }
 
   /// Which gestures should be consumed by our view.
   final Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers;
@@ -82,6 +65,51 @@ class YieldloveAdView extends StatefulWidget {
 
 }
 
+class _YieldloveAdViewState extends State<YieldloveAdView> {
+
+  @override
+  Widget build(BuildContext context) {
+    return getBaseYieldAdView().build(
+      context: context,
+      gestureRecognizers: widget.gestureRecognizers,
+      creationParams: widget.adParamsParcel,
+      listener: widget.listener,
+    );
+  }
+
+  BaseYieldAdView getBaseYieldAdView() {
+    BaseYieldAdView _adView;
+    if (_adView == null) {
+      final  defaultTargetPlatform = TargetPlatform.android; // TODO arty
+      switch (defaultTargetPlatform) {
+        case TargetPlatform.android:
+          _adView = AndroidYieldAdView(onPlatformViewCreatedCallback: (int id) {
+            widget.onPlatformViewCreated(YieldloveAdController(id));
+          });
+          break;
+        case TargetPlatform.iOS:
+          _adView = AndroidYieldAdView(onPlatformViewCreatedCallback: (int id) {
+            YieldloveAdController(id); // TODO Patrick
+          });
+          break;
+        default:
+          throw UnsupportedError("Trying to use the default view implementation for $defaultTargetPlatform but there isn't a default one");
+      }
+    }
+    return _adView;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(YieldloveAdView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+  }
+
+}
 
 class YieldloveAdController {
 
@@ -111,33 +139,14 @@ class YieldloveAdController {
         final errorMessage = call.arguments["error"];
         print("app-widget: $id: onAdEvent($adEventType) with errorMessage=$errorMessage ");
         break;
+      case 'adSizeDetermined':
+        final screenHeight = call.arguments["screenHeight"];
+        final adHeight = call.arguments["adHeight"];
+        print("app-widget: $id: screenHeight=($screenHeight) adHeight=$adHeight ");
+        break;
       default:
         print('TestFairy: Ignoring invoke from native. This normally shouldn\'t happen.');
     }
     return Future<dynamic>.value(null);
   }
-}
-
-class _YieldloveAdViewState extends State<YieldloveAdView> {
-
-  @override
-  Widget build(BuildContext context) {
-    return YieldloveAdView.view.build(
-      context: context,
-      gestureRecognizers: widget.gestureRecognizers,
-      creationParams: widget.adParamsParcel,
-      listener: widget.listener,
-    );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void didUpdateWidget(YieldloveAdView oldWidget) {
-    super.didUpdateWidget(oldWidget);
-  }
-
 }
