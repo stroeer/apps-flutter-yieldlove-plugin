@@ -82,7 +82,7 @@ class YieldlovePlatformView internal constructor(context: Context?,
             this.adEventListener = { event ->
                 when (event) {
                     is YieldAdEvent.OnAdFailedToLoad -> methodChannel.invokeMethod("onAdEvent", argumentsMap("adEventType", event.name, "error", event.message));
-                    else -> methodChannel.invokeMethod("onAdEvent", argumentsMap("adEventType", event.toString()));
+                    else -> methodChannel.invokeMethod("onAdEvent", argumentsMap("adEventType", event.name));
                 }
             }
         }

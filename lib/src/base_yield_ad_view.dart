@@ -11,7 +11,7 @@ abstract class BaseYieldAdView {
     BuildContext context,
     Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers,
     AdCreationParams creationParams,
-    MobileAdListener listener,
+    AdEventListener listener,
   });
 
 }

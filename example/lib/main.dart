@@ -53,12 +53,12 @@ class _MyHomePageState extends State<MyHomePage> {
           useTestAds: true,
           adIsRelease: false,
       ),
-      listener: (MobileAdEvent event) {
-        print("BannerAd event $event");
-      },
       onPlatformViewCreated: (YieldloveAdController controller) {
         _yieldloveAdController = controller;
-        controller.showAd();
+        _yieldloveAdController.listener = (YieldAdEvent event) {
+          print("BannerAd event $event");
+        };
+        _yieldloveAdController.showAd();
       }
     );
   }

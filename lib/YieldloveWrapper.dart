@@ -19,16 +19,7 @@ class YieldloveWrapper {
       ? 'ca-app-pub-3940256099942544~3347511713'
       : 'ca-app-pub-3940256099942544~1458002511';
 
-  static const Map<String, MobileAdEvent> _methodToMobileAdEvent =
-  <String, MobileAdEvent>{
-    'onAdLoaded': MobileAdEvent.loaded,
-    'onAdFailedToLoad': MobileAdEvent.failedToLoad,
-    'onAdClicked': MobileAdEvent.clicked,
-    'onAdImpression': MobileAdEvent.impression,
-    'onAdOpened': MobileAdEvent.opened,
-    'onAdLeftApplication': MobileAdEvent.leftApplication,
-    'onAdClosed': MobileAdEvent.closed,
-  };
+
 
   Future<bool> initialize(
       {@required String appId,
@@ -55,14 +46,3 @@ Future<bool> _invokeBooleanMethod(String method, [dynamic arguments]) async {
 }
 
 
-enum MobileAdEvent {
-  loaded,
-  failedToLoad,
-  clicked,
-  impression,
-  opened,
-  leftApplication,
-  closed,
-}
-
-typedef void MobileAdListener(MobileAdEvent event);

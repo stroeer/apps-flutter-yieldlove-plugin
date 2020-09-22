@@ -17,7 +17,7 @@ class AndroidYieldAdView implements BaseYieldAdView {
     BuildContext context,
     Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers,
     AdCreationParams creationParams,
-    MobileAdListener listener,
+    AdEventListener listener,
   }) {
     return GestureDetector(
       // intercept long press event.

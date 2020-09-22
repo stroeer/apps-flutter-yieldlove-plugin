@@ -42,14 +42,12 @@ class AdSize {
 class YieldloveAdView extends StatefulWidget {
 
   final AdCreationParams adParamsParcel;
-  final MobileAdListener listener;
   final Function onPlatformViewCreated;
 
   YieldloveAdView({
     Key key,
     this.gestureRecognizers,
     this.adParamsParcel,
-    this.listener,
     this.onPlatformViewCreated,
   })  : super(key: key);
 
@@ -73,7 +71,6 @@ class _YieldloveAdViewState extends State<YieldloveAdView> {
       context: context,
       gestureRecognizers: widget.gestureRecognizers,
       creationParams: widget.adParamsParcel,
-      listener: widget.listener,
     );
   }
 
@@ -118,6 +115,7 @@ class YieldloveAdController {
   }
 
   final MethodChannel _channel;
+  AdEventListener listener;
 
   Future<void> showAd() async {
     return _channel.invokeMethod('showAd');
@@ -137,7 +135,7 @@ class YieldloveAdController {
       case 'onAdEvent':
         final adEventType = call.arguments["adEventType"];
         final errorMessage = call.arguments["error"];
-        print("app-widget: $id: onAdEvent($adEventType) with errorMessage=$errorMessage ");
+        listener?.call(_methodToMobileAdEvent[adEventType]);
         break;
       case 'adSizeDetermined':
         final screenHeight = call.arguments["screenHeight"];
@@ -145,8 +143,31 @@ class YieldloveAdController {
         print("app-widget: $id: screenHeight=($screenHeight) adHeight=$adHeight ");
         break;
       default:
-        print('TestFairy: Ignoring invoke from native. This normally shouldn\'t happen.');
+        print("ignore this call from native");
     }
     return Future<dynamic>.value(null);
   }
+
+  static const Map<String, YieldAdEvent> _methodToMobileAdEvent =
+  <String, YieldAdEvent>{
+    'onAdInit': YieldAdEvent.init,
+    'onAdLoaded': YieldAdEvent.loaded,
+    'onAdRequestBuild': YieldAdEvent.requestBuild,
+    'onAdFailedToLoad': YieldAdEvent.failedToLoad,
+    'onAdOpened': YieldAdEvent.opened,
+    'onAdLeftApplication': YieldAdEvent.leftApplication,
+    'onAdClosed': YieldAdEvent.closed,
+  };
 }
+
+enum YieldAdEvent {
+  init,
+  loaded,
+  requestBuild,
+  failedToLoad,
+  opened,
+  leftApplication,
+  closed,
+}
+
+typedef void AdEventListener(YieldAdEvent event);
