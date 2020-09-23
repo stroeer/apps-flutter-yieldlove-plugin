@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:AppsFlutterYieldloveSDK/YieldloveWrapper.dart';
 import 'package:AppsFlutterYieldloveSDK/src/ad_view_provider.dart';
 
@@ -49,63 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _yieldloveAdView = YieldloveAdView(
-      adParamsParcel: AdCreationParams(
-          adId: 'rubrik_b1',
-          //adSizes: [AdSize(320, 50), AdSize(320, 75), AdSize(320, 150), AdSize(300, 250), AdSize(37, 31)],
-          adKeyword: null,
-          adContentUrl: 'https://www.google.com',
-          useTestAds: false,
-          adIsRelease: false,
-      ),
-      onPlatformViewCreated: (YieldloveAdController controller) {
-        _yieldloveAdController = controller;
-        _yieldloveAdController.listener = (YieldAdEvent event) {
-          print("BannerAd event $event");
-        };
-        _yieldloveAdController.showAd();
-      }
-    );
   }
-
-  YieldloveAdController _yieldloveAdController;
-
-  void _onReloadAd() {
-    _yieldloveAdController.showAd();
-  }
-
-  double adHeight = 300;
-  void _resizeAd(BuildContext context) {
-    print("resized");
-    adHeight = 305;
-    print("app-widget: screen height=${MediaQuery.of(context).size.height}");
-    setState(() {});
-  }
-
-  double getHeight(double screenHeight, BuildContext context, double size) {
-    return (MediaQuery.of(context).size.height / screenHeight) * size;
-  }
-
-  YieldloveAdView createBannerAd() {
-    return YieldloveAdView(
-        adParamsParcel: AdCreationParams(
-          adId: 'rubrik_b4',
-          adKeyword: null,
-          adContentUrl: 'https://www.google.com',
-          useTestAds: false,
-          adIsRelease: false,
-        ),
-        onPlatformViewCreated: (YieldloveAdController controller) {
-          controller.listener = (YieldAdEvent event) {
-            print("BannerAd event $event");
-            if (event == YieldAdEvent.loaded) {
-              controller.showAd();
-            }
-          };
-        }
-    );
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -120,17 +63,25 @@ class _MyHomePageState extends State<MyHomePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text('Yieldlove native ad view:'),
-              RaisedButton(
-                onPressed: () {_resizeAd(context);},
-                child: Text('Resize ad'),
+              YieldloveAdView(
+                  adParamsParcel: AdCreationParams(
+                    adId: 'rubrik_b2',
+                    adKeyword: null,
+                    adContentUrl: 'https://www.google.com',
+                    useTestAds: false,
+                    adIsRelease: false,
+                  ),
+                  onPlatformViewCreated: (YieldloveAdController controller) {
+                    controller.listener = (YieldAdEvent event) {
+                      print("BannerAd event $event");
+                    };
+                    controller.showAd();
+                  }
               ),
-
-             _yieldloveAdView,
               Padding(
                 padding: const EdgeInsets.only(top: 500),
                 child: Text('bottom view'),
               ),
-
               FlatButton(
                   child: IntrinsicWidth(
                       child: Column(
@@ -154,11 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-
-  @override
-  void dispose() {
-    //_yieldloveAdView?.dispose();
-    super.dispose();
+  double getHeight(double screenHeight, BuildContext context, double size) {
+    return (MediaQuery.of(context).size.height / screenHeight) * size;
   }
-
 }
