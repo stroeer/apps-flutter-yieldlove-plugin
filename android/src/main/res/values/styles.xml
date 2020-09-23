@@ -1,0 +1,10 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+
+    <style name="AdLabel">
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@color/adLabelText</item>
+    </style>
+
+
+</resources>
