@@ -63,24 +63,37 @@ class _MyHomePageState extends State<MyHomePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text('Yieldlove native ad view:'),
-              YieldloveAdView(
-                  adParamsParcel: AdCreationParams(
-                    adId: 'rubrik_b2',
-                    adKeyword: null,
-                    adContentUrl: 'https://www.google.com',
-                    useTestAds: false,
-                    adIsRelease: false,
-                  ),
-                  onPlatformViewCreated: (YieldloveAdController controller) {
-                    controller.listener = (YieldAdEvent event) {
-                      print("BannerAd event $event");
-                    };
-                    controller.showAd();
-                  }
-              ),
+              //YieldloveAdView(
+              //    adParamsParcel: AdCreationParams(
+              //      adId: 'rubrik_b2',
+              //      adKeyword: null,
+              //      adContentUrl: 'https://www.google.com',
+              //      useTestAds: false,
+              //      adIsRelease: false,
+              //    ),
+              //    onPlatformViewCreated: (YieldloveAdController controller) {
+              //      controller.listener = (YieldAdEvent event) {
+              //        print("BannerAd event $event");
+              //      };
+              //      controller.showAd();
+              //    }
+              //),
               Padding(
                 padding: const EdgeInsets.only(top: 500),
                 child: Text('bottom view'),
+              ),
+              RaisedButton(
+                onPressed: () {
+                  //val adUnitId = if (Config.USE_TEST_AD_TAGS) {
+                  //    "/4444/m.app.dev.test/start_int"
+                  //} else if (BuildConfig.BUILD_TYPE == "sdi") {
+                  //    "/4444/m.app.droid_toi_sd/teststart_int"
+                  //} else {
+                  //    "/4444/m.app.droid_toi_sd/appstart_int"
+                  //}
+                  YieldloveWrapper.instance.showInterstitial(adUnitId: "/4444/m.app.dev.test/start_int");
+                },
+                child: Text("show interstitial"),
               ),
               FlatButton(
                   child: IntrinsicWidth(

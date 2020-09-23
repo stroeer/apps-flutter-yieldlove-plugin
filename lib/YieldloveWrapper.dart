@@ -28,6 +28,17 @@ class YieldloveWrapper {
     });
   }
 
+  Future<bool> showInterstitial(
+      {@required String adUnitId,
+        String trackingId,
+        bool analyticsEnabled = false}) {
+    assert(adUnitId != null && adUnitId.isNotEmpty);
+    assert(analyticsEnabled != null);
+    return _invokeBooleanMethod("loadInterstitialAd", <String, dynamic>{
+      'ad_unit_id': adUnitId,
+    });
+  }
+
 }
 
 
