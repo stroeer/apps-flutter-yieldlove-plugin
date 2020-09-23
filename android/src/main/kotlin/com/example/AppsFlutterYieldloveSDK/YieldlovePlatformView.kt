@@ -62,7 +62,7 @@ class YieldlovePlatformView internal constructor(context: Context?,
                              contentUrl: String?,
                              layoutParams: ViewGroup.LayoutParams?,
                              isRelease: Boolean = false,
-                             useTestAds: Boolean = true
+                             useTestAds: Boolean = false
     ): TomoAdView? {
         if (context1 == null) return null
         return TomoAdView(
@@ -70,11 +70,9 @@ class YieldlovePlatformView internal constructor(context: Context?,
                 visible = View.VISIBLE,
                 backgroundColorRes = R.color.moduleBackground
         ).apply {
-            init(ad = ad)
             // TODO arty layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT TODO
             this.contentUrl = contentUrl
             this.isRelease = isRelease
-            this.useTestAds = useTestAds
             this.visibility = View.GONE
             this.adSizeCallback = { screenHeight, adHeight ->
                 methodChannel.invokeMethod("adSizeDetermined", argumentsMap("screenHeight", screenHeight ?: 0, "adHeight", adHeight ?: 0))
@@ -85,6 +83,7 @@ class YieldlovePlatformView internal constructor(context: Context?,
                     else -> methodChannel.invokeMethod("onAdEvent", argumentsMap("adEventType", event.name));
                 }
             }
+            init(ad = ad, isTestAd = useTestAds)
         }
     }
 

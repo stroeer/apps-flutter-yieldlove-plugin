@@ -6,9 +6,15 @@ import 'package:flutter/services.dart';
 import 'package:AppsFlutterYieldloveSDK/YieldloveWrapper.dart';
 import 'package:AppsFlutterYieldloveSDK/src/ad_view_provider.dart';
 
+// example data for yieldlove
+/*const val YIELDLOVE_ACCOUNT_ID = "promoqui"
+    const val YIELDLOVE_PROPERTY_NAME = "inapp.ios.test"
+    const val YIELDLOVE_PROPERTY_ID = 6960
+    const val YIELDLOVE_PRIVACY_MANAGER_ID = "114323"*/
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await YieldloveWrapper.instance.initialize(appId: "t-online").then((value) {
+  await YieldloveWrapper.instance.initialize(appId: "promoqui").then((value) {
     print("app-widget: initialized = ${value}");
   });
   runApp(MyApp());

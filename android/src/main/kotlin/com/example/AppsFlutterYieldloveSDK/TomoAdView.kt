@@ -34,7 +34,6 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
     var contentUrl: String? = null
     var isVisible = false
     var isRelease = false
-    var useTestAds = false
 
     private val testAdUnitId = "/4444/m.app.dev.test/start_b1"
 
@@ -77,19 +76,11 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
     fun init(ad: Ad? = null, isTestAd: Boolean = false) {
         if (ad != null) {
             adKeyword = ad.keyword
-            if (isTestAd) prepareTestDfpAdView(this) else prepareDfpAdView(this, ad)
+            if (isTestAd)
+                prepareDfpAdView(this, testAdUnitId, testAdSizes)
+            else
+                prepareDfpAdView(this, ad.adUnitId, ad.adSizes)
         }
-    }
-
-    private fun prepareDfpAdView(parentView: View, adModel: Ad, adWithLines: Boolean = false) {
-        return prepareDfpAdView(parentView,
-                adId = if (useTestAds) testAdUnitId else adModel.adUnitId,
-                adSizes = if (useTestAds) testAdSizes else adModel.adSizes
-        )
-    }
-
-    private fun prepareTestDfpAdView(parentView: View) {
-        return prepareDfpAdView(parentView, testAdUnitId, testAdSizes)
     }
 
     private fun prepareDfpAdView(parentView: View, adId: String, adSizes: Array<AdSize>) {
@@ -120,6 +111,8 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
                 "23933"
             } else if (adUnitId!!.contains("rubrik_b5")) {
                 "23934"
+            } else if (adUnitId!!.contains("m.app.dev.test/start_b1")) {
+                "6960" // TODO find the right cofigId for test ads
             } else {
                 Log.e("tomo-app-ad", "Failed to resolve the config id for ad $adUnitId.")
                 return
