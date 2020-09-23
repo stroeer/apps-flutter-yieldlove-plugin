@@ -109,22 +109,27 @@ class _YieldloveAdViewState extends State<YieldloveAdView> {
           ),
         );
       } else if (Platform.isIOS) {
+        final totalMarginsAndPaddingHeight = 0; // TODO
         return GestureDetector(
           // intercept long press event.
           onLongPress: () {},
           excludeFromSemantics: true,
-          child: UiKitView(
-            key: _key,
-            viewType: 'de.stroeer.plugins/yieldlove_ad_view',
-            onPlatformViewCreated: (int id) {
-              if (widget.onPlatformViewCreated != null) {
-                widget.onPlatformViewCreated(YieldloveAdController(id));
-              }
-            },
-            gestureRecognizers: widget.gestureRecognizers,
-            layoutDirection: TextDirection.rtl,
-            creationParams: widget.adParamsParcel.toMap(),
-            creationParamsCodec: const StandardMessageCodec(),
+          child: SizedBox(
+            width: double.infinity,
+            height: widget.adParamsParcel.getOptimalHeight() + totalMarginsAndPaddingHeight,
+            child: UiKitView(
+              key: _key,
+              viewType: 'de.stroeer.plugins/yieldlove_ad_view',
+              onPlatformViewCreated: (int id) {
+                if (widget.onPlatformViewCreated != null) {
+                  widget.onPlatformViewCreated(YieldloveAdController(id));
+                }
+              },
+              gestureRecognizers: widget.gestureRecognizers,
+              layoutDirection: TextDirection.rtl,
+              creationParams: widget.adParamsParcel.toMap(),
+              creationParamsCodec: const StandardMessageCodec(),
+            ),
           ),
         );
       } else {

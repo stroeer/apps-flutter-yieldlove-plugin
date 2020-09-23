@@ -1,6 +1,8 @@
 import Flutter
 import UIKit
 
+// TODO best example I found so far: https://github.com/kmcgill88/admob_flutter/tree/master/ios
+
 public class SwiftAppsFlutterYieldloveSDKPlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
     let instance = SwiftAppsFlutterYieldloveSDKPlugin()
