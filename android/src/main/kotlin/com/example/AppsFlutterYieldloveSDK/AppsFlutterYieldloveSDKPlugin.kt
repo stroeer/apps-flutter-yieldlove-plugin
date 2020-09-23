@@ -19,12 +19,9 @@ class AppsFlutterYieldloveSDKPlugin: FlutterPlugin, MethodCallHandler, ActivityA
 
   override fun onMethodCall(call: MethodCall, result: Result) {
 
-    // val id: String? = call.argument("id")
     when (call.method) {
       "initialize" -> callInitialize(call, result)
-      "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
-      // TBD "loadBannerAd" -> callInitialize(call, result)
-      // TBD "loadInterstitialAd" -> callInitialize(call, result)
+      "loadInterstitialAd" -> callInterstitialLoad(call, result)
       else -> result.notImplemented()
     }
   }
@@ -43,6 +40,10 @@ class AppsFlutterYieldloveSDKPlugin: FlutterPlugin, MethodCallHandler, ActivityA
         result.error("initialization_failed", "Yieldlove SDK initialization failed: ${e.message}", null)
       }
     }
+  }
+
+  private fun callInterstitialLoad(call: MethodCall, result: Result) {
+    InterstitialHolder.delegateMethodCall(call, result)
   }
 
   companion object {
@@ -83,6 +84,7 @@ class AppsFlutterYieldloveSDKPlugin: FlutterPlugin, MethodCallHandler, ActivityA
   override fun onAttachedToActivity(binding: ActivityPluginBinding) {
     Log.v(TAG, "onAttachedToActivity")
     YieldlovePlatformView.activity = binding.activity
+    InterstitialHolder.activity = binding.activity
     //MobileAds.initialize(binding.activity)
     // Your plugin is now associated with an Android Activity.
     //
