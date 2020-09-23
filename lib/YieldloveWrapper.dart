@@ -1,6 +1,6 @@
-import 'dart:async';
-import 'dart:io';
+export 'src/ad_view_provider.dart';
 
+import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
 
