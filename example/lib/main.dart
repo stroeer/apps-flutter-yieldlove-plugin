@@ -45,18 +45,17 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Widget _yieldloveAdView;
-  
+
   @override
   void initState() {
     super.initState();
-    initPlatformState();
     _yieldloveAdView = YieldloveAdView(
       adParamsParcel: AdCreationParams(
           adId: 'rubrik_b1',
-          adSizes: [AdSize(320, 50), AdSize(320, 75), AdSize(320, 150), AdSize(300, 250), AdSize(37, 31)],
+          //adSizes: [AdSize(320, 50), AdSize(320, 75), AdSize(320, 150), AdSize(300, 250), AdSize(37, 31)],
           adKeyword: null,
           adContentUrl: 'https://www.google.com',
-          useTestAds: true,
+          useTestAds: false,
           adIsRelease: false,
       ),
       onPlatformViewCreated: (YieldloveAdController controller) {
@@ -67,22 +66,6 @@ class _MyHomePageState extends State<MyHomePage> {
         _yieldloveAdController.showAd();
       }
     );
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      platformVersion = 'undefined';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
   }
 
   YieldloveAdController _yieldloveAdController;
@@ -103,6 +86,27 @@ class _MyHomePageState extends State<MyHomePage> {
     return (MediaQuery.of(context).size.height / screenHeight) * size;
   }
 
+  YieldloveAdView createBannerAd() {
+    return YieldloveAdView(
+        adParamsParcel: AdCreationParams(
+          adId: 'rubrik_b4',
+          adKeyword: null,
+          adContentUrl: 'https://www.google.com',
+          useTestAds: false,
+          adIsRelease: false,
+        ),
+        onPlatformViewCreated: (YieldloveAdController controller) {
+          controller.listener = (YieldAdEvent event) {
+            print("BannerAd event $event");
+            if (event == YieldAdEvent.loaded) {
+              controller.showAd();
+            }
+          };
+        }
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -117,19 +121,11 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
               Text('Yieldlove native ad view:'),
               RaisedButton(
-                onPressed: _onReloadAd,
-                child: Text('Reload ad'),
-              ),
-              RaisedButton(
                 onPressed: () {_resizeAd(context);},
                 child: Text('Resize ad'),
               ),
-              SizedBox(
-                width: double.infinity,
-                height: adHeight,
-                child: _yieldloveAdView,
-              ),
 
+             _yieldloveAdView,
               Padding(
                 padding: const EdgeInsets.only(top: 500),
                 child: Text('bottom view'),

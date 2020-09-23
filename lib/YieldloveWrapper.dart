@@ -15,12 +15,6 @@ class YieldloveWrapper {
 
   YieldloveWrapper.private(MethodChannel channel) : _channel = channel;
 
-  static final String testAppId = Platform.isAndroid
-      ? 'ca-app-pub-3940256099942544~3347511713'
-      : 'ca-app-pub-3940256099942544~1458002511';
-
-
-
   Future<bool> initialize(
       {@required String appId,
         String trackingId,

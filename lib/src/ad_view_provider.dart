@@ -1,50 +1,66 @@
 import 'dart:io';
 
-import 'package:AppsFlutterYieldloveSDK/src/yieldlove_android.dart';
-import 'package:AppsFlutterYieldloveSDK/src/yieldlove_ios.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-
-import 'base_yield_ad_view.dart';
 
 class AdCreationParams {
 
   String adId;
   String adKeyword;
   String adContentUrl;
-  List<AdSize> adSizes;
   bool adIsRelease = false;
   bool useTestAds = false;
 
-  AdCreationParams({@required this.adId, @required this.adSizes, this.adKeyword, this.adContentUrl, this.useTestAds, this.adIsRelease});
+  List<AdSize> optimalAdSizes; // is calculated based on adId
+
+  AdCreationParams({@required this.adId, this.adKeyword, this.adContentUrl, this.useTestAds, this.adIsRelease}) {
+    optimalAdSizes = _mapAdTypeToAdSize[this.adId];
+    print("app-widget: optimalAdSizes=${optimalAdSizes.first.height}");
+  }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'ad_id': this.adId,
       'ad_keyword': this.adKeyword,
       'ad_content_url': this.adContentUrl,
-      'ad_sizes': _adSizesToStringList(),
+      'ad_sizes': _adSizesToStringList(optimalAdSizes),
       'ad_is_release': adIsRelease,
       'use_test_ads': useTestAds,
     };
   }
 
-  List<String> _adSizesToStringList() => adSizes.map((e) => '${e.width}x${e.height}').toList();
+  static const Map<String, List<AdSize>> _mapAdTypeToAdSize =
+  <String, List<AdSize>>{
+    //'all': [AdSize(320, 50), AdSize(320, 75), AdSize(320, 150), AdSize(300, 250), AdSize(37, 31)],
+    'rubrik_b1': [AdSize(300, 250)],
+    'rubrik_b2': [AdSize(320, 150)],
+    'rubrik_b3': [AdSize(320, 50)],
+    'rubrik_b4': [AdSize(320, 75)],
+    'rubrik_b5': [AdSize(37, 31)],
+    'm.app.dev.test/start_b1': [AdSize(320, 75)]
+  };
+
+  List<String> _adSizesToStringList(List<AdSize> adSizes) {
+    this.optimalAdSizes = adSizes; 
+    return adSizes.map((e) => '${e.width}x${e.height}').toList(); 
+  }
+
+  double getOptimalHeight() => optimalAdSizes.first.height.toDouble();
 }
 
 class AdSize {
-  int width;
-  int height;
-
-  AdSize(this.width, this.height);
+  final int width;
+  final int height;
+  const AdSize(this.width, this.height);
 }
 
 class YieldloveAdView extends StatefulWidget {
 
   final AdCreationParams adParamsParcel;
   final Function onPlatformViewCreated;
+  final Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers;
 
   YieldloveAdView({
     Key key,
@@ -53,40 +69,64 @@ class YieldloveAdView extends StatefulWidget {
     this.onPlatformViewCreated,
   })  : super(key: key);
 
-  /// Which gestures should be consumed by our view.
-  final Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers;
-
   @override
   State<StatefulWidget> createState() => _YieldloveAdViewState();
 
   Future<bool> dispose() {
     //return _invokeBooleanMethod("disposeAd", <String, dynamic>{'id': id}); TODO
   }
-
 }
 
 class _YieldloveAdViewState extends State<YieldloveAdView> {
+  final UniqueKey _key = UniqueKey();
 
   @override
   Widget build(BuildContext context) {
-    return getBaseYieldAdView().build(
-      context: context,
-      gestureRecognizers: widget.gestureRecognizers,
-      creationParams: widget.adParamsParcel,
-    );
-  }
-
-  BaseYieldAdView getBaseYieldAdView() {
-    BaseYieldAdView _adView;
+    Widget _adView;
     if (_adView == null) {
       if (Platform.isAndroid) {
-        _adView = AndroidYieldAdView(onPlatformViewCreatedCallback: (int id) {
-          widget.onPlatformViewCreated(YieldloveAdController(id));
-        });
+        final totalMarginsAndPaddingHeight = 45; // depends on tomo_ad_view.xml
+        return GestureDetector(
+          // intercept long press event.
+          onLongPress: () {},
+          excludeFromSemantics: true,
+          child: SizedBox(
+            width: double.infinity,
+            height: widget.adParamsParcel.getOptimalHeight() + totalMarginsAndPaddingHeight,
+            child: AndroidView(
+              key: _key,
+              viewType: 'de.stroeer.plugins/yieldlove_ad_view',
+              onPlatformViewCreated: (int id) {
+                if (widget.onPlatformViewCreated != null) {
+                  widget.onPlatformViewCreated(YieldloveAdController(id));
+                }
+              },
+              gestureRecognizers: widget.gestureRecognizers,
+              layoutDirection: TextDirection.rtl,
+              creationParams: widget.adParamsParcel.toMap(),
+              creationParamsCodec: const StandardMessageCodec(),
+            ),
+          ),
+        );
       } else if (Platform.isIOS) {
-        _adView = IosYieldAdView(onPlatformViewCreatedCallback: (int id) {
-          widget.onPlatformViewCreated(YieldloveAdController(id));
-        });
+        return GestureDetector(
+          // intercept long press event.
+          onLongPress: () {},
+          excludeFromSemantics: true,
+          child: UiKitView(
+            key: _key,
+            viewType: 'de.stroeer.plugins/yieldlove_ad_view',
+            onPlatformViewCreated: (int id) {
+              if (widget.onPlatformViewCreated != null) {
+                widget.onPlatformViewCreated(YieldloveAdController(id));
+              }
+            },
+            gestureRecognizers: widget.gestureRecognizers,
+            layoutDirection: TextDirection.rtl,
+            creationParams: widget.adParamsParcel.toMap(),
+            creationParamsCodec: const StandardMessageCodec(),
+          ),
+        );
       } else {
         throw UnsupportedError("Trying to use the default view implementation for $defaultTargetPlatform but there isn't a default one");
       }
