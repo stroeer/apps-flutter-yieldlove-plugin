@@ -85,51 +85,75 @@ class _YieldloveAdViewState extends State<YieldloveAdView> {
     Widget _adView;
     if (_adView == null) {
       if (Platform.isAndroid) {
-        final totalMarginsAndPaddingHeight = 45; // depends on tomo_ad_view.xml
         return GestureDetector(
           // intercept long press event.
           onLongPress: () {},
           excludeFromSemantics: true,
-          child: SizedBox(
-            width: double.infinity,
-            height: widget.adParamsParcel.getOptimalHeight() + totalMarginsAndPaddingHeight,
-            child: AndroidView(
-              key: _key,
-              viewType: 'de.stroeer.plugins/yieldlove_ad_view',
-              onPlatformViewCreated: (int id) {
-                if (widget.onPlatformViewCreated != null) {
-                  widget.onPlatformViewCreated(YieldloveAdController(id));
-                }
-              },
-              gestureRecognizers: widget.gestureRecognizers,
-              layoutDirection: TextDirection.rtl,
-              creationParams: widget.adParamsParcel.toMap(),
-              creationParamsCodec: const StandardMessageCodec(),
-            ),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text("  ANZEIGE  "),
+                  ),
+                ],
+              ),
+              SizedBox(
+                width: double.infinity,
+                height: widget.adParamsParcel.getOptimalHeight(),
+                child: AndroidView(
+                  key: _key,
+                  viewType: 'de.stroeer.plugins/yieldlove_ad_view',
+                  onPlatformViewCreated: (int id) {
+                    if (widget.onPlatformViewCreated != null) {
+                      widget.onPlatformViewCreated(YieldloveAdController(id));
+                    }
+                  },
+                  gestureRecognizers: widget.gestureRecognizers,
+                  layoutDirection: TextDirection.rtl,
+                  creationParams: widget.adParamsParcel.toMap(),
+                  creationParamsCodec: const StandardMessageCodec(),
+                ),
+              ),
+            ],
           ),
         );
       } else if (Platform.isIOS) {
-        final totalMarginsAndPaddingHeight = 0; // TODO
         return GestureDetector(
           // intercept long press event.
           onLongPress: () {},
           excludeFromSemantics: true,
-          child: SizedBox(
-            width: double.infinity,
-            height: widget.adParamsParcel.getOptimalHeight() + totalMarginsAndPaddingHeight,
-            child: UiKitView(
-              key: _key,
-              viewType: 'de.stroeer.plugins/yieldlove_ad_view',
-              onPlatformViewCreated: (int id) {
-                if (widget.onPlatformViewCreated != null) {
-                  widget.onPlatformViewCreated(YieldloveAdController(id));
-                }
-              },
-              gestureRecognizers: widget.gestureRecognizers,
-              layoutDirection: TextDirection.rtl,
-              creationParams: widget.adParamsParcel.toMap(),
-              creationParamsCodec: const StandardMessageCodec(),
-            ),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text("  ANZEIGE  "),
+                  ),
+                ],
+              ),
+              SizedBox(
+                width: double.infinity,
+                height: widget.adParamsParcel.getOptimalHeight(),
+                child: UiKitView(
+                  key: _key,
+                  viewType: 'de.stroeer.plugins/yieldlove_ad_view',
+                  onPlatformViewCreated: (int id) {
+                    if (widget.onPlatformViewCreated != null) {
+                      widget.onPlatformViewCreated(YieldloveAdController(id));
+                    }
+                  },
+                  gestureRecognizers: widget.gestureRecognizers,
+                  layoutDirection: TextDirection.rtl,
+                  creationParams: widget.adParamsParcel.toMap(),
+                  creationParamsCodec: const StandardMessageCodec(),
+                ),
+              ),
+            ],
           ),
         );
       } else {

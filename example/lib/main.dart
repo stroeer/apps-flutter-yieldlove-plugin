@@ -63,24 +63,20 @@ class _MyHomePageState extends State<MyHomePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text('Yieldlove native ad view:'),
-              //YieldloveAdView(
-              //    adParamsParcel: AdCreationParams(
-              //      adId: 'rubrik_b2',
-              //      adKeyword: null,
-              //      adContentUrl: 'https://www.google.com',
-              //      useTestAds: false,
-              //      adIsRelease: false,
-              //    ),
-              //    onPlatformViewCreated: (YieldloveAdController controller) {
-              //      controller.listener = (YieldAdEvent event) {
-              //        print("BannerAd event $event");
-              //      };
-              //      controller.showAd();
-              //    }
-              //),
-              Padding(
-                padding: const EdgeInsets.only(top: 500),
-                child: Text('bottom view'),
+              YieldloveAdView(
+                  adParamsParcel: AdCreationParams(
+                    adId: 'rubrik_b2',
+                    adKeyword: null,
+                    adContentUrl: 'https://www.google.com',
+                    useTestAds: false,
+                    adIsRelease: false,
+                  ),
+                  onPlatformViewCreated: (YieldloveAdController controller) {
+                    controller.listener = (YieldAdEvent event) {
+                      print("BannerAd event $event");
+                    };
+                    controller.showAd();
+                  }
               ),
               RaisedButton(
                 onPressed: () {
@@ -95,21 +91,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 child: Text("show interstitial"),
               ),
-              FlatButton(
-                  child: IntrinsicWidth(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          Text('Title'),
-                          //my color line
-                          Container(
-                            height: 5,
-                            width: 100,
-                            color: Colors.blue[800],
-                          )
-                        ],
-                      ))
+              Padding(
+                padding: const EdgeInsets.only(top: 500),
+                child: Text('bottom view'),
               ),
             ],
           ),

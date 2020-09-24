@@ -92,7 +92,6 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
     fun loadAd(activityContext: Context?) {
         adView?.removeAllViews()
         determineScreenDimensions(context = activityContext)
-        findViewById<View>(R.id.ad_placeholder)?.visibility = View.VISIBLE
         adView?.visibility = View.VISIBLE
 
         if (adUnitId == null) {
@@ -199,8 +198,6 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
 
     fun show() {
         if (adView == null || adUnitId == null) return
-
-        findViewById<View>(R.id.ad_placeholder)?.visibility = View.GONE
 
         visibility = View.VISIBLE
         isVisible = true
