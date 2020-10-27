@@ -1,5 +1,6 @@
 import Flutter
 import UIKit
+import YieldloveAdIntegration
 
 // TODO best example I found so far: https://github.com/kmcgill88/admob_flutter/tree/master/ios
 
@@ -17,6 +18,7 @@ public class SwiftAppsFlutterYieldloveSDKPlugin: NSObject, FlutterPlugin {
   }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+      //Yieldlove.instance.interstitialAd(AdUnit: "example_ios_interstitial_1", UIViewController: self)
       result(true)
     }
 }
