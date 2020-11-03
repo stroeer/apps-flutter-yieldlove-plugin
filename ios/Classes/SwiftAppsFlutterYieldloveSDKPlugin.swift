@@ -7,7 +7,7 @@ import GoogleMobileAds
 
 public class SwiftAppsFlutterYieldloveSDKPlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
-    Yieldlove.instance.appName = "promoqui";
+    
     let instance = SwiftAppsFlutterYieldloveSDKPlugin()
     let channel = FlutterMethodChannel(name: "AppsFlutterYieldloveSDK", binaryMessenger: registrar.messenger())
     registrar.addMethodCallDelegate(instance, channel: channel)
@@ -20,8 +20,13 @@ public class SwiftAppsFlutterYieldloveSDKPlugin: NSObject, FlutterPlugin {
   }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-      //Yieldlove.instance.interstitialAd(AdUnit: "example_ios_interstitial_1", UIViewController: self)
-      result(true)
+        //Yieldlove.instance.interstitialAd(AdUnit: "example_ios_interstitial_1", UIViewController: self)
+        if let args = call.arguments as? Dictionary<String, Any> {
+            if let appId = args["appId"] as? String {
+                Yieldlove.instance.appName = appId
+            }
+        }
+        result(true)
     }
 }
 
