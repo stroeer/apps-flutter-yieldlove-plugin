@@ -67,7 +67,7 @@ public class YieldloveView: NSObject, FlutterPlatformView {
                 self.bannerView = banner
 
                 // This line is needed to resize ads that may come from Prebid
-                //Yieldlove.instance.resizeBanner(banner: banner)
+                Yieldlove.instance.resizeBanner(banner: banner)
             }
         )
         

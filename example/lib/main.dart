@@ -13,8 +13,14 @@ import 'package:AppsFlutterYieldloveSDK/src/ad_view_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await YieldloveWrapper.instance.initialize(appId: "promoqui").then((value) {
-    print("app-widget: initialized = ${value}");
+  await YieldloveWrapper.instance.initialize(
+      appId: "promoqui",
+      analyticsEnabled: false
+  ).then((value) {
+    print("app-widget: initialized = $value");
+  }).catchError((e) {
+    print("app-widget: failed with ${e.error}");
+    //return 42;
   });
   runApp(MyApp());
 }
