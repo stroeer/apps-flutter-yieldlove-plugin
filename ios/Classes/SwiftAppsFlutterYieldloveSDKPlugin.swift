@@ -1,6 +1,7 @@
 import Flutter
 import UIKit
 import YieldloveAdIntegration
+import GoogleMobileAds
 
 // TODO best example I found so far: https://github.com/kmcgill88/admob_flutter/tree/master/ios
 
@@ -44,37 +45,50 @@ public class YieldloveView: NSObject, FlutterPlatformView {
     let registrar: FlutterPluginRegistrar
     let frame: CGRect
     let viewId: Int64
-    var bannerView: YLBannerView? = nil //textField: UITextField
-
+    static var adView = AdView()
+    var adViewController: AdViewController? = nil
+    
     init(_ frame: CGRect, viewId: Int64, args: Any?, registrar: FlutterPluginRegistrar) {
         print("YL init platform view")
         self.frame = frame
         self.viewId = viewId
         self.registrar = registrar
-        /*self.textField = UITextField(frame: frame)
-        self.textField.text = " 👋 Hallo Patrick 2👋 "*/
         super.init()
-        let viewController = UIViewController()
+        adViewController = AdViewController()
+
         Yieldlove.instance.bannerAd(
             AdSlotId: "rubrik_b2",
-            UIViewController: viewController,
-            CompletionHandler: { banner, error in
-                if(error != nil) {
-                    print("YL Error: \(error!)")
-                    return
-                }
-                print("YL banner loaded")
-                self.bannerView = banner
-
-                // This line is needed to resize ads that may come from Prebid
-                Yieldlove.instance.resizeBanner(banner: banner)
-            }
+            UIViewController: adViewController!,
+            Delegate: adViewController!
         )
-        
     }
 
     public func view() -> UIView {
         print("YL getView")
-        return bannerView?.getBannerView() ?? UIView()
+        return YieldloveView.adView
+    }
+}
+
+class AdViewController: UIViewController, YLBannerViewDelegate {
+    public func adViewDidReceiveAd(_ bannerView: YLBannerView) {
+        //self.bann
+        print("YL ad loaded")
+        YieldloveView.adView.addBannerView(bannerView: bannerView.getBannerView())
+            // This line is needed to resize ads that may come from Prebid
+            //Yieldlove.instance.resizeBanner(banner: bannerView)
+        }
+
+        public func adView(
+            _ bannerView: YLBannerView,
+            didFailToReceiveAdWithError error: YieldloveRequestError
+        ) {
+            print("YL ad error: \(error)")
+        }
+}
+
+class AdView: UIView {
+    
+    func addBannerView(bannerView: GADBannerView) {
+        self.addSubview(bannerView)
     }
 }
