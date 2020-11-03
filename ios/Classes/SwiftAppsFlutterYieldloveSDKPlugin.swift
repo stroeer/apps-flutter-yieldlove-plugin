@@ -6,6 +6,7 @@ import YieldloveAdIntegration
 
 public class SwiftAppsFlutterYieldloveSDKPlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
+    Yieldlove.instance.appName = "promoqui";
     let instance = SwiftAppsFlutterYieldloveSDKPlugin()
     let channel = FlutterMethodChannel(name: "AppsFlutterYieldloveSDK", binaryMessenger: registrar.messenger())
     registrar.addMethodCallDelegate(instance, channel: channel)
@@ -14,7 +15,7 @@ public class SwiftAppsFlutterYieldloveSDKPlugin: NSObject, FlutterPlugin {
     let channel2 = FlutterMethodChannel(name: "de.stroeer.plugins/adview_0", binaryMessenger: registrar.messenger())
     registrar.addMethodCallDelegate(instance, channel: channel2)
 
-    registrar.register(NativeTextFieldFactory(with: registrar), withId: "de.stroeer.plugins/yieldlove_ad_view")
+    registrar.register(YieldloveViewFactory(with: registrar), withId: "de.stroeer.plugins/yieldlove_ad_view")
   }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -23,7 +24,7 @@ public class SwiftAppsFlutterYieldloveSDKPlugin: NSObject, FlutterPlugin {
     }
 }
 
-public class NativeTextFieldFactory: NSObject, FlutterPlatformViewFactory {
+public class YieldloveViewFactory: NSObject, FlutterPlatformViewFactory {
     let registrar: FlutterPluginRegistrar
 
     init(with registrar: FlutterPluginRegistrar) {
@@ -35,26 +36,45 @@ public class NativeTextFieldFactory: NSObject, FlutterPlatformViewFactory {
         viewIdentifier viewId: Int64,
         arguments args: Any?
     ) -> FlutterPlatformView {
-        return NativeTextField(frame, viewId: viewId, args: args, registrar: registrar)
+        return YieldloveView(frame, viewId: viewId, args: args, registrar: registrar)
     }
 }
 
-public class NativeTextField: NSObject, FlutterPlatformView {
+public class YieldloveView: NSObject, FlutterPlatformView {
     let registrar: FlutterPluginRegistrar
     let frame: CGRect
     let viewId: Int64
-    let textField: UITextField
+    var bannerView: YLBannerView? = nil //textField: UITextField
 
     init(_ frame: CGRect, viewId: Int64, args: Any?, registrar: FlutterPluginRegistrar) {
+        print("YL init platform view")
         self.frame = frame
         self.viewId = viewId
         self.registrar = registrar
-        self.textField = UITextField(frame: frame)
-        self.textField.text = " 👋 Hallo Patrick 👋 "
+        /*self.textField = UITextField(frame: frame)
+        self.textField.text = " 👋 Hallo Patrick 2👋 "*/
         super.init()
+        let viewController = UIViewController()
+        Yieldlove.instance.bannerAd(
+            AdSlotId: "rubrik_b2",
+            UIViewController: viewController,
+            CompletionHandler: { banner, error in
+                if(error != nil) {
+                    print("YL Error: \(error!)")
+                    return
+                }
+                print("YL banner loaded")
+                self.bannerView = banner
+
+                // This line is needed to resize ads that may come from Prebid
+                //Yieldlove.instance.resizeBanner(banner: banner)
+            }
+        )
+        
     }
 
     public func view() -> UIView {
-        return textField
+        print("YL getView")
+        return bannerView?.getBannerView() ?? UIView()
     }
 }

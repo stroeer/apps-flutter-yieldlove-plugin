@@ -1,11 +1,71 @@
 PODS:
+  - Alamofire (4.9.1)
   - AppsFlutterYieldloveSDK (0.0.1):
     - Flutter
+    - YieldloveAdIntegration
+  - ConsentViewController (5.3.0)
   - Flutter (1.0.0)
+  - Google-Mobile-Ads-SDK (7.63.0):
+    - GoogleAppMeasurement (~> 6.0)
+  - GoogleAppMeasurement (6.9.0):
+    - GoogleUtilities/AppDelegateSwizzler (~> 6.7)
+    - GoogleUtilities/MethodSwizzler (~> 6.7)
+    - GoogleUtilities/Network (~> 6.7)
+    - "GoogleUtilities/NSData+zlib (~> 6.7)"
+    - nanopb (~> 1.30906.0)
+  - GoogleUtilities/AppDelegateSwizzler (6.7.2):
+    - GoogleUtilities/Environment
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Network
+  - GoogleUtilities/Environment (6.7.2):
+    - PromisesObjC (~> 1.2)
+  - GoogleUtilities/Logger (6.7.2):
+    - GoogleUtilities/Environment
+  - GoogleUtilities/MethodSwizzler (6.7.2):
+    - GoogleUtilities/Logger
+  - GoogleUtilities/Network (6.7.2):
+    - GoogleUtilities/Logger
+    - "GoogleUtilities/NSData+zlib"
+    - GoogleUtilities/Reachability
+  - "GoogleUtilities/NSData+zlib (6.7.2)"
+  - GoogleUtilities/Reachability (6.7.2):
+    - GoogleUtilities/Logger
+  - LifecycleHooks (0.6.2)
+  - nanopb (1.30906.0):
+    - nanopb/decode (= 1.30906.0)
+    - nanopb/encode (= 1.30906.0)
+  - nanopb/decode (1.30906.0)
+  - nanopb/encode (1.30906.0)
+  - PrebidMobile (1.8):
+    - PrebidMobile/core (= 1.8)
+  - PrebidMobile/core (1.8)
+  - PromiseKit/CorePromise (6.13.1)
+  - PromisesObjC (1.2.11)
+  - YieldloveAdIntegration (2.4.3):
+    - Alamofire (~> 4.0)
+    - ConsentViewController (~> 5.2)
+    - Google-Mobile-Ads-SDK (= 7.63)
+    - LifecycleHooks (~> 0.6)
+    - PrebidMobile (= 1.8)
+    - PromiseKit/CorePromise (~> 6.13)
 
 DEPENDENCIES:
   - AppsFlutterYieldloveSDK (from `.symlinks/plugins/AppsFlutterYieldloveSDK/ios`)
   - Flutter (from `Flutter`)
+
+SPEC REPOS:
+  trunk:
+    - Alamofire
+    - ConsentViewController
+    - Google-Mobile-Ads-SDK
+    - GoogleAppMeasurement
+    - GoogleUtilities
+    - LifecycleHooks
+    - nanopb
+    - PrebidMobile
+    - PromiseKit
+    - PromisesObjC
+    - YieldloveAdIntegration
 
 EXTERNAL SOURCES:
   AppsFlutterYieldloveSDK:
@@ -14,9 +74,20 @@ EXTERNAL SOURCES:
     :path: Flutter
 
 SPEC CHECKSUMS:
-  AppsFlutterYieldloveSDK: 441fb60367cd09c846f89c181b19f11f6378a5c7
+  Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
+  AppsFlutterYieldloveSDK: 3f8612d3084c687f2b3f71a7feb072c959abc45a
+  ConsentViewController: 7c399e2882046638e641169c298585b0f9dfdce3
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  Google-Mobile-Ads-SDK: a71d6bc14f9cf1f66d686dbdf9ad2091de04059c
+  GoogleAppMeasurement: a6a3a066369828db64eda428cb2856dc1cdc7c4e
+  GoogleUtilities: 7f2f5a07f888cdb145101d6042bc4422f57e70b3
+  LifecycleHooks: 246984e8ef036a8c717298166845bb999b245f5b
+  nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
+  PrebidMobile: 1f196e0b969e98ced724133091f9991303c42bca
+  PromiseKit: 28fda91c973cc377875d8c0ea4f973013c05b6db
+  PromisesObjC: 8c196f5a328c2cba3e74624585467a557dcb482f
+  YieldloveAdIntegration: b9bb1f412e69b0c3f504dcbba07291a892ed593e
 
-PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+PODFILE CHECKSUM: dc085884ed4e421ef16c4866e980d8c2c0d89db1
 
-COCOAPODS: 1.9.2
+COCOAPODS: 1.9.3
