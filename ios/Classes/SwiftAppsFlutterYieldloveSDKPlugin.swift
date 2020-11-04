@@ -44,6 +44,10 @@ public class YieldloveViewFactory: NSObject, FlutterPlatformViewFactory {
     ) -> FlutterPlatformView {
         return YieldloveView(frame, viewId: viewId, args: args, registrar: registrar)
     }
+
+    public func createArgsCodec() -> FlutterMessageCodec & NSObjectProtocol {
+          return FlutterStandardMessageCodec.sharedInstance()
+    }
 }
 
 public class YieldloveView: NSObject, FlutterPlatformView {
@@ -55,14 +59,24 @@ public class YieldloveView: NSObject, FlutterPlatformView {
     
     init(_ frame: CGRect, viewId: Int64, args: Any?, registrar: FlutterPluginRegistrar) {
         print("YL init platform view")
+
+        var adSlotId: String? = nil
+        if let argsAsDictionary = args as? Dictionary<String, Any> {
+            if let adId = argsAsDictionary["ad_id"] as? String {
+                adSlotId = adId
+            }
+        }
+       
         self.frame = frame
         self.viewId = viewId
         self.registrar = registrar
         super.init()
+        guard adSlotId != nil else {
+            return
+        }
         adViewController = AdViewController()
-
         Yieldlove.instance.bannerAd(
-            AdSlotId: "rubrik_b2",
+            AdSlotId: adSlotId!,
             UIViewController: adViewController!,
             Delegate: adViewController!
         )
