@@ -5,8 +5,11 @@ import GoogleMobileAds
 
 // TODO best example I found so far: https://github.com/kmcgill88/admob_flutter/tree/master/ios
 
+
 public class SwiftAppsFlutterYieldloveSDKPlugin: NSObject, FlutterPlugin {
-  public static func register(with registrar: FlutterPluginRegistrar) {
+    static let interstitialHelper = YLInterstitialHelper()
+    
+    public static func register(with registrar: FlutterPluginRegistrar) {
     
     let instance = SwiftAppsFlutterYieldloveSDKPlugin()
     let channel = FlutterMethodChannel(name: "AppsFlutterYieldloveSDK", binaryMessenger: registrar.messenger())
@@ -20,11 +23,21 @@ public class SwiftAppsFlutterYieldloveSDKPlugin: NSObject, FlutterPlugin {
   }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        //var adViewController: AdViewController? = nil
         //Yieldlove.instance.interstitialAd(AdUnit: "example_ios_interstitial_1", UIViewController: self)
         if let args = call.arguments as? Dictionary<String, Any> {
             if let appId = args["appId"] as? String {
                 Yieldlove.instance.appName = appId
             }
+        }
+        if call.method == "loadInterstitialAd" {
+            //adViewController = AdViewController()
+            let viewController = UIApplication.shared.windows.first!.rootViewController ?? UIViewController()
+            Yieldlove.instance.interstitialAd(
+                AdSlotId: "/4444/m.app.ios_toi_sd/appstart_int",
+                UIViewController: viewController,
+                Delegate: SwiftAppsFlutterYieldloveSDKPlugin.interstitialHelper
+            )
         }
         result(true)
     }
@@ -95,14 +108,27 @@ class AdViewController: UIViewController, YLBannerViewDelegate {
         YieldloveView.adView.addBannerView(bannerView: bannerView.getBannerView())
             // This line is needed to resize ads that may come from Prebid
             //Yieldlove.instance.resizeBanner(banner: bannerView)
-        }
+    }
 
-        public func adView(
-            _ bannerView: YLBannerView,
-            didFailToReceiveAdWithError error: YieldloveRequestError
-        ) {
-            print("YL ad error: \(error)")
+    public func adView(
+        _ bannerView: YLBannerView,
+        didFailToReceiveAdWithError error: YieldloveRequestError
+    ) {
+        print("YL ad error: \(error)")
+    }
+}
+
+class YLInterstitialHelper: YLInterstitialDelegate {
+    public func interstitialDidReceiveAd(_ ad: YLInterstitial) {
+        if (ad.getInterstitial().isReady) {
+            let viewController = UIApplication.shared.windows.first!.rootViewController ?? UIViewController()
+            ad.getInterstitial().present(fromRootViewController: viewController)
         }
+    }
+    
+    public func interstitial(_ interstitial: YLInterstitial, didFailToReceiveAdWithError error: YieldloveRequestError) {
+        print(error)
+    }
 }
 
 class AdView: UIView {

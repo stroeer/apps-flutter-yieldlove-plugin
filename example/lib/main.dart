@@ -68,6 +68,19 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              RaisedButton(
+                onPressed: () {
+                  //val adUnitId = if (Config.USE_TEST_AD_TAGS) {
+                  //    "/4444/m.app.dev.test/start_int"
+                  //} else if (BuildConfig.BUILD_TYPE == "sdi") {
+                  //    "/4444/m.app.droid_toi_sd/teststart_int"
+                  //} else {
+                  //    "/4444/m.app.droid_toi_sd/appstart_int"
+                  //}
+                  YieldloveWrapper.instance.showInterstitial(adUnitId: "/4444/m.app.dev.test/start_int");
+                },
+                child: Text("show interstitial"),
+              ),
               Text('Yieldlove native ad view:'),
               YieldloveAdView(
                   adParamsParcel: AdCreationParams(
@@ -84,19 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     controller.showAd();
                   }
               ),
-              RaisedButton(
-                onPressed: () {
-                  //val adUnitId = if (Config.USE_TEST_AD_TAGS) {
-                  //    "/4444/m.app.dev.test/start_int"
-                  //} else if (BuildConfig.BUILD_TYPE == "sdi") {
-                  //    "/4444/m.app.droid_toi_sd/teststart_int"
-                  //} else {
-                  //    "/4444/m.app.droid_toi_sd/appstart_int"
-                  //}
-                  YieldloveWrapper.instance.showInterstitial(adUnitId: "/4444/m.app.dev.test/start_int");
-                },
-                child: Text("show interstitial"),
-              ),
+
               Padding(
                 padding: const EdgeInsets.only(top: 500),
                 child: Text('bottom view'),
