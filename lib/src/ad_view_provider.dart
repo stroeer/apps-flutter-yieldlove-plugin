@@ -91,15 +91,6 @@ class _YieldloveAdViewState extends State<YieldloveAdView> {
           excludeFromSemantics: true,
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text("  ANZEIGE  "),
-                  ),
-                ],
-              ),
               SizedBox(
                 width: double.infinity,
                 height: widget.adParamsParcel.getOptimalHeight(),
@@ -127,15 +118,6 @@ class _YieldloveAdViewState extends State<YieldloveAdView> {
           excludeFromSemantics: true,
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text("  ANZEIGE  "),
-                  ),
-                ],
-              ),
               SizedBox(
                 width: double.infinity,
                 height: widget.adParamsParcel.getOptimalHeight(),
