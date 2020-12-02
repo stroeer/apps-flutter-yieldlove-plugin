@@ -70,7 +70,6 @@ class YieldlovePlatformView internal constructor(context: Context?,
                 visible = View.VISIBLE,
                 backgroundColorRes = R.color.moduleBackground
         ).apply {
-            // TODO arty layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT TODO
             this.contentUrl = contentUrl
             this.isRelease = isRelease
             this.visibility = View.GONE
@@ -109,10 +108,6 @@ class YieldlovePlatformView internal constructor(context: Context?,
     private fun hideAd(methodCall: MethodCall, result: MethodChannel.Result) {
         tomoAdView?.hide()
         result.success(true)
-    }
-
-    override fun dispose() {
-        // TODO
     }
 
     private fun argumentsMap(vararg args: Any): Map<String, Any>? {

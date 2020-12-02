@@ -13,8 +13,13 @@ import 'package:AppsFlutterYieldloveSDK/src/ad_view_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await YieldloveWrapper.instance.initialize(appId: "promoqui").then((value) {
-    print("app-widget: initialized = ${value}");
+  await YieldloveWrapper.instance.initialize(
+      appId: "promoqui",
+      analyticsEnabled: false
+  ).then((value) {
+    print("app-widget: initialized = $value");
+  }).catchError((e) {
+    print("app-widget: failed with ${e.error}");
   });
   runApp(MyApp());
 }
@@ -43,7 +48,6 @@ class MyHomePage extends StatefulWidget {
 
 
 class _MyHomePageState extends State<MyHomePage> {
-  Widget _yieldloveAdView;
 
   @override
   void initState() {
@@ -62,6 +66,12 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              RaisedButton(
+                onPressed: () {
+                  YieldloveWrapper.instance.showInterstitial(adUnitId: "/4444/m.app.dev.test/start_int");
+                },
+                child: Text("show interstitial"),
+              ),
               Text('Yieldlove native ad view:'),
               YieldloveAdView(
                   adParamsParcel: AdCreationParams(
@@ -78,19 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     controller.showAd();
                   }
               ),
-              RaisedButton(
-                onPressed: () {
-                  //val adUnitId = if (Config.USE_TEST_AD_TAGS) {
-                  //    "/4444/m.app.dev.test/start_int"
-                  //} else if (BuildConfig.BUILD_TYPE == "sdi") {
-                  //    "/4444/m.app.droid_toi_sd/teststart_int"
-                  //} else {
-                  //    "/4444/m.app.droid_toi_sd/appstart_int"
-                  //}
-                  YieldloveWrapper.instance.showInterstitial(adUnitId: "/4444/m.app.dev.test/start_int");
-                },
-                child: Text("show interstitial"),
-              ),
+
               Padding(
                 padding: const EdgeInsets.only(top: 500),
                 child: Text('bottom view'),

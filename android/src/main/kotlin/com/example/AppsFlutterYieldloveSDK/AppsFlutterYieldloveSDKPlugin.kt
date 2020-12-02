@@ -33,8 +33,8 @@ class AppsFlutterYieldloveSDKPlugin: FlutterPlugin, MethodCallHandler, ActivityA
       return
     } else {
       try {
-        Yieldlove.setApplicationName("inapp.ios.test");
-        Yieldlove.setAccountId("promoqui")
+        Yieldlove.setApplicationName("inapp.ios.test")
+        Yieldlove.setAccountId(appId ?: "promoqui")
         result.success(true)
       } catch (e: Exception) {
         result.error("initialization_failed", "Yieldlove SDK initialization failed: ${e.message}", null)

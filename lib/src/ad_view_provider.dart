@@ -72,9 +72,6 @@ class YieldloveAdView extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _YieldloveAdViewState();
 
-  Future<bool> dispose() {
-    //return _invokeBooleanMethod("disposeAd", <String, dynamic>{'id': id}); TODO
-  }
 }
 
 class _YieldloveAdViewState extends State<YieldloveAdView> {
