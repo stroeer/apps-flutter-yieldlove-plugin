@@ -3,9 +3,6 @@ import UIKit
 import YieldloveAdIntegration
 import GoogleMobileAds
 
-// TODO best example I found so far: https://github.com/kmcgill88/admob_flutter/tree/master/ios
-
-
 public class SwiftAppsFlutterYieldloveSDKPlugin: NSObject, FlutterPlugin {
     static let interstitialHelper = YLInterstitialHelper()
     

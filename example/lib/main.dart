@@ -20,7 +20,6 @@ Future<void> main() async {
     print("app-widget: initialized = $value");
   }).catchError((e) {
     print("app-widget: failed with ${e.error}");
-    //return 42;
   });
   runApp(MyApp());
 }
@@ -49,7 +48,6 @@ class MyHomePage extends StatefulWidget {
 
 
 class _MyHomePageState extends State<MyHomePage> {
-  Widget _yieldloveAdView;
 
   @override
   void initState() {
@@ -70,13 +68,6 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
               RaisedButton(
                 onPressed: () {
-                  //val adUnitId = if (Config.USE_TEST_AD_TAGS) {
-                  //    "/4444/m.app.dev.test/start_int"
-                  //} else if (BuildConfig.BUILD_TYPE == "sdi") {
-                  //    "/4444/m.app.droid_toi_sd/teststart_int"
-                  //} else {
-                  //    "/4444/m.app.droid_toi_sd/appstart_int"
-                  //}
                   YieldloveWrapper.instance.showInterstitial(adUnitId: "/4444/m.app.dev.test/start_int");
                 },
                 child: Text("show interstitial"),

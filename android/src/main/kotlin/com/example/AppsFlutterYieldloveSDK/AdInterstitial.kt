@@ -38,12 +38,6 @@ object InterstitialHolder {
                     }
 
                     override fun onAdRequestBuild(): PublisherAdRequest.Builder? {
-                        // TODO?
-                        //if(npa == true) {
-                        //    val extras = Bundle()
-                        //    extras.putString("npa", "1")
-                        //    adRequestBuilder.addNetworkExtrasBundle(AdMobAdapter::class.java, extras)
-                        //}
                         return null
                     }
 
