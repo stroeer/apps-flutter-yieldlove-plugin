@@ -29,7 +29,7 @@ class YieldlovePlatformView internal constructor(context: Context?,
     }
 
     private var tomoAdView: TomoAdView? = null
-    private var methodChannel: MethodChannel
+    private var methodChannel: MethodChannel? = null
     private var platformThreadHandler: Handler? = null
 
     init {
@@ -54,7 +54,7 @@ class YieldlovePlatformView internal constructor(context: Context?,
 
         platformThreadHandler = Handler(context!!.mainLooper)
         methodChannel = MethodChannel(messenger, "de.stroeer.plugins/adview_$id")
-        methodChannel.setMethodCallHandler(this)
+        methodChannel?.setMethodCallHandler(this)
     }
 
     private fun createAdView(context1: Context?,
@@ -74,12 +74,12 @@ class YieldlovePlatformView internal constructor(context: Context?,
             this.isRelease = isRelease
             this.visibility = View.GONE
             this.adSizeCallback = { screenHeight, adHeight ->
-                methodChannel.invokeMethod("adSizeDetermined", argumentsMap("screenHeight", screenHeight ?: 0, "adHeight", adHeight ?: 0))
+                methodChannel?.invokeMethod("adSizeDetermined", argumentsMap("screenHeight", screenHeight ?: 0, "adHeight", adHeight ?: 0))
             }
             this.adEventListener = { event ->
                 when (event) {
-                    is YieldAdEvent.OnAdFailedToLoad -> methodChannel.invokeMethod("onAdEvent", argumentsMap("adEventType", event.name, "error", event.message));
-                    else -> methodChannel.invokeMethod("onAdEvent", argumentsMap("adEventType", event.name));
+                    is YieldAdEvent.OnAdFailedToLoad -> methodChannel?.invokeMethod("onAdEvent", argumentsMap("adEventType", event.name, "error", event.message));
+                    else -> methodChannel?.invokeMethod("onAdEvent", argumentsMap("adEventType", event.name));
                 }
             }
             init(ad = ad, isTestAd = useTestAds)
@@ -108,6 +108,12 @@ class YieldlovePlatformView internal constructor(context: Context?,
     private fun hideAd(methodCall: MethodCall, result: MethodChannel.Result) {
         tomoAdView?.hide()
         result.success(true)
+    }
+
+    override fun dispose() {
+        tomoAdView = null
+        methodChannel = null
+        platformThreadHandler = null
     }
 
     private fun argumentsMap(vararg args: Any): Map<String, Any>? {
