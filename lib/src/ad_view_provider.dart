@@ -8,15 +8,15 @@ import 'package:flutter/widgets.dart';
 class AdCreationParams {
 
   String adId;
-  String adKeyword;
-  String adContentUrl;
-  bool adIsRelease = false;
-  bool useTestAds = false;
+  String? adKeyword;
+  String? adContentUrl;
+  bool? adIsRelease = false;
+  bool? useTestAds = false;
 
-  List<AdSize> optimalAdSizes; // is calculated based on adId
+  List<AdSize> optimalAdSizes = []; // is calculated based on adId
 
-  AdCreationParams({@required this.adId, this.adKeyword, this.adContentUrl, this.useTestAds, this.adIsRelease}) {
-    optimalAdSizes = _mapAdTypeToAdSize[this.adId];
+  AdCreationParams({required this.adId, this.adKeyword, this.adContentUrl, this.useTestAds, this.adIsRelease}) {
+    optimalAdSizes = _mapAdTypeToAdSize[this.adId] ?? [];
     print("app-widget: optimalAdSizes=${optimalAdSizes.first.height}");
   }
 
@@ -59,13 +59,13 @@ class AdSize {
 class YieldloveAdView extends StatefulWidget {
 
   final AdCreationParams adParamsParcel;
-  final Function onPlatformViewCreated;
-  final Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers;
+  final Function? onPlatformViewCreated;
+  final Set<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers;
 
   YieldloveAdView({
-    Key key,
+    Key? key,
     this.gestureRecognizers,
-    this.adParamsParcel,
+    required this.adParamsParcel,
     this.onPlatformViewCreated,
   })  : super(key: key);
 
@@ -79,67 +79,63 @@ class _YieldloveAdViewState extends State<YieldloveAdView> {
 
   @override
   Widget build(BuildContext context) {
-    Widget _adView;
-    if (_adView == null) {
-      if (Platform.isAndroid) {
-        return GestureDetector(
-          // intercept long press event.
-          onLongPress: () {},
-          excludeFromSemantics: true,
-          child: Column(
-            children: [
-              SizedBox(
-                width: double.infinity,
-                height: widget.adParamsParcel.getOptimalHeight(),
-                child: AndroidView(
-                  key: _key,
-                  viewType: 'de.stroeer.plugins/yieldlove_ad_view',
-                  onPlatformViewCreated: (int id) {
-                    if (widget.onPlatformViewCreated != null) {
-                      widget.onPlatformViewCreated(YieldloveAdController(id));
-                    }
-                  },
-                  gestureRecognizers: widget.gestureRecognizers,
-                  layoutDirection: TextDirection.rtl,
-                  creationParams: widget.adParamsParcel.toMap(),
-                  creationParamsCodec: const StandardMessageCodec(),
-                ),
+    if (Platform.isAndroid) {
+      return GestureDetector(
+        // intercept long press event.
+        onLongPress: () {},
+        excludeFromSemantics: true,
+        child: Column(
+          children: [
+            SizedBox(
+              width: double.infinity,
+              height: widget.adParamsParcel?.getOptimalHeight(),
+              child: AndroidView(
+                key: _key,
+                viewType: 'de.stroeer.plugins/yieldlove_ad_view',
+                onPlatformViewCreated: (int id) {
+                  if (widget.onPlatformViewCreated != null) {
+                    widget.onPlatformViewCreated!(YieldloveAdController(id));
+                  }
+                },
+                gestureRecognizers: widget.gestureRecognizers,
+                layoutDirection: TextDirection.rtl,
+                creationParams: widget.adParamsParcel.toMap(),
+                creationParamsCodec: const StandardMessageCodec(),
               ),
-            ],
-          ),
-        );
-      } else if (Platform.isIOS) {
-        return GestureDetector(
-          // intercept long press event.
-          onLongPress: () {},
-          excludeFromSemantics: true,
-          child: Column(
-            children: [
-              SizedBox(
-                width: double.infinity,
-                height: widget.adParamsParcel.getOptimalHeight(),
-                child: UiKitView(
-                  key: _key,
-                  viewType: 'de.stroeer.plugins/yieldlove_ad_view',
-                  onPlatformViewCreated: (int id) {
-                    if (widget.onPlatformViewCreated != null) {
-                      widget.onPlatformViewCreated(YieldloveAdController(id));
-                    }
-                  },
-                  gestureRecognizers: widget.gestureRecognizers,
-                  layoutDirection: TextDirection.rtl,
-                  creationParams: widget.adParamsParcel.toMap(),
-                  creationParamsCodec: const StandardMessageCodec(),
-                ),
+            ),
+          ],
+        ),
+      );
+    } else if (Platform.isIOS) {
+      return GestureDetector(
+        // intercept long press event.
+        onLongPress: () {},
+        excludeFromSemantics: true,
+        child: Column(
+          children: [
+            SizedBox(
+              width: double.infinity,
+              height: widget.adParamsParcel.getOptimalHeight(),
+              child: UiKitView(
+                key: _key,
+                viewType: 'de.stroeer.plugins/yieldlove_ad_view',
+                onPlatformViewCreated: (int id) {
+                  if (widget.onPlatformViewCreated != null) {
+                    widget.onPlatformViewCreated!(YieldloveAdController(id));
+                  }
+                },
+                gestureRecognizers: widget.gestureRecognizers,
+                layoutDirection: TextDirection.rtl,
+                creationParams: widget.adParamsParcel.toMap(),
+                creationParamsCodec: const StandardMessageCodec(),
               ),
-            ],
-          ),
-        );
-      } else {
-        throw UnsupportedError("Trying to use the default view implementation for $defaultTargetPlatform but there isn't a default one");
-      }
+            ),
+          ],
+        ),
+      );
+    } else {
+      throw UnsupportedError("Trying to use the default view implementation for $defaultTargetPlatform but there isn't a default one");
     }
-    return _adView;
   }
 
   @override
@@ -161,7 +157,7 @@ class YieldloveAdController {
   }
 
   final MethodChannel _channel;
-  AdEventListener listener;
+  AdEventListener? listener;
 
   Future<void> showAd() async {
     return _channel.invokeMethod('showAd');
@@ -181,7 +177,10 @@ class YieldloveAdController {
       case 'onAdEvent':
         final adEventType = call.arguments["adEventType"];
         final errorMessage = call.arguments["error"];
-        listener?.call(_methodToMobileAdEvent[adEventType]);
+        final event = _methodToMobileAdEvent[adEventType];
+        if (event != null) {
+          listener?.call(event);
+        }
         break;
       case 'adSizeDetermined':
         final screenHeight = call.arguments["screenHeight"];
