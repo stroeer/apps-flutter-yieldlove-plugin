@@ -171,7 +171,7 @@ class YieldloveAdController {
     assert(call.arguments is Map);
     final Map<dynamic, dynamic> argumentsMap = call.arguments;
 
-    final int id = argumentsMap['id'];
+    final int? id = argumentsMap['id'];
 
     switch (call.method) {
       case 'onAdEvent':
