@@ -58,7 +58,7 @@ class AdSize {
 
 class YieldloveAdView extends StatefulWidget {
 
-  final AdCreationParams adParamsParcel;
+  final AdCreationParams? adParamsParcel;
   final Function? onPlatformViewCreated;
   final Set<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers;
 
@@ -99,7 +99,7 @@ class _YieldloveAdViewState extends State<YieldloveAdView> {
                 },
                 gestureRecognizers: widget.gestureRecognizers,
                 layoutDirection: TextDirection.rtl,
-                creationParams: widget.adParamsParcel.toMap(),
+                creationParams: widget.adParamsParcel?.toMap(),
                 creationParamsCodec: const StandardMessageCodec(),
               ),
             ),
@@ -115,7 +115,7 @@ class _YieldloveAdViewState extends State<YieldloveAdView> {
           children: [
             SizedBox(
               width: double.infinity,
-              height: widget.adParamsParcel.getOptimalHeight(),
+              height: widget.adParamsParcel?.getOptimalHeight(),
               child: UiKitView(
                 key: _key,
                 viewType: 'de.stroeer.plugins/yieldlove_ad_view',
@@ -126,7 +126,7 @@ class _YieldloveAdViewState extends State<YieldloveAdView> {
                 },
                 gestureRecognizers: widget.gestureRecognizers,
                 layoutDirection: TextDirection.rtl,
-                creationParams: widget.adParamsParcel.toMap(),
+                creationParams: widget.adParamsParcel?.toMap(),
                 creationParamsCodec: const StandardMessageCodec(),
               ),
             ),
