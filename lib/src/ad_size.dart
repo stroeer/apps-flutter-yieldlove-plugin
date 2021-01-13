@@ -9,7 +9,6 @@ class AdSize {
 
   @override
   String toString() {
-    // TODO: implement toString
     return 'AdSize(width: $width, height: $height)';
   }
 }
