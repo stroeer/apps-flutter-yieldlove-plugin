@@ -5,69 +5,23 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-class AdCreationParams {
+import 'package:AppsFlutterYieldloveSDK/src/ad_creation_params.dart';
 
-  String adId;
-  String? adKeyword;
-  String? adContentUrl;
-  bool? adIsRelease = false;
-  bool? useTestAds = false;
-
-  List<AdSize> optimalAdSizes = []; // is calculated based on adId
-
-  AdCreationParams({required this.adId, this.adKeyword, this.adContentUrl, this.useTestAds, this.adIsRelease}) {
-    optimalAdSizes = _mapAdTypeToAdSize[this.adId] ?? [];
-    print("app-widget: optimalAdSizes=${optimalAdSizes.first.height}");
-  }
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'ad_id': this.adId,
-      'ad_keyword': this.adKeyword,
-      'ad_content_url': this.adContentUrl,
-      'ad_sizes': _adSizesToStringList(optimalAdSizes),
-      'ad_is_release': adIsRelease,
-      'use_test_ads': useTestAds,
-    };
-  }
-
-  static const Map<String, List<AdSize>> _mapAdTypeToAdSize =
-  <String, List<AdSize>>{
-    //'all': [AdSize(320, 50), AdSize(320, 75), AdSize(320, 150), AdSize(300, 250), AdSize(37, 31)],
-    'rubrik_b1': [AdSize(300, 250)],
-    'rubrik_b2': [AdSize(320, 150)],
-    'rubrik_b3': [AdSize(320, 50)],
-    'rubrik_b4': [AdSize(320, 75)],
-    'rubrik_b5': [AdSize(37, 31)],
-    'm.app.dev.test/start_b1': [AdSize(320, 75)]
-  };
-
-  List<String> _adSizesToStringList(List<AdSize> adSizes) {
-    this.optimalAdSizes = adSizes; 
-    return adSizes.map((e) => '${e.width}x${e.height}').toList(); 
-  }
-
-  double getOptimalHeight() => optimalAdSizes.first.height.toDouble();
-}
-
-class AdSize {
-  final int width;
-  final int height;
-  const AdSize(this.width, this.height);
-}
+export 'package:AppsFlutterYieldloveSDK/src/ad_creation_params.dart';
+export 'package:AppsFlutterYieldloveSDK/src/ad_size.dart';
 
 class YieldloveAdView extends StatefulWidget {
 
-  final AdCreationParams? adParamsParcel;
-  final Function? onPlatformViewCreated;
-  final Set<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers;
-
-  YieldloveAdView({
+  const YieldloveAdView({
     Key? key,
     this.gestureRecognizers,
     required this.adParamsParcel,
     this.onPlatformViewCreated,
-  })  : super(key: key);
+  }) : super(key: key);
+
+  final AdCreationParams? adParamsParcel;
+  final Function? onPlatformViewCreated;
+  final Set<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers;
 
   @override
   State<StatefulWidget> createState() => _YieldloveAdViewState();
