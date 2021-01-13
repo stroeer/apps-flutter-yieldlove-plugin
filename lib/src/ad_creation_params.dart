@@ -15,7 +15,7 @@ class AdCreationParams {
   /// AdSize will be ignored!
   final List<AdSize>? adSizes;
 
-  List<AdSize> optimalAdSizes = []; // is calculated based on adId
+  List<AdSize> _optimalAdSizes = []; // is calculated based on adId
 
   AdCreationParams({
     required this.adId,
@@ -26,9 +26,10 @@ class AdCreationParams {
     this.adIsRelease = false
   }) {
     if (adSizes != null) {
+      print(adSizes);
       assert(adSizes!.isNotEmpty, 'The adSizes list should never be empty!');
     } else {
-      optimalAdSizes =
+      _optimalAdSizes =
           _mapAdTypeToAdSize[this.adId] ?? [AdSize(width: 300, height: 150)];
       //print("app-widget: optimalAdSizes=${optimalAdSizes.first.height}");
     }
@@ -39,7 +40,7 @@ class AdCreationParams {
       'ad_id': this.adId,
       'ad_keyword': this.adKeyword,
       'ad_content_url': this.adContentUrl,
-      'ad_sizes': adSizes ?? _adSizesToStringList(optimalAdSizes),
+      'ad_sizes': adSizes ?? _adSizesToStringList(_optimalAdSizes),
       'ad_is_release': adIsRelease,
       'use_test_ads': useTestAds,
     };
@@ -57,9 +58,9 @@ class AdCreationParams {
   };
 
   List<String> _adSizesToStringList(List<AdSize> adSizes) {
-    this.optimalAdSizes = adSizes;
+    this._optimalAdSizes = adSizes;
     return adSizes.map((e) => '${e.width}x${e.height}').toList();
   }
 
-  double getOptimalHeight() => (adSizes ?? optimalAdSizes).first.height.toDouble();
+  double getOptimalHeight() => (adSizes ?? _optimalAdSizes).first.height.toDouble();
 }

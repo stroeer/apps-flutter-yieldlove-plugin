@@ -37,22 +37,10 @@ class MyApp extends StatelessWidget {
 }
 
 
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends StatelessWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
   final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-
-class _MyHomePageState extends State<MyHomePage> {
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,13 +58,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () {
                   YieldloveWrapper.instance.showInterstitial(adUnitId: "/4444/m.app.dev.test/start_int");
                 },
-                child: Text("show interstitial"),
+                child: Text("Show interstitial"),
               ),
               Text('Yieldlove native ad view:'),
               YieldloveAdView(
                   adParamsParcel: AdCreationParams(
                     adId: 'rubrik_b2',
-                    adSizes: [AdSize(width: 320, height: 50)],
+                    adSizes: [ AdSize(width: 320, height: 150) ],
                     adKeyword: null,
                     adContentUrl: 'https://www.google.com',
                     useTestAds: false,
@@ -91,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
 
               Padding(
-                padding: const EdgeInsets.only(top: 500),
+                padding: const EdgeInsets.only(top: 400),
                 child: Text('bottom view'),
               ),
             ],
