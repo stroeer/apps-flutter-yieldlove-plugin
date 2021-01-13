@@ -1,8 +1,9 @@
 # AppsFlutterYieldloveSDK
 
-A new flutter plugin project.
+A new flutter plugin for YieldloveSDK. Feedback much appreciated.
 
-Note, in version 0.0.1 of the Flutter lib only Android is supported. Feedback much appreciated.
+Known bugs:
+- Ads are not shown on iOS
 
 ## Getting started with Flutter
 
