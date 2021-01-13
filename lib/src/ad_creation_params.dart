@@ -28,11 +28,11 @@ class AdCreationParams {
     if (adSizes != null) {
       print(adSizes);
       assert(adSizes!.isNotEmpty, 'The adSizes list should never be empty!');
-    } //else {
+    } else {
       _optimalAdSizes =
           _mapAdTypeToAdSize[this.adId] ?? [AdSize(width: 300, height: 150)];
       //print("app-widget: optimalAdSizes=${optimalAdSizes.first.height}");
-    //}
+    }
   }
 
   Map<String, dynamic> toMap() {
