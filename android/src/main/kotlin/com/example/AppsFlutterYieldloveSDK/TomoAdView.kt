@@ -100,37 +100,19 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
         }
 
         try {
-            // TODO: Still required?
-            val configId: String = if (adUnitId!!.contains("rubrik_b1")) {
-                "23904"
-            } else if (adUnitId!!.contains("_b2")) {
-                "23928"
-            } else if (adUnitId!!.contains("_b3")) {
-                "23931"
-            } else if (adUnitId!!.contains("_b4")) {
-                "23933"
-            } else if (adUnitId!!.contains("rubrik_b5")) {
-                "23934"
-            } else if (adUnitId!!.contains("m.app.dev.test/start_b1")) {
-                "6960" // TODO find the right cofigId for test ads
-            } else {
-                Log.e("tomo-app-ad", "Failed to resolve the config id for ad $adUnitId.")
-                return
-            }
-            val adUnit = YieldloveAdUnit(adUnitId, configId, adSizes)
+            val builder = PublisherAdRequest.Builder()
 
-            adUnit.addCustomTargeting("rse", SessionValuesProvider.sessionRandom.toString()) // random session
-            adUnit.addCustomTargeting("rpi", SessionValuesProvider.screenRandom.toString()) // random pi
-            val pageViewCounter = if (SessionValuesProvider.screenCounter > 99) "100+" else SessionValuesProvider.screenCounter.toString()
-            adUnit.addCustomTargeting("pvc", pageViewCounter) // page view counter
-
-            insertRecommendedTargeting(adUnit)
+            insertRecommendedTargeting(builder)
 
             if (adKeyword != null) {
-                adUnit.addCustomTargeting("keywords", adKeyword)
+                builder.addCustomTargeting("keywords", adKeyword)
             }
 
-            val builder = PublisherAdRequest.Builder()
+            builder.addCustomTargeting("rse", SessionValuesProvider.sessionRandom.toString())
+            builder.addCustomTargeting("rpi", SessionValuesProvider.screenRandom.toString()) // random pi
+            val pageViewCounter = if (SessionValuesProvider.screenCounter > 99) "100+" else SessionValuesProvider.screenCounter.toString()
+            builder.addCustomTargeting("pvc", pageViewCounter) // page view counter
+
             if (contentUrl != null) {
                 builder.setContentUrl(contentUrl)
             }
@@ -139,15 +121,17 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
             if (!isRelease) {
                 val randomValuesForPrint = "random-session = ${SessionValuesProvider.sessionRandom}, random-pi = ${SessionValuesProvider.screenRandom}, pi-counter = $pageViewCounter"
                 if (adKeyword != null && contentUrl != null) {
-                    Log.v("tomo-app-ad", "Loading ad $adUnitId: configId = $configId, contentUrl = $contentUrl, tagKeyword = $adKeyword, $randomValuesForPrint")
+                    Log.v("app-ad", "Loading ad $adUnitId: contentUrl = $contentUrl, tagKeyword = $adKeyword, $randomValuesForPrint")
                 } else if (contentUrl != null) {
-                    if (!isRelease) Log.v("tomo-app-ad", "Loading ad $adUnitId: configId = $configId, contentUrl = $contentUrl, $randomValuesForPrint")
+                    if (!isRelease) Log.v("tomo-app-ad", "Loading ad $adUnitId: contentUrl = $contentUrl, $randomValuesForPrint")
                 } else if (contentUrl == null && adKeyword == null) {
-                    if (!isRelease) Log.e("tomo-app-ad", "Loading ad $adUnitId: configId = $configId, but contentUrl is null!")
+                    if (!isRelease) Log.e("tomo-app-ad", "Loading ad $adUnitId, but contentUrl is null!")
                 }
             }
 
-            YieldloveBannerAd(adUnit, activityContext, object: YieldloveBannerAdListener {
+            // publisherCallString is something like start_b2
+            val ad = YieldloveBannerAd(activityContext)
+            ad.load(adUnitId, object: YieldloveBannerAdListener {
                 override fun onAdInit(banner: YieldloveBannerAdView?) {
                     adView?.addView(banner?.adView)
                     adEventListener?.invoke(YieldAdEvent.OnAdInit())
@@ -165,8 +149,9 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
                     return PublisherAdRequest.Builder().addNetworkExtrasBundle(AdMobAdapter::class.java, extras)
                 }
 
-                override fun onAdFailedToLoad(banner: YieldloveBannerAdView?, errorCode: Int) {
-                    adEventListener?.invoke(YieldAdEvent.OnAdFailedToLoad(message = errorCode.toString()))
+                override fun onAdFailedToLoad(banner: YieldloveBannerAdView?, error: YieldloveException?) {
+                    adEventListener?.invoke(YieldAdEvent.OnAdFailedToLoad(
+                            message = error?.localizedMessage ?: "Error message is missing"))
                     hide()
                 }
 
@@ -231,7 +216,7 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
         isVisible = false
     }
 
-    private fun insertRecommendedTargeting(adUnit: YieldloveAdUnit) {
+    private fun insertRecommendedTargeting(builder: PublisherAdRequest.Builder) {
         // the "recommended" key value targeting
         // link: https://stroeerdigitalgroup.atlassian.net/wiki/spaces/SDGPUBLIC/pages/1263730994/Integration+in+Apps
 
@@ -262,7 +247,7 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
             list.add("moad2x1")
         }
         val af = TextUtils.join(",", list)
-        adUnit.addCustomTargeting("af", af)
+        builder.addCustomTargeting("af", af)
 
         // (2) adslot and and as
         val adSlot = if (adUnitId!!.contains("_b1")) {
@@ -276,8 +261,8 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
         } else {
             ""
         }
-        adUnit.addCustomTargeting("adslot", "topmobile$adSlot")
-        adUnit.addCustomTargeting("as", "topmobile$adSlot")
+        builder.addCustomTargeting("adslot", "topmobile$adSlot")
+        builder.addCustomTargeting("as", "topmobile$adSlot")
 
         if (!isRelease) Log.v("tomo-app-ad", "af: '$af', adslot: 'topmobile$adSlot', as: 'topmobile$adSlot'")
     }

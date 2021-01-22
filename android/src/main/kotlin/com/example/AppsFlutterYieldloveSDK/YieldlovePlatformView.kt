@@ -33,7 +33,7 @@ class YieldlovePlatformView internal constructor(context: Context?,
     private var platformThreadHandler: Handler? = null
 
     init {
-        var adId: String = "rubrik_b3"
+        var adId: String = ""
         var adKeyword: String? = null
         var adContentUrl: String? = null
         var adSizes: List<Size> = emptyList()

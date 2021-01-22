@@ -9,6 +9,7 @@ import com.yieldlove.adIntegration.AdFormats.YieldloveInterstitialAd
 import com.yieldlove.adIntegration.AdFormats.YieldloveInterstitialAdListener
 import com.yieldlove.adIntegration.AdFormats.YieldloveInterstitialAdView
 import com.yieldlove.adIntegration.AdUnit.YieldloveAdUnit
+import com.yieldlove.adIntegration.exceptions.YieldloveException
 
 object InterstitialHolder {
 
@@ -26,7 +27,8 @@ object InterstitialHolder {
                 }
                 val adUnitId = call.argument<String>("ad_unit_id")
                 val adUnit = YieldloveAdUnit(adUnitId, "23935")
-                YieldloveInterstitialAd(adUnit, activity, object : YieldloveInterstitialAdListener {
+                val interstitialAd = YieldloveInterstitialAd(activity)
+                interstitialAd.load(adUnitId, object : YieldloveInterstitialAdListener {
                     override fun onAdInit(interstitial: YieldloveInterstitialAdView?) {
                         interstitialView = interstitial
                         interstitialView?.show()
@@ -41,7 +43,7 @@ object InterstitialHolder {
                         return null
                     }
 
-                    override fun onAdFailedToLoad(interstitial: YieldloveInterstitialAdView?, errorCode: Int) {
+                    override fun onAdFailedToLoad(interstitial: YieldloveInterstitialAdView?, exception: YieldloveException?) {
                         loadError = true
                         result.success(false)
                     }

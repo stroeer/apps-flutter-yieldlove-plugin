@@ -46,7 +46,8 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.AppsFlutterYieldloveSDK_example"
+        //applicationId "com.example.AppsFlutterYieldloveSDK_example"
+        applicationId "com.telekom.wetterinfo"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()

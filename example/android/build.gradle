@@ -3,7 +3,6 @@ buildscript {
     repositories {
         google()
         jcenter()
-        maven { url 'https://slabs-yieldlove-ad-integration.s3.eu-central-1.amazonaws.com/android'}
     }
 
     dependencies {
@@ -16,6 +15,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url 'https://slabs-yieldlove-ad-integration.s3.eu-central-1.amazonaws.com/android'}
     }
 }
 
