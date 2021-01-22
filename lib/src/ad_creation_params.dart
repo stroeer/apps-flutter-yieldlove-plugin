@@ -49,12 +49,12 @@ class AdCreationParams {
   static const Map<String, List<AdSize>> _mapAdTypeToAdSize =
   <String, List<AdSize>>{
     //'all': [AdSize(320, 50), AdSize(320, 75), AdSize(320, 150), AdSize(300, 250), AdSize(37, 31)],
-    'rubrik_b1': [AdSize(width: 300, height: 250)],
-    'rubrik_b2': [AdSize(width: 320, height: 150)],
-    'rubrik_b3': [AdSize(width: 320, height: 50)],
-    'rubrik_b4': [AdSize(width: 320, height: 75)],
-    'rubrik_b5': [AdSize(width: 37, height: 31)],
-    'm.app.dev.test/start_b1': [AdSize(width: 320, height: 75)]
+    'rubrik_b1': [AdSize(width: 300, height: 250), AdSize(width: 37, height: 31)],
+    'rubrik_b2': [AdSize(width: 320, height: 150), AdSize(width: 37, height: 32)],
+    'rubrik_b3': [AdSize(width: 320, height: 50), AdSize(width: 37, height: 33)],
+    'rubrik_b4': [AdSize(width: 320, height: 75), AdSize(width: 37, height: 34)],
+    'rubrik_b5': [AdSize(width: 37, height: 31), AdSize(width: 37, height: 35)],
+    'm.app.dev.test/start_b1': [AdSize(width: 320, height: 75), AdSize(width: 37, height: 31)]
   };
 
   List<String> _adSizesToStringList(List<AdSize> adSizes) {

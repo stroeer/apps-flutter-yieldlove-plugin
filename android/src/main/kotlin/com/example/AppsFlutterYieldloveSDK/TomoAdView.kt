@@ -95,18 +95,19 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
         adView?.visibility = View.VISIBLE
 
         if (adUnitId == null) {
-            Log.e("tomo-app-ad", "Cannot load an ad without its id.")
+            Log.e("app-ad", "Cannot load an ad without its id.")
             return
         }
 
         try {
+            // TODO: Still required?
             val configId: String = if (adUnitId!!.contains("rubrik_b1")) {
                 "23904"
-            } else if (adUnitId!!.contains("rubrik_b2")) {
+            } else if (adUnitId!!.contains("_b2")) {
                 "23928"
-            } else if (adUnitId!!.contains("rubrik_b3")) {
+            } else if (adUnitId!!.contains("_b3")) {
                 "23931"
-            } else if (adUnitId!!.contains("rubrik_b4")) {
+            } else if (adUnitId!!.contains("_b4")) {
                 "23933"
             } else if (adUnitId!!.contains("rubrik_b5")) {
                 "23934"
