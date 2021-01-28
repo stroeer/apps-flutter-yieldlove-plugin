@@ -62,10 +62,8 @@ class MyHomePage extends StatelessWidget {
               Text('Yieldlove native ad view:'),
               YieldloveAdView(
                   adParamsParcel: AdCreationParams(
-                    //adId: 'rubrik_b2',
-                    //adSizes: [ AdSize(width: 320, height: 50) ],
                     adId: 'start_b2',
-                    adSizes: [ AdSize(width: 300, height: 250), AdSize(width: 37, height: 32) ],
+                    optimalHeight: 250,
                     adKeyword: null,
                     adContentUrl: 'https://www.google.com',
                     useTestAds: false,

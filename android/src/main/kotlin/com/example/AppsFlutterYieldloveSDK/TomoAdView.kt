@@ -37,19 +37,6 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
 
     private val testAdUnitId = "/4444/m.app.dev.test/start_b1"
 
-    private val testAdSizes: Array<AdSize> = arrayOf(
-            AdSize.BANNER,
-            AdSize.LARGE_BANNER,
-            AdSize.FULL_BANNER,
-            AdSize.MEDIUM_RECTANGLE,
-            AdSize.SMART_BANNER,
-            AdSize.WIDE_SKYSCRAPER,
-            AdSize.LEADERBOARD,
-            AdSize.FLUID
-    )
-
-    private var adSizes: Array<AdSize> = testAdSizes
-
     private var adUnitId: String? = null
 
     private var adKeyword: String? = null
@@ -77,16 +64,15 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
         if (ad != null) {
             adKeyword = ad.keyword
             if (isTestAd)
-                prepareDfpAdView(this, testAdUnitId, testAdSizes)
+                prepareDfpAdView(this, testAdUnitId)
             else
-                prepareDfpAdView(this, ad.adUnitId, ad.adSizes)
+                prepareDfpAdView(this, ad.adUnitId)
         }
     }
 
-    private fun prepareDfpAdView(parentView: View, adId: String, adSizes: Array<AdSize>) {
+    private fun prepareDfpAdView(parentView: View, adId: String) {
         adUnitId = adId
         adView = parentView.findViewById(R.id.yieldlove_ad) as ViewGroup?
-        this.adSizes = adSizes
     }
 
     fun loadAd(activityContext: Context?) {
@@ -101,8 +87,6 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
 
         try {
             val builder = PublisherAdRequest.Builder()
-
-            insertRecommendedTargeting(builder)
 
             if (adKeyword != null) {
                 builder.addCustomTargeting("keywords", adKeyword)
@@ -214,57 +198,6 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
     fun hide() {
         visibility = View.GONE
         isVisible = false
-    }
-
-    private fun insertRecommendedTargeting(builder: PublisherAdRequest.Builder) {
-        // the "recommended" key value targeting
-        // link: https://stroeerdigitalgroup.atlassian.net/wiki/spaces/SDGPUBLIC/pages/1263730994/Integration+in+Apps
-
-        // (1) The af value (available format)
-        val list: MutableList<String> = mutableListOf()
-        // (300, 250) -> mrec
-        if (adSizes.contains(AdSize(300, 250))) {
-            list.add("mrec")
-        }
-        // (320, 50) -> mpres6x1 or moad6x1
-        if (adSizes.contains(AdSize(320, 50))) {
-            list.add("mpres6x1")
-            list.add("moad6x1")
-        }
-        // (320, 75) -> moad4x1 or mpres4x1
-        if (adSizes.contains(AdSize(320, 75))) {
-            list.add("moad4x1")
-            list.add("mpres4x1")
-        }
-        // (320, 100) -> moad3x1 or mpres3x1
-        if (adSizes.contains(AdSize(320, 100))) {
-            list.add("moad3x1")
-            list.add("mpres3x1")
-        }
-        // (320, 150) -> moad2x1 or mpres2x1
-        if (adSizes.contains(AdSize(320, 150))) {
-            list.add("mpres2x1")
-            list.add("moad2x1")
-        }
-        val af = TextUtils.join(",", list)
-        builder.addCustomTargeting("af", af)
-
-        // (2) adslot and and as
-        val adSlot = if (adUnitId!!.contains("_b1")) {
-            ""
-        } else if (adUnitId!!.contains("_b2")) {
-            "2"
-        } else if (adUnitId!!.contains("_b3")) {
-            "3"
-        } else if (adUnitId!!.contains("_b4")) {
-            "4"
-        } else {
-            ""
-        }
-        builder.addCustomTargeting("adslot", "topmobile$adSlot")
-        builder.addCustomTargeting("as", "topmobile$adSlot")
-
-        if (!isRelease) Log.v("tomo-app-ad", "af: '$af', adslot: 'topmobile$adSlot', as: 'topmobile$adSlot'")
     }
 }
 

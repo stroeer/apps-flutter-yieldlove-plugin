@@ -36,7 +36,6 @@ class YieldlovePlatformView internal constructor(context: Context?,
         var adId: String = ""
         var adKeyword: String? = null
         var adContentUrl: String? = null
-        var adSizes: List<Size> = emptyList()
         var adIsRelease: Boolean = false
         var useTestAds: Boolean = false
 
@@ -46,11 +45,10 @@ class YieldlovePlatformView internal constructor(context: Context?,
             adContentUrl = params["ad_content_url"] as String?
             adIsRelease = params["ad_is_release"] as Boolean
             useTestAds = params["use_test_ads"] as Boolean
-            adSizes = (params["ad_sizes"] as List<String>).map { e -> Size(e.split("x")[0].toInt(), e.split("x")[1].toInt()) }
-            Log.v("app-platform-view", "Ad(id=${adId}, keyword=${adKeyword}, contentUrl=${adContentUrl}, adSizes=${adSizes}, adIsRelease=${adIsRelease}, adIsTest=${useTestAds}")
+            Log.v("app-platform-view", "Ad(id=${adId}, keyword=${adKeyword}, contentUrl=${adContentUrl}, adIsRelease=${adIsRelease}, adIsTest=${useTestAds}")
         }
 
-        tomoAdView = createAdView(context, Ad(adId, adSizes, adKeyword), adContentUrl, null, adIsRelease, useTestAds)
+        tomoAdView = createAdView(context, Ad(adId, adKeyword), adContentUrl, null, adIsRelease, useTestAds)
 
         platformThreadHandler = Handler(context!!.mainLooper)
         methodChannel = MethodChannel(messenger, "de.stroeer.plugins/adview_$id")
