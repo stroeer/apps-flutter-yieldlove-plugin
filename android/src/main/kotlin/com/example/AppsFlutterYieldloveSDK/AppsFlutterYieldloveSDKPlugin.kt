@@ -33,10 +33,7 @@ class AppsFlutterYieldloveSDKPlugin: FlutterPlugin, MethodCallHandler, ActivityA
       return
     } else {
       try {
-        // Is ApplicationName required?
-        Yieldlove.setApplicationName(appId ?: "t-online_wetter")
-        //Yieldlove.setApplicationName("inapp.ios.test")
-
+        Yieldlove.setApplicationName(appId)
         result.success(true)
       } catch (e: Exception) {
         result.error("initialization_failed", "Yieldlove SDK initialization failed: ${e.message}", null)

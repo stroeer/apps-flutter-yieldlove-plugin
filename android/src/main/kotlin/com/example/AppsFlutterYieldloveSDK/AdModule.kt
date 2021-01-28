@@ -5,6 +5,7 @@ import com.google.android.gms.ads.AdSize
 data class Size(val width: Int, val height: Int)
 
 class Ad(val id: String, val possibleSizes: List<Size>, val keyword: String? = null) {
+    // TODO: Which prefix is correct?
     val AD_UNIT_PREFIX = "/4444/m.app.droid_toi_sd"
     //val AD_UNIT_PREFIX = "m.app.ios_toi_t-o_wetter_sd"
 
