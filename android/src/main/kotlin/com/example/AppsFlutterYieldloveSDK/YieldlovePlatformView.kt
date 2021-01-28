@@ -1,18 +1,14 @@
 package com.example.AppsFlutterYieldloveSDK
 
-import android.R.id
 import android.app.Activity
 import android.content.Context
 import android.os.Handler
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import com.yieldlove.adIntegration.Yieldlove
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.platform.PlatformView
 import java.util.*
 
@@ -45,10 +41,14 @@ class YieldlovePlatformView internal constructor(context: Context?,
             adContentUrl = params["ad_content_url"] as String?
             adIsRelease = params["ad_is_release"] as Boolean
             useTestAds = params["use_test_ads"] as Boolean
-            Log.v("app-platform-view", "Ad(id=${adId}, keyword=${adKeyword}, contentUrl=${adContentUrl}, adIsRelease=${adIsRelease}, adIsTest=${useTestAds}")
+            Log.v("app-platform-view", "Ad(id=${adId}, " +
+                    "keyword=${adKeyword}, " +
+                    "contentUrl=${adContentUrl}, " +
+                    "adIsRelease=${adIsRelease}, " +
+                    "adIsTest=${useTestAds}")
         }
 
-        tomoAdView = createAdView(context, Ad(adId, adKeyword), adContentUrl, null, adIsRelease, useTestAds)
+        tomoAdView = createAdView(context, Ad(adId, adKeyword), adContentUrl, adIsRelease, useTestAds)
 
         platformThreadHandler = Handler(context!!.mainLooper)
         methodChannel = MethodChannel(messenger, "de.stroeer.plugins/adview_$id")
@@ -58,7 +58,6 @@ class YieldlovePlatformView internal constructor(context: Context?,
     private fun createAdView(context1: Context?,
                              ad: Ad,
                              contentUrl: String?,
-                             layoutParams: ViewGroup.LayoutParams?,
                              isRelease: Boolean = false,
                              useTestAds: Boolean = false
     ): TomoAdView? {
