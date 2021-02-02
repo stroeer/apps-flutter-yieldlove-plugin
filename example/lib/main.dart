@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:AppsFlutterYieldloveSDK/YieldloveWrapper.dart';
-import 'package:AppsFlutterYieldloveSDK/src/ad_view_provider.dart';
 
 // example data for yieldlove
 /*const val YIELDLOVE_ACCOUNT_ID = "promoqui"
@@ -14,7 +13,7 @@ import 'package:AppsFlutterYieldloveSDK/src/ad_view_provider.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await YieldloveWrapper.instance.initialize(
-      appId: "promoqui",
+      appId: "t-online_wetter",
       analyticsEnabled: false
   ).then((value) {
     print("app-widget: initialized = $value");
@@ -63,8 +62,8 @@ class MyHomePage extends StatelessWidget {
               Text('Yieldlove native ad view:'),
               YieldloveAdView(
                   adParamsParcel: AdCreationParams(
-                    adId: 'rubrik_b2',
-                    adSizes: [ AdSize(width: 320, height: 50) ],
+                    adId: 'rest_b3',
+                    optimalHeight: 250,
                     adKeyword: null,
                     adContentUrl: 'https://www.google.com',
                     useTestAds: false,

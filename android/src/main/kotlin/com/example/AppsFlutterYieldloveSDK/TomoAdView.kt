@@ -37,19 +37,6 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
 
     private val testAdUnitId = "/4444/m.app.dev.test/start_b1"
 
-    private val testAdSizes: Array<AdSize> = arrayOf(
-            AdSize.BANNER,
-            AdSize.LARGE_BANNER,
-            AdSize.FULL_BANNER,
-            AdSize.MEDIUM_RECTANGLE,
-            AdSize.SMART_BANNER,
-            AdSize.WIDE_SKYSCRAPER,
-            AdSize.LEADERBOARD,
-            AdSize.FLUID
-    )
-
-    private var adSizes: Array<AdSize> = testAdSizes
-
     private var adUnitId: String? = null
 
     private var adKeyword: String? = null
@@ -77,16 +64,15 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
         if (ad != null) {
             adKeyword = ad.keyword
             if (isTestAd)
-                prepareDfpAdView(this, testAdUnitId, testAdSizes)
+                prepareDfpAdView(this, testAdUnitId)
             else
-                prepareDfpAdView(this, ad.adUnitId, ad.adSizes)
+                prepareDfpAdView(this, ad.adUnitId)
         }
     }
 
-    private fun prepareDfpAdView(parentView: View, adId: String, adSizes: Array<AdSize>) {
+    private fun prepareDfpAdView(parentView: View, adId: String) {
         adUnitId = adId
         adView = parentView.findViewById(R.id.yieldlove_ad) as ViewGroup?
-        this.adSizes = adSizes
     }
 
     fun loadAd(activityContext: Context?) {
@@ -95,41 +81,22 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
         adView?.visibility = View.VISIBLE
 
         if (adUnitId == null) {
-            Log.e("tomo-app-ad", "Cannot load an ad without its id.")
+            Log.e("app-ad", "Cannot load an ad without its id.")
             return
         }
 
         try {
-            val configId: String = if (adUnitId!!.contains("rubrik_b1")) {
-                "23904"
-            } else if (adUnitId!!.contains("rubrik_b2")) {
-                "23928"
-            } else if (adUnitId!!.contains("rubrik_b3")) {
-                "23931"
-            } else if (adUnitId!!.contains("rubrik_b4")) {
-                "23933"
-            } else if (adUnitId!!.contains("rubrik_b5")) {
-                "23934"
-            } else if (adUnitId!!.contains("m.app.dev.test/start_b1")) {
-                "6960" // TODO find the right cofigId for test ads
-            } else {
-                Log.e("tomo-app-ad", "Failed to resolve the config id for ad $adUnitId.")
-                return
-            }
-            val adUnit = YieldloveAdUnit(adUnitId, configId, adSizes)
-
-            adUnit.addCustomTargeting("rse", SessionValuesProvider.sessionRandom.toString()) // random session
-            adUnit.addCustomTargeting("rpi", SessionValuesProvider.screenRandom.toString()) // random pi
-            val pageViewCounter = if (SessionValuesProvider.screenCounter > 99) "100+" else SessionValuesProvider.screenCounter.toString()
-            adUnit.addCustomTargeting("pvc", pageViewCounter) // page view counter
-
-            insertRecommendedTargeting(adUnit)
+            val builder = PublisherAdRequest.Builder()
 
             if (adKeyword != null) {
-                adUnit.addCustomTargeting("keywords", adKeyword)
+                builder.addCustomTargeting("keywords", adKeyword)
             }
 
-            val builder = PublisherAdRequest.Builder()
+            builder.addCustomTargeting("rse", SessionValuesProvider.sessionRandom.toString())
+            builder.addCustomTargeting("rpi", SessionValuesProvider.screenRandom.toString()) // random pi
+            val pageViewCounter = if (SessionValuesProvider.screenCounter > 99) "100+" else SessionValuesProvider.screenCounter.toString()
+            builder.addCustomTargeting("pvc", pageViewCounter) // page view counter
+
             if (contentUrl != null) {
                 builder.setContentUrl(contentUrl)
             }
@@ -138,15 +105,17 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
             if (!isRelease) {
                 val randomValuesForPrint = "random-session = ${SessionValuesProvider.sessionRandom}, random-pi = ${SessionValuesProvider.screenRandom}, pi-counter = $pageViewCounter"
                 if (adKeyword != null && contentUrl != null) {
-                    Log.v("tomo-app-ad", "Loading ad $adUnitId: configId = $configId, contentUrl = $contentUrl, tagKeyword = $adKeyword, $randomValuesForPrint")
+                    Log.v("app-ad", "Loading ad $adUnitId: contentUrl = $contentUrl, tagKeyword = $adKeyword, $randomValuesForPrint")
                 } else if (contentUrl != null) {
-                    if (!isRelease) Log.v("tomo-app-ad", "Loading ad $adUnitId: configId = $configId, contentUrl = $contentUrl, $randomValuesForPrint")
+                    if (!isRelease) Log.v("tomo-app-ad", "Loading ad $adUnitId: contentUrl = $contentUrl, $randomValuesForPrint")
                 } else if (contentUrl == null && adKeyword == null) {
-                    if (!isRelease) Log.e("tomo-app-ad", "Loading ad $adUnitId: configId = $configId, but contentUrl is null!")
+                    if (!isRelease) Log.e("tomo-app-ad", "Loading ad $adUnitId, but contentUrl is null!")
                 }
             }
 
-            YieldloveBannerAd(adUnit, activityContext, object: YieldloveBannerAdListener {
+            // publisherCallString is something like start_b2
+            val ad = YieldloveBannerAd(activityContext)
+            ad.load(adUnitId, object: YieldloveBannerAdListener {
                 override fun onAdInit(banner: YieldloveBannerAdView?) {
                     adView?.addView(banner?.adView)
                     adEventListener?.invoke(YieldAdEvent.OnAdInit())
@@ -164,8 +133,9 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
                     return PublisherAdRequest.Builder().addNetworkExtrasBundle(AdMobAdapter::class.java, extras)
                 }
 
-                override fun onAdFailedToLoad(banner: YieldloveBannerAdView?, errorCode: Int) {
-                    adEventListener?.invoke(YieldAdEvent.OnAdFailedToLoad(message = errorCode.toString()))
+                override fun onAdFailedToLoad(banner: YieldloveBannerAdView?, error: YieldloveException?) {
+                    adEventListener?.invoke(YieldAdEvent.OnAdFailedToLoad(
+                            message = error?.localizedMessage ?: "Error message is missing"))
                     hide()
                 }
 
@@ -228,57 +198,6 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
     fun hide() {
         visibility = View.GONE
         isVisible = false
-    }
-
-    private fun insertRecommendedTargeting(adUnit: YieldloveAdUnit) {
-        // the "recommended" key value targeting
-        // link: https://stroeerdigitalgroup.atlassian.net/wiki/spaces/SDGPUBLIC/pages/1263730994/Integration+in+Apps
-
-        // (1) The af value (available format)
-        val list: MutableList<String> = mutableListOf()
-        // (300, 250) -> mrec
-        if (adSizes.contains(AdSize(300, 250))) {
-            list.add("mrec")
-        }
-        // (320, 50) -> mpres6x1 or moad6x1
-        if (adSizes.contains(AdSize(320, 50))) {
-            list.add("mpres6x1")
-            list.add("moad6x1")
-        }
-        // (320, 75) -> moad4x1 or mpres4x1
-        if (adSizes.contains(AdSize(320, 75))) {
-            list.add("moad4x1")
-            list.add("mpres4x1")
-        }
-        // (320, 100) -> moad3x1 or mpres3x1
-        if (adSizes.contains(AdSize(320, 100))) {
-            list.add("moad3x1")
-            list.add("mpres3x1")
-        }
-        // (320, 150) -> moad2x1 or mpres2x1
-        if (adSizes.contains(AdSize(320, 150))) {
-            list.add("mpres2x1")
-            list.add("moad2x1")
-        }
-        val af = TextUtils.join(",", list)
-        adUnit.addCustomTargeting("af", af)
-
-        // (2) adslot and and as
-        val adSlot = if (adUnitId!!.contains("_b1")) {
-            ""
-        } else if (adUnitId!!.contains("_b2")) {
-            "2"
-        } else if (adUnitId!!.contains("_b3")) {
-            "3"
-        } else if (adUnitId!!.contains("_b4")) {
-            "4"
-        } else {
-            ""
-        }
-        adUnit.addCustomTargeting("adslot", "topmobile$adSlot")
-        adUnit.addCustomTargeting("as", "topmobile$adSlot")
-
-        if (!isRelease) Log.v("tomo-app-ad", "af: '$af', adslot: 'topmobile$adSlot', as: 'topmobile$adSlot'")
     }
 }
 
