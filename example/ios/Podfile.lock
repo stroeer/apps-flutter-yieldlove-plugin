@@ -1,6 +1,6 @@
 PODS:
   - Alamofire (4.9.1)
-  - AppsFlutterYieldloveSDK (0.0.1):
+  - AppsFlutterYieldloveSDK (0.9.3):
     - Flutter
     - YieldloveAdIntegration
   - ConsentViewController (5.3.0)
@@ -75,7 +75,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
-  AppsFlutterYieldloveSDK: 72abe4e371de02d191f189c02a1347ae8ba03ef6
+  AppsFlutterYieldloveSDK: 315db93a2a34a91140269edeffdf7e809e15a04e
   ConsentViewController: 7c399e2882046638e641169c298585b0f9dfdce3
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   Google-Mobile-Ads-SDK: a71d6bc14f9cf1f66d686dbdf9ad2091de04059c
@@ -90,4 +90,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: dc085884ed4e421ef16c4866e980d8c2c0d89db1
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.10.0
