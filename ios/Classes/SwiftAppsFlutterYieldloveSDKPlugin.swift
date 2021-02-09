@@ -24,7 +24,9 @@ public class SwiftAppsFlutterYieldloveSDKPlugin: NSObject, FlutterPlugin {
         //Yieldlove.instance.interstitialAd(AdUnit: "example_ios_interstitial_1", UIViewController: self)
         if let args = call.arguments as? Dictionary<String, Any> {
             if let appId = args["appId"] as? String {
-                Yieldlove.instance.appName = appId
+                // TODO apparently native Yieldlove SDK for iOS doesn't not have
+                // TODO this property ("appName") anymore; test ads work fine without it
+                // Yieldlove.instance.appName = appId
             }
         }
         if call.method == "loadInterstitialAd" {
