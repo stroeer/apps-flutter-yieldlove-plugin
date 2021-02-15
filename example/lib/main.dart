@@ -13,7 +13,7 @@ import 'package:AppsFlutterYieldloveSDK/YieldloveWrapper.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await YieldloveWrapper.instance.initialize(
-      appId: "t-online_wetter",
+      appId: "t-online_wetter_flutter",
       analyticsEnabled: false
   ).then((value) {
     print("app-widget: initialized = $value");
@@ -62,12 +62,13 @@ class MyHomePage extends StatelessWidget {
               Text('Yieldlove native ad view:'),
               YieldloveAdView(
                   adParamsParcel: AdCreationParams(
-                    adId: 'rest_b3',
+                    adId: 'start_b4',
                     optimalHeight: 250,
                     adKeyword: null,
                     adContentUrl: 'https://www.google.com',
                     useTestAds: false,
                     adIsRelease: false,
+                    //customTargeting: {"testKey": "testValue"}
                   ),
                   onPlatformViewCreated: (YieldloveAdController controller) {
                     controller.listener = (YieldAdEvent event) {
