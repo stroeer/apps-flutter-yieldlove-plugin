@@ -41,6 +41,8 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
 
     private var adKeyword: String? = null
 
+    private var customTargeting: Map<String, String>? = null
+
     private var isTestAd: Boolean = false
 
     var adEventListener: ((YieldAdEvent) -> Unit)? = null
@@ -66,6 +68,7 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
         this.isTestAd = isTestAd
         if (ad != null) {
             adKeyword = ad.keyword
+            customTargeting = ad.customTargeting
             //if (isTestAd)
             //    prepareDfpAdView(this, testAdUnitId)
             //else
@@ -93,6 +96,13 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
 
             if (adKeyword != null) {
                 builder.addCustomTargeting("keywords", adKeyword)
+            }
+
+            if (customTargeting != null) {
+                for (key in customTargeting!!.keys) {
+                    val value = customTargeting!![key]
+                    builder.addCustomTargeting(key, value)
+                }
             }
 
             builder.addCustomTargeting("rse", SessionValuesProvider.sessionRandom.toString())

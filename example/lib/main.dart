@@ -68,7 +68,7 @@ class MyHomePage extends StatelessWidget {
                     adContentUrl: 'https://www.google.com',
                     useTestAds: false,
                     adIsRelease: false,
-                    //customTargeting: {"testKey": "testValue"}
+                    customTargeting: {"testKey": "testValue"}
                   ),
                   onPlatformViewCreated: (YieldloveAdController controller) {
                     controller.listener = (YieldAdEvent event) {

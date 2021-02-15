@@ -20,7 +20,7 @@ class AdCreationParams {
   /// define the height of the ad (dynamic height is not supported yet)
   final double? optimalHeight;
 
-  //final Map<String, String>? customTargeting;
+  final Map<String, String>? customTargeting;
 
   AdCreationParams({
     required this.adId,
@@ -29,7 +29,7 @@ class AdCreationParams {
     this.optimalHeight,
     this.useTestAds = false,
     this.adIsRelease = false,
-    //this.customTargeting = const {}
+    this.customTargeting = const {}
   });
 
   Map<String, dynamic> toMap() {
