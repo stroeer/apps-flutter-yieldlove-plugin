@@ -24,19 +24,30 @@ public class SwiftAppsFlutterYieldloveSDKPlugin: NSObject, FlutterPlugin {
         //Yieldlove.instance.interstitialAd(AdUnit: "example_ios_interstitial_1", UIViewController: self)
         if let args = call.arguments as? Dictionary<String, Any> {
             if let appId = args["appId"] as? String {
-                // TODO apparently native Yieldlove SDK for iOS doesn't not have
-                // TODO this property ("appName") anymore; test ads work fine without it
-                // Yieldlove.instance.appName = appId
+                Yieldlove.instance.appName = appId
             }
         }
         if call.method == "loadInterstitialAd" {
             //adViewController = AdViewController()
             let viewController = UIApplication.shared.windows.first!.rootViewController ?? UIViewController()
-            Yieldlove.instance.interstitialAd(
-                AdSlotId: "/4444/m.app.ios_toi_sd/appstart_int",
-                UIViewController: viewController,
-                Delegate: SwiftAppsFlutterYieldloveSDKPlugin.interstitialHelper
-            )
+            
+            var adSlotId: String? = nil
+            if let args = call.arguments as? Dictionary<String, Any> {
+                if let adId = args["ad_unit_id"] as? String {
+                    adSlotId = adId
+                }
+            }
+            
+            if (adSlotId != nil) {
+                print("YL: loading interstitial with adId '"+adSlotId!+"'.")
+                Yieldlove.instance.interstitialAd(
+                    AdSlotId: adSlotId!,
+                    UIViewController: viewController,
+                    Delegate: SwiftAppsFlutterYieldloveSDKPlugin.interstitialHelper
+                )
+            } else {
+                print("YL: Cannot load interstitial without adId.")
+            }
         }
         result(true)
     }
@@ -70,12 +81,23 @@ public class YieldloveView: NSObject, FlutterPlatformView {
     var adViewController: AdViewController? = nil
     
     init(_ frame: CGRect, viewId: Int64, args: Any?, registrar: FlutterPluginRegistrar) {
-        print("YL init platform view")
+        print("YL: Init platform view")
 
+        // adSlotId
         var adSlotId: String? = nil
         if let argsAsDictionary = args as? Dictionary<String, Any> {
             if let adId = argsAsDictionary["ad_id"] as? String {
                 adSlotId = adId
+                print("YL: Using adId '"+adSlotId!+"' for banner ad.")
+            }
+        }
+        
+        // contentUrl
+        var adContentUrl: String? = nil
+        if let argsAsDictionary = args as? Dictionary<String, Any> {
+            if let contentUrl = argsAsDictionary["ad_content_url"] as? String {
+                adContentUrl = contentUrl
+                print("YL: Using adContentUrl '"+adContentUrl!+"' for banner ad.")
             }
         }
        
@@ -95,7 +117,7 @@ public class YieldloveView: NSObject, FlutterPlatformView {
     }
 
     public func view() -> UIView {
-        print("YL getView")
+        print("YL: get view")
         return YieldloveView.adView
     }
 }
@@ -103,7 +125,7 @@ public class YieldloveView: NSObject, FlutterPlatformView {
 class AdViewController: UIViewController, YLBannerViewDelegate {
     public func adViewDidReceiveAd(_ bannerView: YLBannerView) {
         //self.bann
-        print("YL ad loaded")
+        print("YL: Ad loaded")
         YieldloveView.adView.addBannerView(bannerView: bannerView.getBannerView())
             // This line is needed to resize ads that may come from Prebid
             //Yieldlove.instance.resizeBanner(banner: bannerView)
@@ -113,7 +135,18 @@ class AdViewController: UIViewController, YLBannerViewDelegate {
         _ bannerView: YLBannerView,
         didFailToReceiveAdWithError error: YieldloveRequestError
     ) {
-        print("YL ad error: \(error)")
+        print("YL: Ad error: \(error)")
+    }
+    
+    func getDfpRequest() -> DFPRequest {
+        let request = DFPRequest()
+        /*if contentURL != nil {
+         request.contentURL = contentURL
+       }
+       if keywords != nil {
+         request.customTargeting = keywords
+       }*/
+        return request
     }
 }
 
@@ -126,7 +159,7 @@ class YLInterstitialHelper: YLInterstitialDelegate {
     }
     
     public func interstitial(_ interstitial: YLInterstitial, didFailToReceiveAdWithError error: YieldloveRequestError) {
-        print(error)
+        print("YL: Failed to load interstitial. Error: "+error.description)
     }
 }
 
