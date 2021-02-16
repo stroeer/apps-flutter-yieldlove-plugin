@@ -153,7 +153,7 @@ public class YieldloveView: NSObject, FlutterPlatformView {
         let screenRect = UIScreen.main.bounds
         let screenWidth = screenRect.size.width
         let adWidth = YieldloveView.adView.frame.size.width
-        let adPositionX = (adWidth / 2)// + (screenWidth - adWidth) * 2.8
+        let adPositionX = (adWidth / 2) + (adWidth - 320) / 2 
         if !adIsRelease {
             print("YL: get view. ad width = \(adWidth), screen width = \(screenWidth), adPositionX = \(adPositionX)")
         }
