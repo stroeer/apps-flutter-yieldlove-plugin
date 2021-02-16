@@ -42,7 +42,7 @@ class YieldlovePlatformView internal constructor(context: Context?,
             adContentUrl = params["ad_content_url"] as String?
             adIsRelease = params["ad_is_release"] as Boolean
             useTestAds = params["use_test_ads"] as Boolean
-            customTargeting = params["customTargeting"] as Map<String, String>? ?: mapOf()
+            customTargeting = params["custom_targeting"] as Map<String, String>? ?: mapOf()
             Log.v("app-platform-view", "Ad(id=${adId}, " +
                     "adKeyword=${adKeyword}, " +
                     "contentUrl=${adContentUrl}, " +

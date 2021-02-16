@@ -39,7 +39,7 @@ class AdCreationParams {
       'ad_content_url': this.adContentUrl,
       'ad_is_release': adIsRelease,
       'use_test_ads': useTestAds,
-      //'customTargeting': customTargeting,
+      'custom_targeting': customTargeting,
     };
   }
 
