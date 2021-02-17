@@ -24,7 +24,7 @@ public class SwiftAppsFlutterYieldloveSDKPlugin: NSObject, FlutterPlugin {
         //Yieldlove.instance.interstitialAd(AdUnit: "example_ios_interstitial_1", UIViewController: self)
         if let args = call.arguments as? Dictionary<String, Any> {
             if let appId = args["appId"] as? String {
-                Yieldlove.instance.appName = appId
+                Yieldlove.instance.setAppName(appName: appId)
             }
         }
         if call.method == "loadInterstitialAd" {
