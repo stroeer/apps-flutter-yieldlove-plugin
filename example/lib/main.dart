@@ -10,10 +10,21 @@ import 'package:AppsFlutterYieldloveSDK/YieldloveWrapper.dart';
     const val YIELDLOVE_PROPERTY_ID = 6960
     const val YIELDLOVE_PRIVACY_MANAGER_ID = "114323"*/
 
+const appId = "appDfpTest";
+//const appId = 'promoqui';
+//const appId = 't-online_wetter_flutter';
+//const appId = 't-online_wetter';
+
+const bannerAdId = 'banner';
+//const bannerAdId = 'start_b4';
+
+const interstitialAdId = 'interstitial';
+//const interstitialAdId = 'appstart_int';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await YieldloveWrapper.instance.initialize(
-      appId: "t-online_wetter",
+      appId: appId,
       analyticsEnabled: false
   ).then((value) {
     print("app-widget: initialized = $value");
@@ -43,46 +54,62 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final adParams = AdCreationParams(
+        adId: bannerAdId,
+        optimalHeight: 100,
+        adKeyword: null,
+        adContentUrl: 'https://www.google.com',
+        useTestAds: false,
+        adIsRelease: false,
+        customTargeting: {"testKey": "testValue"}
+    );
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              RaisedButton(
-                onPressed: () {
-                  YieldloveWrapper.instance.showInterstitial(adUnitId: "/4444/m.app.dev.test/start_int");
-                },
-                child: Text("Show interstitial"),
-              ),
-              Text('Yieldlove native ad view:'),
-              YieldloveAdView(
-                  adParamsParcel: AdCreationParams(
-                    adId: 'rest_b3',
-                    optimalHeight: 250,
-                    adKeyword: null,
-                    adContentUrl: 'https://www.google.com',
-                    useTestAds: false,
-                    adIsRelease: false,
-                  ),
-                  onPlatformViewCreated: (YieldloveAdController controller) {
-                    controller.listener = (YieldAdEvent event) {
-                      print("BannerAd event $event");
-                    };
-                    controller.showAd();
-                  }
-              ),
+        body: LayoutBuilder(builder: (context, constraints) {
+          return SingleChildScrollView(
+            child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: IntrinsicHeight(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text('Load interstitial ad with id "$interstitialAdId":'),
+                        RaisedButton(
+                          onPressed: () {
+                            YieldloveWrapper.instance.showInterstitial(adUnitId: interstitialAdId);
+                          },
+                          child: Text("Show interstitial"),
+                        ),
+                        const SizedBox(height: 32),
+                        Text('Native ad with id "${adParams.adId}":'),
+                        YieldloveAdView(
+                            adParamsParcel: adParams,
+                            onPlatformViewCreated: (YieldloveAdController controller) {
+                              controller.listener = (YieldAdEvent event) {
+                                print("BannerAd event $event");
+                              };
+                              controller.showAd();
+                            }
+                        ),
 
-              Padding(
-                padding: const EdgeInsets.only(top: 400),
-                child: Text('bottom view'),
-              ),
-            ],
-          ),
+                        Expanded(child: Container()),
+                        Text('the bottom of the screen'),
+                        const SizedBox(
+                          height: 16,
+                        )
+                      ],
+                    ),
+                  ),
+                )
+            )
+          );
+        },
         ),
       ),
     );

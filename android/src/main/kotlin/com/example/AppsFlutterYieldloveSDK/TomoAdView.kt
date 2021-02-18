@@ -35,11 +35,15 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
     var isVisible = false
     var isRelease = false
 
-    private val testAdUnitId = "/4444/m.app.dev.test/start_b1"
+    //private val testAdUnitId = "/4444/m.app.dev.test/start_b1"
 
     private var adUnitId: String? = null
 
     private var adKeyword: String? = null
+
+    private var customTargeting: Map<String, String>? = null
+
+    private var isTestAd: Boolean = false
 
     var adEventListener: ((YieldAdEvent) -> Unit)? = null
     var adSizeCallback: ((Int?, Int?) -> Unit)? = null
@@ -61,12 +65,14 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
     }
 
     fun init(ad: Ad? = null, isTestAd: Boolean = false) {
+        this.isTestAd = isTestAd
         if (ad != null) {
             adKeyword = ad.keyword
-            if (isTestAd)
-                prepareDfpAdView(this, testAdUnitId)
-            else
-                prepareDfpAdView(this, ad.adUnitId)
+            customTargeting = ad.customTargeting
+            //if (isTestAd)
+            //    prepareDfpAdView(this, testAdUnitId)
+            //else
+            prepareDfpAdView(this, ad.adUnitId)
         }
     }
 
@@ -92,10 +98,21 @@ class TomoAdView : ConstraintLayout, AdLongClickListener {
                 builder.addCustomTargeting("keywords", adKeyword)
             }
 
+            if (customTargeting != null) {
+                for (key in customTargeting!!.keys) {
+                    val value = customTargeting!![key]
+                    builder.addCustomTargeting(key, value)
+                }
+            }
+
             builder.addCustomTargeting("rse", SessionValuesProvider.sessionRandom.toString())
             builder.addCustomTargeting("rpi", SessionValuesProvider.screenRandom.toString()) // random pi
             val pageViewCounter = if (SessionValuesProvider.screenCounter > 99) "100+" else SessionValuesProvider.screenCounter.toString()
             builder.addCustomTargeting("pvc", pageViewCounter) // page view counter
+
+            if (isTestAd) {
+                builder.addCustomTargeting("demo", "mobileads")
+            }
 
             if (contentUrl != null) {
                 builder.setContentUrl(contentUrl)

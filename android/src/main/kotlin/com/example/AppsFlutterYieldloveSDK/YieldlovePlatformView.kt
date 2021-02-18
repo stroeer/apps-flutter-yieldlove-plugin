@@ -21,7 +21,7 @@ class YieldlovePlatformView internal constructor(context: Context?,
     : PlatformView, MethodCallHandler {
 
     companion object {
-            var activity: Activity? = null
+        var activity: Activity? = null
     }
 
     private var tomoAdView: TomoAdView? = null
@@ -34,6 +34,7 @@ class YieldlovePlatformView internal constructor(context: Context?,
         var adContentUrl: String? = null
         var adIsRelease: Boolean = false
         var useTestAds: Boolean = false
+        var customTargeting: Map<String, String>? = null
 
         if (params?.containsKey("ad_id") == true) {
             adId = params["ad_id"] as String
@@ -41,14 +42,23 @@ class YieldlovePlatformView internal constructor(context: Context?,
             adContentUrl = params["ad_content_url"] as String?
             adIsRelease = params["ad_is_release"] as Boolean
             useTestAds = params["use_test_ads"] as Boolean
+            customTargeting = params["custom_targeting"] as Map<String, String>? ?: mapOf()
             Log.v("app-platform-view", "Ad(id=${adId}, " +
-                    "keyword=${adKeyword}, " +
+                    "adKeyword=${adKeyword}, " +
                     "contentUrl=${adContentUrl}, " +
                     "adIsRelease=${adIsRelease}, " +
-                    "adIsTest=${useTestAds}")
+                    "adIsTest=${useTestAds}, " +
+                    "customTargeting=${customTargeting}"
+            )
         }
 
-        tomoAdView = createAdView(context, Ad(adId, adKeyword), adContentUrl, adIsRelease, useTestAds)
+        tomoAdView = createAdView(
+                context,
+                Ad(adId, adKeyword, customTargeting),
+                adContentUrl,
+                adIsRelease,
+                useTestAds
+        )
 
         platformThreadHandler = Handler(context!!.mainLooper)
         methodChannel = MethodChannel(messenger, "de.stroeer.plugins/adview_$id")
