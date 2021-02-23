@@ -1,29 +1,30 @@
 import 'package:AppsFlutterYieldloveSDK/src/ad_size.dart';
+import 'package:flutter/foundation.dart';
 
 class AdCreationParams {
 
   final String adId;
 
   /// addCustomTargeting("keywords", adKeyword)
-  final String? adKeyword;
+  final String adKeyword;
 
-  final String? adContentUrl;
+  final String adContentUrl;
 
   /// addOnAdClickListener is only called for non-release versions.
   /// For non-release versions there are also more prints on terminal.
-  final bool? adIsRelease;
+  final bool adIsRelease;
 
   /// If set to true, you should always see an ad.
   /// How it works? -> Custom targeting ("demo" to "mobileads") is added.
-  final bool? useTestAds;
+  final bool useTestAds;
 
   /// define the height of the ad (dynamic height is not supported yet)
-  final double? optimalHeight;
+  final double optimalHeight;
 
-  final Map<String, String>? customTargeting;
+  final Map<String, String> customTargeting;
 
   AdCreationParams({
-    required this.adId,
+    @required this.adId,
     this.adKeyword,
     this.adContentUrl,
     this.optimalHeight,

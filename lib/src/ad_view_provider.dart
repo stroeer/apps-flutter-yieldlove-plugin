@@ -13,15 +13,15 @@ export 'package:AppsFlutterYieldloveSDK/src/ad_size.dart';
 class YieldloveAdView extends StatefulWidget {
 
   const YieldloveAdView({
-    Key? key,
+    Key key,
     this.gestureRecognizers,
-    required this.adParamsParcel,
+    @required this.adParamsParcel,
     this.onPlatformViewCreated,
   }) : super(key: key);
 
-  final AdCreationParams? adParamsParcel;
-  final Function? onPlatformViewCreated;
-  final Set<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers;
+  final AdCreationParams adParamsParcel;
+  final Function onPlatformViewCreated;
+  final Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers;
 
   @override
   State<StatefulWidget> createState() => _YieldloveAdViewState();
@@ -42,18 +42,18 @@ class _YieldloveAdViewState extends State<YieldloveAdView> {
           children: [
             SizedBox(
               width: double.infinity,
-              height: widget.adParamsParcel?.getOptimalHeight(),
+              height: widget.adParamsParcel.getOptimalHeight(),
               child: AndroidView(
                 key: _key,
                 viewType: 'de.stroeer.plugins/yieldlove_ad_view',
                 onPlatformViewCreated: (int id) {
                   if (widget.onPlatformViewCreated != null) {
-                    widget.onPlatformViewCreated!(YieldloveAdController(id));
+                    widget.onPlatformViewCreated(YieldloveAdController(id));
                   }
                 },
                 gestureRecognizers: widget.gestureRecognizers,
                 layoutDirection: TextDirection.rtl,
-                creationParams: widget.adParamsParcel?.toMap(),
+                creationParams: widget.adParamsParcel.toMap(),
                 creationParamsCodec: const StandardMessageCodec(),
               ),
             ),
@@ -75,7 +75,7 @@ class _YieldloveAdViewState extends State<YieldloveAdView> {
                 viewType: 'de.stroeer.plugins/yieldlove_ad_view',
                 onPlatformViewCreated: (int id) {
                   if (widget.onPlatformViewCreated != null) {
-                    widget.onPlatformViewCreated!(YieldloveAdController(id));
+                    widget.onPlatformViewCreated(YieldloveAdController(id));
                   }
                 },
                 gestureRecognizers: widget.gestureRecognizers,
@@ -111,7 +111,7 @@ class YieldloveAdController {
   }
 
   final MethodChannel _channel;
-  AdEventListener? listener;
+  AdEventListener listener;
 
   Future<void> showAd() async {
     return _channel.invokeMethod('showAd');
@@ -125,7 +125,7 @@ class YieldloveAdController {
     assert(call.arguments is Map);
     final Map<dynamic, dynamic> argumentsMap = call.arguments;
 
-    final int? id = argumentsMap['id'];
+    final int id = argumentsMap['id'];
 
     switch (call.method) {
       case 'onAdEvent':

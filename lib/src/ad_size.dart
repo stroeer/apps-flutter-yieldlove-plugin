@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
+
 class AdSize {
   const AdSize({
-    required this.width,
-    required this.height
+    @required this.width,
+    @required this.height
   });
 
   final int width;
