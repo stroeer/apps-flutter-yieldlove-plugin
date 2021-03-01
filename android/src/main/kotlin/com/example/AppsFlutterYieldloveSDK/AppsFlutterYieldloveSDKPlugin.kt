@@ -46,7 +46,7 @@ class AppsFlutterYieldloveSDKPlugin: FlutterPlugin, MethodCallHandler, ActivityA
   }
 
   companion object {
-    const val TAG = "tomo-app-ad"
+    const val TAG = "yieldlove-app"
 
     fun registerWith(registrar: Registrar) {
       registrar

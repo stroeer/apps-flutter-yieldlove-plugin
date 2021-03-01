@@ -1,4 +1,3 @@
-import 'package:AppsFlutterYieldloveSDK/src/ad_size.dart';
 import 'package:flutter/foundation.dart';
 
 class AdCreationParams {

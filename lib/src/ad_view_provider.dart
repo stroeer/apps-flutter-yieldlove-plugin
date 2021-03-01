@@ -8,7 +8,6 @@ import 'package:flutter/widgets.dart';
 import 'package:AppsFlutterYieldloveSDK/src/ad_creation_params.dart';
 
 export 'package:AppsFlutterYieldloveSDK/src/ad_creation_params.dart';
-export 'package:AppsFlutterYieldloveSDK/src/ad_size.dart';
 
 class YieldloveAdView extends StatefulWidget {
 
