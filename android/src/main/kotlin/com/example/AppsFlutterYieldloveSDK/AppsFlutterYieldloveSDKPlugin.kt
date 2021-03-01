@@ -1,8 +1,11 @@
 package com.example.AppsFlutterYieldloveSDK
 
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.WindowManager
 import androidx.annotation.NonNull
 import com.yieldlove.adIntegration.Yieldlove
+import com.yieldlove.adIntegration.YieldloveConsent
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -46,7 +49,7 @@ class AppsFlutterYieldloveSDKPlugin: FlutterPlugin, MethodCallHandler, ActivityA
   }
 
   companion object {
-    const val TAG = "tomo-app-ad"
+    const val TAG = "yieldlove-app"
 
     fun registerWith(registrar: Registrar) {
       registrar
