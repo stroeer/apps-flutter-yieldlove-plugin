@@ -3,7 +3,6 @@ package com.example.AppsFlutterYieldloveSDK
 import android.util.Log
 import androidx.annotation.NonNull
 import com.example.AppsFlutterYieldloveSDK.ad_view.NativeAdViewFactory
-import com.example.AppsFlutterYieldloveSDK.consent.NativeConsentViewFactory
 import com.yieldlove.adIntegration.Yieldlove
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -62,12 +61,6 @@ class AppsFlutterYieldloveSDKPlugin: FlutterPlugin, MethodCallHandler, ActivityA
             .getRegistry()
             .registerViewFactory("de.stroeer.plugins/yieldlove_ad_view",
                     NativeAdViewFactory(messenger,  /*containerView=*/null))
-
-    binding.getFlutterEngine()
-            .getPlatformViewsController()
-            .getRegistry()
-            .registerViewFactory("de.stroeer.plugins/consent_view",
-                    NativeConsentViewFactory(messenger,  /*containerView=*/null))
     
     channel = MethodChannel(binding.binaryMessenger, "AppsFlutterYieldloveSDK")
     channel.setMethodCallHandler(this)
@@ -82,7 +75,6 @@ class AppsFlutterYieldloveSDKPlugin: FlutterPlugin, MethodCallHandler, ActivityA
   override fun onAttachedToActivity(binding: ActivityPluginBinding) {
     Log.v(TAG, "onAttachedToActivity")
     AdPlatformView.activity = binding.activity
-    ConsentPlatformView.activity = binding.activity
     InterstitialHolder.activity = binding.activity
     //MobileAds.initialize(binding.activity)
     // Your plugin is now associated with an Android Activity.
