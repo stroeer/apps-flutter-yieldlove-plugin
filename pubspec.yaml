@@ -11,6 +11,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  sourcepoint_cmp: ^0.0.2
+  http: ^0.12.2
 
 dev_dependencies:
   flutter_test:

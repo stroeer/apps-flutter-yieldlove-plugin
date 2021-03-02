@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:AppsFlutterYieldloveSDK/YieldloveWrapper.dart';
-import 'package:sourcepoint_cmp/sourcepoint_cmp.dart';
 
 // example data for yieldlove
 /*const val YIELDLOVE_ACCOUNT_ID = "promoqui"
@@ -19,8 +18,8 @@ const appId = 't-online_wetter_flutter';
 //const bannerAdId = 'banner';
 const bannerAdId = 'start_b4';
 
-const interstitialAdId = 'interstitial';
-//const interstitialAdId = 'appstart_int';
+//const interstitialAdId = 'interstitial';
+const interstitialAdId = 'appstart_int';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,36 +47,10 @@ class MyApp extends StatelessWidget {
 }
 
 
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends StatelessWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
   final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-
-  SourcepointCmp _sourcepointCmp;
-
-  @override
-  void initState() {
-    // http://cdn.stroeerdigitalgroup.de/sdk/live/t-online_wetter_flutter/config.json
-    _sourcepointCmp = SourcepointCmp(
-        accountId: 375, // always the same for Ströer
-        propertyId: 10452,
-        propertyName: "android.app.wetter.info",
-        pmId: "179267",
-        onConsentReady: () {
-          print('consentReady');
-        },
-        onError: (errorCode) {
-          print('consentError: errorCode:$errorCode');
-        });
-
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,14 +100,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
                         RaisedButton(
                           onPressed: () {
-                            _sourcepointCmp.load();
-
-                            YieldloveWrapper.instance.
-
-                            //_sourcepointCmp.showPM();
-
-                            //YieldloveWrapper.instance.showConsent();
-
+                            //YieldloveWrapper.instance.showConsentDialog();
+                            YieldloveWrapper.instance.showConsentPrivacyManager();
                           },
                           child: Text("Show consent dialog")
                         ),
