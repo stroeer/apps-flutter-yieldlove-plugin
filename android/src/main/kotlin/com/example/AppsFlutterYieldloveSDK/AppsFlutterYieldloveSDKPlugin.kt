@@ -17,8 +17,13 @@ import java.lang.Exception
 /** AppsFlutterYieldloveSDKPlugin */
 class AppsFlutterYieldloveSDKPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
-  override fun onMethodCall(call: MethodCall, result: Result) {
+  companion object {
+    const val TAG = "yieldlove-app"
+  }
 
+  private lateinit var channel : MethodChannel
+
+  override fun onMethodCall(call: MethodCall, result: Result) {
     when (call.method) {
       "initialize" -> callInitialize(call, result)
       "loadInterstitialAd" -> callInterstitialLoad(call, result)
@@ -44,13 +49,6 @@ class AppsFlutterYieldloveSDKPlugin: FlutterPlugin, MethodCallHandler, ActivityA
   private fun callInterstitialLoad(call: MethodCall, result: Result) {
     InterstitialHolder.delegateMethodCall(call, result)
   }
-
-  companion object {
-    const val TAG = "yieldlove-app"
-  }
-
-
-  private lateinit var channel : MethodChannel
 
   override fun onAttachedToEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
     Log.v(TAG, "onAttachedToEngine")

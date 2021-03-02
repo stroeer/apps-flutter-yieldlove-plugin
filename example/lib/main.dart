@@ -82,7 +82,8 @@ class MyHomePage extends StatelessWidget {
                         Text('Load interstitial ad with id "$interstitialAdId":'),
                         RaisedButton(
                           onPressed: () {
-                            YieldloveWrapper.instance.showInterstitial(adUnitId: interstitialAdId);
+                            YieldloveWrapper.instance
+                                .showInterstitial(adUnitId: interstitialAdId);
                           },
                           child: Text("Show interstitial"),
                         ),

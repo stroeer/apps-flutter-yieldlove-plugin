@@ -1,5 +1,6 @@
 package com.example.AppsFlutterYieldloveSDK
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -11,6 +12,7 @@ import com.yieldlove.adIntegration.AdFormats.YieldloveInterstitialAdView
 import com.yieldlove.adIntegration.AdUnit.YieldloveAdUnit
 import com.yieldlove.adIntegration.exceptions.YieldloveException
 
+@SuppressLint("StaticFieldLeak")
 object InterstitialHolder {
 
     var interstitialView: YieldloveInterstitialAdView? = null
