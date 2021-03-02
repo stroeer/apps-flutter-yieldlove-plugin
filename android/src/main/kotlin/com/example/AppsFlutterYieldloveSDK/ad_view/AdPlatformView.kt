@@ -13,18 +13,18 @@ import io.flutter.plugin.platform.PlatformView
 import java.util.*
 
 
-class YieldlovePlatformView internal constructor(context: Context?,
-                                                 messenger: BinaryMessenger?,
-                                                 val id: Int,
-                                                 params: Map<String, Any>?,
-                                                 containerView: View?)
+class AdPlatformView internal constructor(context: Context?,
+                                          messenger: BinaryMessenger?,
+                                          val id: Int,
+                                          params: Map<String, Any>?,
+                                          containerView: View?)
     : PlatformView, MethodCallHandler {
 
     companion object {
         var activity: Activity? = null
     }
 
-    private var tomoAdView: TomoAdView? = null
+    private var adView: AdView? = null
     private var methodChannel: MethodChannel? = null
     private var platformThreadHandler: Handler? = null
 
@@ -52,7 +52,7 @@ class YieldlovePlatformView internal constructor(context: Context?,
             )
         }
 
-        tomoAdView = createAdView(
+        adView = createAdView(
                 context,
                 Ad(adId, adKeyword, customTargeting),
                 adContentUrl,
@@ -70,9 +70,9 @@ class YieldlovePlatformView internal constructor(context: Context?,
                              contentUrl: String?,
                              isRelease: Boolean = false,
                              useTestAds: Boolean = false
-    ): TomoAdView? {
+    ): AdView? {
         if (context1 == null) return null
-        return TomoAdView(
+        return AdView(
                 context = context1,
                 visible = View.VISIBLE,
                 backgroundColorRes = R.color.moduleBackground
@@ -94,7 +94,7 @@ class YieldlovePlatformView internal constructor(context: Context?,
     }
 
     override fun getView(): View? {
-        return tomoAdView
+        return adView
     }
 
     override fun onMethodCall(methodCall: MethodCall, result: MethodChannel.Result) {
@@ -107,18 +107,18 @@ class YieldlovePlatformView internal constructor(context: Context?,
 
     private fun showAd(methodCall: MethodCall, result: MethodChannel.Result) {
         // val text = methodCall.arguments as String
-        tomoAdView?.loadAd(activity)
-        tomoAdView?.show()
+        adView?.loadAd(activity)
+        adView?.show()
         result.success(true)
     }
 
     private fun hideAd(methodCall: MethodCall, result: MethodChannel.Result) {
-        tomoAdView?.hide()
+        adView?.hide()
         result.success(true)
     }
 
     override fun dispose() {
-        tomoAdView = null
+        adView = null
         methodChannel = null
         platformThreadHandler = null
     }

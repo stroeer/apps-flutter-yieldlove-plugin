@@ -25,7 +25,7 @@ import com.yieldlove.adIntegration.Yieldlove
 import com.yieldlove.adIntegration.exceptions.YieldloveException
 
 
-class TomoAdView : ConstraintLayout, AdLongClickListener {
+class AdView : ConstraintLayout, AdLongClickListener {
 
     @LayoutRes
     private val layout: Int = R.layout.tomo_ad_view

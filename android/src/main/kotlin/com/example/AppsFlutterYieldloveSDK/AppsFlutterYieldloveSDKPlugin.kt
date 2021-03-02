@@ -2,6 +2,7 @@ package com.example.AppsFlutterYieldloveSDK
 
 import android.util.Log
 import androidx.annotation.NonNull
+import com.example.AppsFlutterYieldloveSDK.ad_view.NativeAdViewFactory
 import com.yieldlove.adIntegration.Yieldlove
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -11,7 +12,6 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.plugin.common.PluginRegistry.Registrar
 import java.lang.Exception
 
 /** AppsFlutterYieldloveSDKPlugin */
@@ -47,15 +47,6 @@ class AppsFlutterYieldloveSDKPlugin: FlutterPlugin, MethodCallHandler, ActivityA
 
   companion object {
     const val TAG = "yieldlove-app"
-
-    fun registerWith(registrar: Registrar) {
-      registrar
-              .platformViewRegistry()
-              .registerViewFactory(
-                      "de.stroeer.plugins/yieldlove_ad_view",
-                      NativeViewFactory(registrar.messenger(), registrar.view())
-              )
-    }
   }
 
 
@@ -69,7 +60,13 @@ class AppsFlutterYieldloveSDKPlugin: FlutterPlugin, MethodCallHandler, ActivityA
             .getPlatformViewsController()
             .getRegistry()
             .registerViewFactory("de.stroeer.plugins/yieldlove_ad_view",
-                    NativeViewFactory(messenger,  /*containerView=*/null))
+                    NativeAdViewFactory(messenger,  /*containerView=*/null))
+
+    binding.getFlutterEngine()
+            .getPlatformViewsController()
+            .getRegistry()
+            .registerViewFactory("de.stroeer.plugins/consent_view",
+                    NativeAdViewFactory(messenger,  /*containerView=*/null))
     channel = MethodChannel(binding.binaryMessenger, "AppsFlutterYieldloveSDK")
     channel.setMethodCallHandler(this)
   }
@@ -82,7 +79,7 @@ class AppsFlutterYieldloveSDKPlugin: FlutterPlugin, MethodCallHandler, ActivityA
 
   override fun onAttachedToActivity(binding: ActivityPluginBinding) {
     Log.v(TAG, "onAttachedToActivity")
-    YieldlovePlatformView.activity = binding.activity
+    AdPlatformView.activity = binding.activity
     InterstitialHolder.activity = binding.activity
     //MobileAds.initialize(binding.activity)
     // Your plugin is now associated with an Android Activity.
