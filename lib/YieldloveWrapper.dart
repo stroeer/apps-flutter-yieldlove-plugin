@@ -1,4 +1,5 @@
 export 'src/ad_view_provider.dart';
+export 'src/consent_provider.dart';
 
 import 'dart:async';
 import 'package:flutter/foundation.dart';
