@@ -27,13 +27,13 @@ class YieldloveWrapper {
 
   YieldloveWrapper.private(MethodChannel channel) : _channel = channel;
 
-  String? appId;
+  String appId;
 
-  SourcepointCmp? _sourcepointCmp;
+  SourcepointCmp _sourcepointCmp;
 
-  ConsentListener? _listener;
+  ConsentListener _listener;
 
-  Future<SourcepointCmp?> _loadAdConfig() async {
+  Future<SourcepointCmp> _loadAdConfig() async {
     if (_sourcepointCmp != null) {
       return _sourcepointCmp;
     }
@@ -43,9 +43,9 @@ class YieldloveWrapper {
 
     var propertyId = 10452;
 
-    String? propertyName = 'android.app.wetter.info';
+    var propertyName = 'android.app.wetter.info';
 
-    String? privacyManagerId = '179267';
+    var privacyManagerId = '179267';
 
     var response = await http.get(_yieldloveConfigUrl());
     if (response.statusCode == 200) {
@@ -65,8 +65,8 @@ class YieldloveWrapper {
     _sourcepointCmp = SourcepointCmp(
         accountId: sourcepointAccountId,
         propertyId: propertyId,
-        propertyName: propertyName!,
-        pmId: privacyManagerId!,
+        propertyName: propertyName,
+        pmId: privacyManagerId,
         onConsentUIReady: () {
           _listener?.onConsentUIReady();
         },
@@ -80,7 +80,7 @@ class YieldloveWrapper {
           print('consentReady');
           _listener?.onConsentGiven(consent);
         },
-        onError: (String? errorCode) {
+        onError: (String errorCode) {
           print('consentError: errorCode:$errorCode');
           _listener?.onError(errorCode);
         },
@@ -92,23 +92,23 @@ class YieldloveWrapper {
 
   Uri _yieldloveConfigUrl() => Uri.parse('https://cdn.stroeerdigitalgroup.de/sdk/live/$appId/config.json');
 
-  void showConsentDialog({ConsentListener? listener}) async {
+  void showConsentDialog({ConsentListener listener}) async {
     this._listener = listener;
 
     await _loadAdConfig();
-    _sourcepointCmp!.load();
+    _sourcepointCmp.load();
   }
 
-  void showConsentPrivacyManager({ConsentListener? listener}) async {
+  void showConsentPrivacyManager({ConsentListener listener}) async {
     this._listener = listener;
 
     await _loadAdConfig();
-    _sourcepointCmp!.showPM();
+    _sourcepointCmp.showPM();
   }
 
-  Future<bool?> initialize(
-      {required String appId,
-        String? trackingId,
+  Future<bool> initialize(
+      {@required String appId,
+        String trackingId,
         bool analyticsEnabled = false}) async {
     assert(appId.isNotEmpty);
 
@@ -121,9 +121,9 @@ class YieldloveWrapper {
     });
   }
 
-  Future<bool?> showInterstitial(
-      {required String adUnitId,
-        String? trackingId,
+  Future<bool> showInterstitial(
+      {@required String adUnitId,
+        String trackingId,
         bool analyticsEnabled = false}) {
     assert(adUnitId.isNotEmpty);
     return _invokeBooleanMethod("loadInterstitialAd", <String, dynamic>{
@@ -134,8 +134,8 @@ class YieldloveWrapper {
 }
 
 
-Future<bool?> _invokeBooleanMethod(String method, [dynamic arguments]) async {
-  final bool? result = await YieldloveWrapper.instance._channel.invokeMethod<bool>(
+Future<bool> _invokeBooleanMethod(String method, [dynamic arguments]) async {
+  final bool result = await YieldloveWrapper.instance._channel.invokeMethod<bool>(
     method,
     arguments,
   );
