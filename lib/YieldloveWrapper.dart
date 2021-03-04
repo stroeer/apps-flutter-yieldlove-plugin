@@ -76,7 +76,7 @@ class YieldloveWrapper {
         onAction: (ActionType actionType) {
           _listener?.onAction(actionType);
         },
-        onConsentReady: (GDPRUserConsent consent) {
+        onConsentReady: ({GDPRUserConsent consent} ) {
           print('consentReady');
           _listener?.onConsentGiven(consent);
         },
