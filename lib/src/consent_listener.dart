@@ -5,7 +5,7 @@ abstract class ConsentListener {
 
   void onConsentGiven(GDPRUserConsent consent) {}
 
-  void onError(String? errorMessage) {}
+  void onError(String errorMessage) {}
 
   void onConsentUIReady() {}
 

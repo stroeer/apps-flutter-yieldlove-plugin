@@ -12,15 +12,15 @@ import 'package:AppsFlutterYieldloveSDK/src/ad_creation_params.dart';
 class YieldloveConsentView extends StatefulWidget {
 
   const YieldloveConsentView({
-    Key? key,
+    Key key,
     this.gestureRecognizers,
-    required this.adParamsParcel,
+    @required this.adParamsParcel,
     this.onPlatformViewCreated,
   }) : super(key: key);
 
   final AdCreationParams adParamsParcel;
-  final Function? onPlatformViewCreated;
-  final Set<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers;
+  final Function onPlatformViewCreated;
+  final Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers;
 
   @override
   State<StatefulWidget> createState() => _YieldloveConsentViewState();
@@ -32,7 +32,7 @@ class _YieldloveConsentViewState extends State<YieldloveConsentView> {
 
   @override
   Widget build(BuildContext context) {
-    final double? height = widget.adParamsParcel?.getOptimalHeight();
+    final double height = widget.adParamsParcel?.getOptimalHeight();
     if (Platform.isAndroid) {
       return GestureDetector(
         // intercept long press event.
@@ -48,7 +48,7 @@ class _YieldloveConsentViewState extends State<YieldloveConsentView> {
                 viewType: 'de.stroeer.plugins/consent_view',
                 onPlatformViewCreated: (int id) {
                   if (widget.onPlatformViewCreated != null) {
-                    widget.onPlatformViewCreated!(YieldloveConsentController(id));
+                    widget.onPlatformViewCreated(YieldloveConsentController(id));
                   }
                 },
                 gestureRecognizers: widget.gestureRecognizers,
@@ -75,7 +75,7 @@ class _YieldloveConsentViewState extends State<YieldloveConsentView> {
                 viewType: 'de.stroeer.plugins/consent_view',
                 onPlatformViewCreated: (int id) {
                   if (widget.onPlatformViewCreated != null) {
-                    widget.onPlatformViewCreated!(YieldloveConsentController(id));
+                    widget.onPlatformViewCreated(YieldloveConsentController(id));
                   }
                 },
                 gestureRecognizers: widget.gestureRecognizers,
@@ -111,7 +111,7 @@ class YieldloveConsentController {
   }
 
   final MethodChannel _channel;
-  ConsentEventListener? listener;
+  ConsentEventListener listener;
 
   Future<void> showAd() async {
     return _channel.invokeMethod('showAd');
@@ -125,7 +125,7 @@ class YieldloveConsentController {
     assert(call.arguments is Map);
     final Map<dynamic, dynamic> argumentsMap = call.arguments;
 
-    final int? id = argumentsMap['id'];
+    final int id = argumentsMap['id'];
 
     switch (call.method) {
       case 'onAdEvent':
