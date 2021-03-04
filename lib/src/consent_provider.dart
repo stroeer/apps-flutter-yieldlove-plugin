@@ -32,7 +32,7 @@ class _YieldloveConsentViewState extends State<YieldloveConsentView> {
 
   @override
   Widget build(BuildContext context) {
-    final double height = widget.adParamsParcel?.getOptimalHeight();
+    final double? height = widget.adParamsParcel?.getOptimalHeight();
     if (Platform.isAndroid) {
       return GestureDetector(
         // intercept long press event.
