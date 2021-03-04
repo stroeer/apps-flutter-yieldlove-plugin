@@ -90,7 +90,7 @@ class YieldloveWrapper {
     return _sourcepointCmp;
   }
 
-  String _yieldloveConfigUrl() => 'https://cdn.stroeerdigitalgroup.de/sdk/live/$appId/config.json';
+  Uri _yieldloveConfigUrl() => Uri.parse('https://cdn.stroeerdigitalgroup.de/sdk/live/$appId/config.json');
 
   void showConsentDialog({ConsentListener listener}) async {
     this._listener = listener;

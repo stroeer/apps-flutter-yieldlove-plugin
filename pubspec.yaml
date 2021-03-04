@@ -14,7 +14,7 @@ dependencies:
   sourcepoint_cmp: #^0.0.3
     git:
       url: https://github.com/stroeer/sourcepoint_cmp.git
-  http: ^0.12.2
+  http: ^0.13.0
 
 dev_dependencies:
   flutter_test:
