@@ -4,6 +4,8 @@ import 'dart:async';
 
 import 'package:AppsFlutterYieldloveSDK/YieldloveWrapper.dart';
 
+import 'custom_consent_listener.dart';
+
 // example data for yieldlove
 /*const val YIELDLOVE_ACCOUNT_ID = "promoqui"
     const val YIELDLOVE_PROPERTY_NAME = "inapp.ios.test"
@@ -52,6 +54,8 @@ class MyHomePage extends StatelessWidget {
 
   final String title;
 
+  final CustomConsentListener _consentListener = CustomConsentListener();
+
   @override
   Widget build(BuildContext context) {
     final adParams = AdCreationParams(
@@ -63,6 +67,7 @@ class MyHomePage extends StatelessWidget {
         adIsRelease: false,
         customTargeting: {"testKey": "testValue"}
     );
+
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
@@ -80,7 +85,7 @@ class MyHomePage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text('Load interstitial ad with id "$interstitialAdId":'),
-                        RaisedButton(
+                        ElevatedButton(
                           onPressed: () {
                             YieldloveWrapper.instance
                                 .showInterstitial(adUnitId: interstitialAdId);
@@ -99,12 +104,21 @@ class MyHomePage extends StatelessWidget {
                             }
                         ),
 
-                        RaisedButton(
+                        ElevatedButton(
                           onPressed: () {
-                            //YieldloveWrapper.instance.showConsentDialog();
-                            YieldloveWrapper.instance.showConsentPrivacyManager();
+                            YieldloveWrapper.instance.showConsentDialog(
+                              listener: _consentListener
+                            );
                           },
                           child: Text("Show consent dialog")
+                        ),
+                        ElevatedButton(
+                            onPressed: () {
+                              YieldloveWrapper.instance.showConsentPrivacyManager(
+                                listener: _consentListener
+                              );
+                            },
+                            child: Text("Show privacy manager")
                         ),
 
                         Expanded(child: Container()),

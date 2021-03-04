@@ -2,6 +2,7 @@ export 'src/ad_view_provider.dart';
 export 'src/consent_provider.dart';
 
 import 'dart:async';
+import 'package:AppsFlutterYieldloveSDK/src/consent_listener.dart';
 import 'package:AppsFlutterYieldloveSDK/src/extensions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +11,10 @@ import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
 
 import 'package:sourcepoint_cmp/sourcepoint_cmp.dart';
+
+export 'package:AppsFlutterYieldloveSDK/src/consent_listener.dart';
+export 'package:sourcepoint_cmp/action_type.dart';
+export 'package:sourcepoint_cmp/gdpr_user_consent.dart';
 
 class YieldloveWrapper {
 
@@ -25,6 +30,8 @@ class YieldloveWrapper {
   String appId;
 
   SourcepointCmp _sourcepointCmp;
+
+  ConsentListener _listener;
 
   Future<SourcepointCmp> _loadAdConfig() async {
     if (_sourcepointCmp != null) {
@@ -60,24 +67,41 @@ class YieldloveWrapper {
         propertyId: propertyId,
         propertyName: propertyName,
         pmId: privacyManagerId,
-        onConsentReady: () {
-          print('consentReady');
+        onConsentUIReady: () {
+          _listener?.onConsentUIReady();
         },
-        onError: (errorCode) {
+        onConsentUIFinished: () {
+          _listener?.onConsentUIFinished();
+        },
+        onAction: (ActionType actionType) {
+          _listener?.onAction(actionType);
+        },
+        onConsentReady: (GDPRUserConsent consent) {
+          print('consentReady');
+          _listener?.onConsentGiven(consent);
+        },
+        onError: (String errorCode) {
           print('consentError: errorCode:$errorCode');
-        });
+          _listener?.onError(errorCode);
+        },
+
+    );
 
     return _sourcepointCmp;
   }
 
   String _yieldloveConfigUrl() => 'https://cdn.stroeerdigitalgroup.de/sdk/live/$appId/config.json';
 
-  void showConsentDialog() async {
+  void showConsentDialog({ConsentListener listener}) async {
+    this._listener = listener;
+
     await _loadAdConfig();
     _sourcepointCmp.load();
   }
 
-  void showConsentPrivacyManager() async {
+  void showConsentPrivacyManager({ConsentListener listener}) async {
+    this._listener = listener;
+
     await _loadAdConfig();
     _sourcepointCmp.showPM();
   }
