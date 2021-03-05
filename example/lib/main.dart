@@ -4,22 +4,24 @@ import 'dart:async';
 
 import 'package:AppsFlutterYieldloveSDK/YieldloveWrapper.dart';
 
+import 'custom_consent_listener.dart';
+
 // example data for yieldlove
 /*const val YIELDLOVE_ACCOUNT_ID = "promoqui"
     const val YIELDLOVE_PROPERTY_NAME = "inapp.ios.test"
     const val YIELDLOVE_PROPERTY_ID = 6960
     const val YIELDLOVE_PRIVACY_MANAGER_ID = "114323"*/
 
-const appId = "appDfpTest";
+//const appId = "appDfpTest";
 //const appId = 'promoqui';
-//const appId = 't-online_wetter_flutter';
+const appId = 't-online_wetter_flutter';
 //const appId = 't-online_wetter';
 
-const bannerAdId = 'banner';
-//const bannerAdId = 'start_b4';
+//const bannerAdId = 'banner';
+const bannerAdId = 'start_b4';
 
-const interstitialAdId = 'interstitial';
-//const interstitialAdId = 'appstart_int';
+//const interstitialAdId = 'interstitial';
+const interstitialAdId = 'appstart_int';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,6 +54,8 @@ class MyHomePage extends StatelessWidget {
 
   final String title;
 
+  final CustomConsentListener _consentListener = CustomConsentListener();
+
   @override
   Widget build(BuildContext context) {
     final adParams = AdCreationParams(
@@ -63,6 +67,7 @@ class MyHomePage extends StatelessWidget {
         adIsRelease: false,
         customTargeting: {"testKey": "testValue"}
     );
+
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
@@ -80,9 +85,10 @@ class MyHomePage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text('Load interstitial ad with id "$interstitialAdId":'),
-                        RaisedButton(
+                        ElevatedButton(
                           onPressed: () {
-                            YieldloveWrapper.instance.showInterstitial(adUnitId: interstitialAdId);
+                            YieldloveWrapper.instance
+                                .showInterstitial(adUnitId: interstitialAdId);
                           },
                           child: Text("Show interstitial"),
                         ),
@@ -96,6 +102,23 @@ class MyHomePage extends StatelessWidget {
                               };
                               controller.showAd();
                             }
+                        ),
+
+                        ElevatedButton(
+                          onPressed: () {
+                            YieldloveWrapper.instance.showConsentDialog(
+                              listener: _consentListener
+                            );
+                          },
+                          child: Text("Show consent dialog")
+                        ),
+                        ElevatedButton(
+                            onPressed: () {
+                              YieldloveWrapper.instance.showConsentPrivacyManager(
+                                listener: _consentListener
+                              );
+                            },
+                            child: Text("Show privacy manager")
                         ),
 
                         Expanded(child: Container()),

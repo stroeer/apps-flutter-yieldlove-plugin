@@ -16,7 +16,7 @@ For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
-## Integration steps
+## Showing ads
 
 Import the preview lib to your `pubspec.yaml`:
 ```yaml
@@ -58,4 +58,21 @@ YieldloveAdView(
     controller.showAd();
   }
 )
+```
+
+## Showing consent
+
+Optionally create `ConsentListener`, e.g. for tracking events or getting the consent string.
+
+```
+YieldloveWrapper.instance.showConsentDialog(
+  listener: _consentListener
+);
+```
+
+
+```
+YieldloveWrapper.instance.showConsentPrivacyManager(
+  listener: _consentListener
+);
 ```
