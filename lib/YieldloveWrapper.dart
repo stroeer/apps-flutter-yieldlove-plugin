@@ -2,7 +2,6 @@ export 'src/ad_view_provider.dart';
 export 'src/consent_provider.dart';
 
 import 'dart:async';
-import 'package:AppsFlutterYieldloveSDK/src/consent_listener.dart';
 import 'package:AppsFlutterYieldloveSDK/src/extensions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -12,7 +11,6 @@ import 'package:http/http.dart' as http;
 
 import 'package:sourcepoint_cmp/sourcepoint_cmp.dart';
 
-export 'package:AppsFlutterYieldloveSDK/src/consent_listener.dart';
 export 'package:sourcepoint_cmp/action_type.dart';
 export 'package:sourcepoint_cmp/gdpr_user_consent.dart';
 
@@ -31,7 +29,11 @@ class YieldloveWrapper {
 
   SourcepointCmp _sourcepointCmp;
 
-  ConsentListener _listener;
+  void Function() _onConsentUIReady;
+  void Function() _onConsentUIFinished;
+  void Function(ActionType) _onAction;
+  void Function(GDPRUserConsent consent) _onConsentGiven;
+  void Function(String errorCode) _onError;
 
   Future<SourcepointCmp> _loadAdConfig() async {
     if (_sourcepointCmp != null) {
@@ -45,7 +47,7 @@ class YieldloveWrapper {
 
     var propertyName = 'android.app.wetter.info';
 
-    var privacyManagerId = '179267';
+    var privacyManagerId = '305923';
 
     var response = await http.get(_yieldloveConfigUrl());
     if (response.statusCode == 200) {
@@ -68,23 +70,22 @@ class YieldloveWrapper {
         propertyName: propertyName,
         pmId: privacyManagerId,
         onConsentUIReady: () {
-          _listener?.onConsentUIReady();
+          if (_onConsentUIReady != null) _onConsentUIReady();
         },
         onConsentUIFinished: () {
-          _listener?.onConsentUIFinished();
+          if (_onConsentUIFinished != null) _onConsentUIFinished();
         },
         onAction: (ActionType actionType) {
-          _listener?.onAction(actionType);
+          if (_onAction != null) _onAction(actionType);
         },
-        onConsentReady: ({GDPRUserConsent consent} ) {
+        onConsentReady: (GDPRUserConsent consent) { //({GDPRUserConsent consent}) {
           print('consentReady');
-          _listener?.onConsentGiven(consent);
+          if (_onConsentGiven != null) _onConsentGiven(consent);
         },
         onError: (String errorCode) {
           print('consentError: errorCode:$errorCode');
-          _listener?.onError(errorCode);
+          if (_onError != null) _onError(errorCode);
         },
-
     );
 
     return _sourcepointCmp;
@@ -92,15 +93,35 @@ class YieldloveWrapper {
 
   Uri _yieldloveConfigUrl() => Uri.parse('https://cdn.stroeerdigitalgroup.de/sdk/live/$appId/config.json');
 
-  void showConsentDialog({ConsentListener listener}) async {
-    this._listener = listener;
+  void showConsentDialog({
+    void Function() onConsentUIReady,
+    void Function() onConsentUIFinished,
+    void Function(ActionType) onAction,
+    void Function(GDPRUserConsent consent) onConsentGiven,
+    void Function(String errorCode) onError
+  }) async {
+    this._onConsentUIReady = onConsentUIReady;
+    this._onConsentUIFinished = onConsentUIFinished;
+    this._onAction = onAction;
+    this._onConsentGiven = onConsentGiven;
+    this._onError = onError;
 
     await _loadAdConfig();
     _sourcepointCmp.load();
   }
 
-  void showConsentPrivacyManager({ConsentListener listener}) async {
-    this._listener = listener;
+  void showConsentPrivacyManager({
+    void Function() onConsentUIReady,
+    void Function() onConsentUIFinished,
+    void Function(ActionType) onAction,
+    void Function(GDPRUserConsent consent) onConsentGiven,
+    void Function(String errorCode) onError
+  }) async {
+    this._onConsentUIReady = onConsentUIReady;
+    this._onConsentUIFinished = onConsentUIFinished;
+    this._onAction = onAction;
+    this._onConsentGiven = onConsentGiven;
+    this._onError = onError;
 
     await _loadAdConfig();
     _sourcepointCmp.showPM();
