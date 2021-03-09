@@ -4,8 +4,6 @@ import 'dart:async';
 
 import 'package:AppsFlutterYieldloveSDK/YieldloveWrapper.dart';
 
-import 'custom_consent_listener.dart';
-
 // example data for yieldlove
 /*const val YIELDLOVE_ACCOUNT_ID = "promoqui"
     const val YIELDLOVE_PROPERTY_NAME = "inapp.ios.test"
@@ -53,8 +51,6 @@ class MyHomePage extends StatelessWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
   final String title;
-
-  final CustomConsentListener _consentListener = CustomConsentListener();
 
   @override
   Widget build(BuildContext context) {
@@ -106,17 +102,13 @@ class MyHomePage extends StatelessWidget {
 
                         ElevatedButton(
                           onPressed: () {
-                            YieldloveWrapper.instance.showConsentDialog(
-                              listener: _consentListener
-                            );
+                            YieldloveWrapper.instance.showConsentDialog();
                           },
                           child: Text("Show consent dialog")
                         ),
                         ElevatedButton(
                             onPressed: () {
-                              YieldloveWrapper.instance.showConsentPrivacyManager(
-                                listener: _consentListener
-                              );
+                              YieldloveWrapper.instance.showConsentPrivacyManager();
                             },
                             child: Text("Show privacy manager")
                         ),
