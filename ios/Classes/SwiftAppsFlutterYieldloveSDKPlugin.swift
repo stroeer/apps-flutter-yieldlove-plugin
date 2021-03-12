@@ -152,14 +152,10 @@ public class YieldloveView: NSObject, FlutterPlatformView {
     public func view() -> UIView {
         let screenRect = UIScreen.main.bounds
         let screenWidth = screenRect.size.width
-        let adWidth = YieldloveView.adView.frame.size.width
-        let adPositionX = (adWidth / 2) + (adWidth - 320) / 2 
-        if !adIsRelease {
-            print("YL: get view. ad width = \(adWidth), screen width = \(screenWidth), adPositionX = \(adPositionX)")
-        }
+        let adPositionX = (screenWidth - 320) / 2
         YieldloveView.adView.center = CGPoint(
             x: adPositionX,
-            y: YieldloveView.adView.frame.size.height / 2
+            y: 0
         )
         return YieldloveView.adView
     }
