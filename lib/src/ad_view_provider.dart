@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:AppsFlutterYieldloveSDK/src/ad_creation_params.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 export 'package:AppsFlutterYieldloveSDK/src/ad_creation_params.dart';
 
@@ -29,6 +30,8 @@ class YieldloveAdView extends StatefulWidget {
 
 class _YieldloveAdViewState extends State<YieldloveAdView> {
   final UniqueKey _key = UniqueKey();
+
+  bool showAdIos = false;
 
   @override
   Widget build(BuildContext context) {
@@ -60,30 +63,42 @@ class _YieldloveAdViewState extends State<YieldloveAdView> {
         ),
       );
     } else if (Platform.isIOS) {
-      return GestureDetector(
-        // intercept long press event.
-        onLongPress: () {},
-        excludeFromSemantics: true,
-        child: Column(
-          children: [
-            SizedBox(
-              width: double.infinity,
-              height: widget.adParamsParcel?.getOptimalHeight(),
-              child: UiKitView(
-                key: _key,
-                viewType: 'de.stroeer.plugins/yieldlove_ad_view',
-                onPlatformViewCreated: (int id) {
-                  if (widget.onPlatformViewCreated != null) {
-                    widget.onPlatformViewCreated(YieldloveAdController(id));
-                  }
-                },
-                gestureRecognizers: widget.gestureRecognizers,
-                layoutDirection: TextDirection.rtl,
-                creationParams: widget.adParamsParcel?.toMap(),
-                creationParamsCodec: const StandardMessageCodec(),
+      return VisibilityDetector(
+        key: ValueKey(widget.adParamsParcel.adId),
+        onVisibilityChanged: (visibilityInfo) {
+          var visiblePercentage = visibilityInfo.visibleFraction * 100;
+          setState(() {
+            final bool isVisible = visiblePercentage > 0;
+            if (showAdIos != isVisible) {
+              showAdIos = isVisible;
+            }
+          });
+        },
+        child: GestureDetector(
+          // intercept long press event.
+          onLongPress: () {},
+          excludeFromSemantics: true,
+          child: Column(
+            children: [
+              SizedBox(
+                width: double.infinity,
+                height: widget.adParamsParcel?.getOptimalHeight(),
+                child: !showAdIos ? Container() : UiKitView(
+                  key: _key,
+                  viewType: 'de.stroeer.plugins/yieldlove_ad_view',
+                  onPlatformViewCreated: (int id) {
+                    if (widget.onPlatformViewCreated != null) {
+                      widget.onPlatformViewCreated(YieldloveAdController(id));
+                    }
+                  },
+                  gestureRecognizers: widget.gestureRecognizers,
+                  layoutDirection: TextDirection.rtl,
+                  creationParams: widget.adParamsParcel?.toMap(),
+                  creationParamsCodec: const StandardMessageCodec(),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
     } else {
