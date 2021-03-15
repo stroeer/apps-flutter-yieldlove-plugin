@@ -20,6 +20,9 @@ class AdCreationParams {
   /// define the height of the ad (dynamic height is not supported yet)
   final double optimalHeight;
 
+  /// define the width of the ad (only required for ios, otherwise not centered)
+  final double optimalWidth;
+
   final Map<String, String> customTargeting;
 
   AdCreationParams({
@@ -27,6 +30,7 @@ class AdCreationParams {
     this.adKeyword,
     this.adContentUrl,
     this.optimalHeight,
+    this.optimalWidth,
     this.useTestAds = false,
     this.adIsRelease = false,
     this.customTargeting = const {}
@@ -53,6 +57,8 @@ class AdCreationParams {
     'rubrik_b5': [AdSize(width: 37, height: 31), AdSize(width: 37, height: 35)],
     'm.app.dev.test/start_b1': [AdSize(width: 320, height: 75), AdSize(width: 37, height: 31)]
   };*/
+
+  double getOptimalWidth() => optimalWidth ?? adId.contains('b1') ? 300 : 320;
 
   double getOptimalHeight() => optimalHeight ?? 250;
 }

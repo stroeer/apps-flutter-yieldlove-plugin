@@ -60,7 +60,11 @@ public class YieldloveViewFactory: NSObject, FlutterPlatformViewFactory {
         self.registrar = registrar
     }
     
-    public func create(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?) -> FlutterPlatformView {
+    public func create(
+        withFrame frame: CGRect,
+        viewIdentifier viewId: Int64,
+        arguments args: Any?
+    ) -> FlutterPlatformView {
         return YieldloveView(
             frame,
             viewId: viewId,
@@ -156,16 +160,13 @@ public class YieldloveView: NSObject, FlutterPlatformView {
         let adPositionX = (screenWidth - 320) / 2
 
         // TODO: Use optimal width (like optimal height)
-        //let view = UIView(frame: CGRect(
-        //                    x: 0,
-        //                    y: 0, width: 100, height: 20))
-        //view.backgroundColor = .blue
+        let view = UIView(frame: CGRect(
+                            x: 0,
+                            y: 0, width: 100, height: 20))
+        view.backgroundColor = .blue
         //return view
         
-        YieldloveView.adView.center = CGPoint(
-            x: adPositionX,
-            y: 0
-        )
+        //YieldloveView.adView.center = CGPoint(x: adPositionX, y: 0)
         return YieldloveView.adView
     }
 }

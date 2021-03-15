@@ -103,7 +103,7 @@ class _YieldloveAdViewState extends VisibilityAwareState<YieldloveAdView> {
           child: Column(
             children: [
               SizedBox(
-                width: double.infinity,
+                width: widget.adParamsParcel?.getOptimalWidth(),
                 height: widget.adParamsParcel?.getOptimalHeight(),
                 child: !showAdIos ? Container() : UiKitView(
                   key: _key,
@@ -114,7 +114,7 @@ class _YieldloveAdViewState extends VisibilityAwareState<YieldloveAdView> {
                     }
                   },
                   gestureRecognizers: widget.gestureRecognizers,
-                  layoutDirection: TextDirection.rtl,
+                  layoutDirection: TextDirection.ltr,
                   creationParams: widget.adParamsParcel?.toMap(),
                   creationParamsCodec: const StandardMessageCodec(),
                 ),
