@@ -48,7 +48,7 @@ class _YieldloveAdViewState extends VisibilityAwareState<YieldloveAdView> {
         break;
       default:
         setState(() {
-          showAdIos = false;
+          //showAdIos = false;
         });
         break;
     }
@@ -85,13 +85,15 @@ class _YieldloveAdViewState extends VisibilityAwareState<YieldloveAdView> {
         ),
       );
     } else if (Platform.isIOS) {
+      final key = widget.adParamsParcel.adId;
       return VisibilityDetector(
-        key: ValueKey(widget.adParamsParcel.adId),
+        key: ValueKey(key),
         onVisibilityChanged: (visibilityInfo) {
           var visiblePercentage = visibilityInfo.visibleFraction * 100;
           setState(() {
             final bool isVisible = visiblePercentage > 0;
             if (showAdIos != isVisible) {
+              //print('showAdIos = $isVisible ($key)');
               showAdIos = isVisible;
             }
           });

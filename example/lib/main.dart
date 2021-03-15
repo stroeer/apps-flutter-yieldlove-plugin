@@ -63,6 +63,15 @@ class MyHomePage extends StatelessWidget {
         adIsRelease: false,
         customTargeting: {"testKey": "testValue"}
     );
+    final adParams2 = AdCreationParams(
+        adId: 'banner2',
+        optimalHeight: 100,
+        adKeyword: null,
+        adContentUrl: 'https://www.google.com',
+        useTestAds: false,
+        adIsRelease: false,
+        customTargeting: {"testKey": "testValue"}
+    );
 
     return MaterialApp(
       home: Scaffold(
@@ -75,12 +84,37 @@ class MyHomePage extends StatelessWidget {
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: IntrinsicHeight(
                   child: Padding(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(16),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text('Load interstitial ad with id "$interstitialAdId":'),
+                        _headline(context, 'Welcome to Yieldlove Wrapper SDK plugin for flutter!'),
+                        _paragraph('You launched the app with app id "$appId".'),
+                        _paragraph('Note, if you update the app id, deinstall the app and then install with new app id.',
+                          padding: const EdgeInsets.only(top: 4),
+                          style: TextStyle(fontStyle: FontStyle.italic)),
+                        _headline(context, 'Consent Management'),
+                        _paragraph('If an app should show personalized ads the '
+                            'user must give his consent. This plugin provides '
+                            'cmp features relying on the Sourcepoint SDK (not '
+                            'the Yieldlove wrapper SDK beyond).',
+                        ),
+                        ElevatedButton(
+                            onPressed: () {
+                              YieldloveWrapper.instance.showConsentDialog();
+                            },
+                            child: Text("Show consent dialog")
+                        ),
+                        ElevatedButton(
+                            onPressed: () {
+                              YieldloveWrapper.instance.showConsentPrivacyManager();
+                            },
+                            child: Text("Show privacy manager")
+                        ),
+
+                        _headline(context, 'Interstitial Ads'),
+                        _paragraph('Load interstitial ad with id "$interstitialAdId":'),
                         ElevatedButton(
                           onPressed: () {
                             YieldloveWrapper.instance
@@ -88,8 +122,17 @@ class MyHomePage extends StatelessWidget {
                           },
                           child: Text("Show interstitial"),
                         ),
-                        const SizedBox(height: 832),
-                        Text('Native ad with id "${adParams.adId}":'),
+
+                        Container(
+                          height: 332,
+                          color: Colors.black26,
+                          child: Center(
+                            child: Text('Placeholder'),
+                          ),
+                        ),
+
+                        _headline(context, 'Banner ads'),
+                        _paragraph('Native ad with id "${adParams.adId}"'),
                         YieldloveAdView(
                             adParamsParcel: adParams,
                             placedInsideScrollView: true,
@@ -100,18 +143,16 @@ class MyHomePage extends StatelessWidget {
                               controller.showAd();
                             }
                         ),
-
-                        ElevatedButton(
-                          onPressed: () {
-                            YieldloveWrapper.instance.showConsentDialog();
-                          },
-                          child: Text("Show consent dialog")
-                        ),
-                        ElevatedButton(
-                            onPressed: () {
-                              YieldloveWrapper.instance.showConsentPrivacyManager();
-                            },
-                            child: Text("Show privacy manager")
+                        _paragraph('And again: native ad with id "${adParams2.adId}"'),
+                        YieldloveAdView(
+                            adParamsParcel: adParams2,
+                            placedInsideScrollView: true,
+                            onPlatformViewCreated: (YieldloveAdController controller) {
+                              controller.listener = (YieldAdEvent event) {
+                                print("BannerAd event $event");
+                              };
+                              controller.showAd();
+                            }
                         ),
 
                         Expanded(child: Container()),
@@ -131,7 +172,24 @@ class MyHomePage extends StatelessWidget {
     );
   }
 
-  double getHeight(double screenHeight, BuildContext context, double size) {
-    return (MediaQuery.of(context).size.height / screenHeight) * size;
+  Widget _paragraph(String text, {TextStyle style, EdgeInsets padding}) {
+    return Padding(
+      padding: padding ?? const EdgeInsets.only(bottom: 4),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(text, style: style),
+      ),
+    );
+  }
+
+  Widget _headline(BuildContext context, String headline) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8, bottom: 4),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(headline,
+            style: Theme.of(context).textTheme.headline5),
+      ),
+    );
   }
 }
