@@ -48,7 +48,7 @@ class _YieldloveAdViewState extends VisibilityAwareState<YieldloveAdView> {
         break;
       default:
         setState(() {
-          //showAdIos = false;
+          showAdIos = false;
         });
         break;
     }
@@ -93,7 +93,7 @@ class _YieldloveAdViewState extends VisibilityAwareState<YieldloveAdView> {
           setState(() {
             final bool isVisible = visiblePercentage > 0;
             if (showAdIos != isVisible) {
-              //print('showAdIos = $isVisible ($key)');
+              print('showAdIos = $isVisible ($key), $visiblePercentage%');
               showAdIos = isVisible;
             }
           });
