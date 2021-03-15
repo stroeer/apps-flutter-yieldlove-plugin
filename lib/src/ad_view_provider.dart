@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:AppsFlutterYieldloveSDK/src/ad_creation_params.dart';
+import 'package:visibility_aware_state/visibility_aware_state.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 export 'package:AppsFlutterYieldloveSDK/src/ad_creation_params.dart';
@@ -17,21 +18,42 @@ class YieldloveAdView extends StatefulWidget {
     this.gestureRecognizers,
     @required this.adParamsParcel,
     this.onPlatformViewCreated,
+    this.placedInsideScrollView,
   }) : super(key: key);
 
   final AdCreationParams adParamsParcel;
   final Function onPlatformViewCreated;
   final Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers;
+  final bool placedInsideScrollView;
 
   @override
   State<StatefulWidget> createState() => _YieldloveAdViewState();
 
 }
 
-class _YieldloveAdViewState extends State<YieldloveAdView> {
+class _YieldloveAdViewState extends VisibilityAwareState<YieldloveAdView> {
   final UniqueKey _key = UniqueKey();
 
   bool showAdIos = false;
+
+  @override
+  void onVisibilityChanged(WidgetVisibility visibility) {
+    switch (visibility) {
+      case WidgetVisibility.VISIBLE:
+        if (!widget.placedInsideScrollView) {
+          setState(() {
+            showAdIos = true;
+          });
+        }
+        break;
+      default:
+        setState(() {
+          showAdIos = false;
+        });
+        break;
+    }
+    super.onVisibilityChanged(visibility);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,16 +126,6 @@ class _YieldloveAdViewState extends State<YieldloveAdView> {
     } else {
       throw UnsupportedError("Trying to use the default view implementation for $defaultTargetPlatform but there isn't a default one");
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void didUpdateWidget(YieldloveAdView oldWidget) {
-    super.didUpdateWidget(oldWidget);
   }
 
 }

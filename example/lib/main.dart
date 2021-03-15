@@ -10,16 +10,16 @@ import 'package:AppsFlutterYieldloveSDK/YieldloveWrapper.dart';
     const val YIELDLOVE_PROPERTY_ID = 6960
     const val YIELDLOVE_PRIVACY_MANAGER_ID = "114323"*/
 
-//const appId = "appDfpTest";
+const appId = "appDfpTest";
 //const appId = 'promoqui';
-const appId = 't-online_wetter_flutter';
+//const appId = 't-online_wetter_flutter';
 //const appId = 't-online_wetter';
 
-//const bannerAdId = 'banner';
-const bannerAdId = 'start_b4';
+const bannerAdId = 'banner';
+//const bannerAdId = 'start_b4';
 
-//const interstitialAdId = 'interstitial';
-const interstitialAdId = 'appstart_int';
+const interstitialAdId = 'interstitial';
+//const interstitialAdId = 'appstart_int';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -88,10 +88,11 @@ class MyHomePage extends StatelessWidget {
                           },
                           child: Text("Show interstitial"),
                         ),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: 832),
                         Text('Native ad with id "${adParams.adId}":'),
                         YieldloveAdView(
                             adParamsParcel: adParams,
+                            placedInsideScrollView: true,
                             onPlatformViewCreated: (YieldloveAdController controller) {
                               controller.listener = (YieldAdEvent event) {
                                 print("BannerAd event $event");
