@@ -35,25 +35,7 @@ Future<void> main() async {
   runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
-
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends VisibilityAwareState<MyApp> {
-
-  @override
-  void onVisibilityChanged(WidgetVisibility visibility) {
-    print('onVisibilityChanged: $visibility');
-    switch (visibility) {
-      case WidgetVisibility.VISIBLE:
-        break;
-      default:
-        YieldloveWrapper.instance.clearAdCache();
-    }
-    super.onVisibilityChanged(visibility);
-  }
+class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {

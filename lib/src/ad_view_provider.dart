@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:AppsFlutterYieldloveSDK/YieldloveWrapper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
@@ -46,10 +47,13 @@ class _YieldloveAdViewState extends VisibilityAwareState<YieldloveAdView> {
           });
         }
         break;
-      default:
+      case WidgetVisibility.GONE:
+        YieldloveWrapper.instance.clearAdCache();
         setState(() {
           showAdIos = false;
         });
+        break;
+      default:
         break;
     }
     super.onVisibilityChanged(visibility);
