@@ -95,11 +95,11 @@ public class YieldloveView: NSObject, FlutterPlatformView {
         }
         
         if !adIsRelease {
-            print("YL: Not a release version")
+            //print("YL: Not a release version")
         }
         
         if !adIsRelease {
-            print("YL: Init platform view")
+            //print("YL: Init platform view")
         }
         
         // adSlotId
@@ -119,7 +119,7 @@ public class YieldloveView: NSObject, FlutterPlatformView {
             if let contentUrl = argsAsDictionary["ad_content_url"] as? String {
                 adContentUrl = contentUrl
                 if !adIsRelease {
-                    print("YL: Using adContentUrl '\(adContentUrl!)' for banner ad.")
+                    //print("YL: Using adContentUrl '\(adContentUrl!)' for banner ad.")
                 }
             }
         }
@@ -130,7 +130,7 @@ public class YieldloveView: NSObject, FlutterPlatformView {
             if let customTargeting = argsAsDictionary["custom_targeting"] as? [AnyHashable : Any]? {
                 adCustomTargeting = customTargeting
                 if !adIsRelease {
-                    print("YL: Using this key-value map for banner ad: \(customTargeting!)")
+                    //print("YL: Using this key-value map for banner ad: \(customTargeting!)")
                 }
             }
         }
@@ -156,15 +156,11 @@ public class YieldloveView: NSObject, FlutterPlatformView {
     }
     
     public func view() -> UIView {
-        let screenRect = UIScreen.main.bounds
-        let screenWidth = screenRect.size.width
-        let adPositionX = (screenWidth - 320) / 2
-
         // TODO: Use optimal width (like optimal height)
-        let view = UIView(frame: CGRect(
-                            x: 0,
-                            y: 0, width: 100, height: 20))
-        view.backgroundColor = .blue
+        //let view = UIView(frame: CGRect(
+        //                    x: 0,
+        //                    y: 0, width: 100, height: 20))
+        //view.backgroundColor = .blue
         //return view
         
         //YieldloveView.adView.center = CGPoint(x: adPositionX, y: 0)
@@ -194,7 +190,7 @@ class AdViewController: UIViewController, YLBannerViewDelegate {
     
     public func adViewDidReceiveAd(_ bannerView: YLBannerView) {
         if !adIsRelease {
-            print("YL: Ad loaded")
+            //print("YL: Ad loaded")
         }
         if let adView = adView {
             adView.addBannerView(bannerView: bannerView.getBannerView())

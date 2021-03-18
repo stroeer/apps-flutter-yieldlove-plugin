@@ -10,16 +10,16 @@ import 'package:AppsFlutterYieldloveSDK/YieldloveWrapper.dart';
     const val YIELDLOVE_PROPERTY_ID = 6960
     const val YIELDLOVE_PRIVACY_MANAGER_ID = "114323"*/
 
-const appId = "appDfpTest";
+//const appId = "appDfpTest";
 //const appId = 'promoqui';
-//const appId = 't-online_wetter_flutter';
+const appId = 't-online_wetter_flutter';
 //const appId = 't-online_wetter';
 
-const bannerAdId = 'banner';
-//const bannerAdId = 'start_b4';
+//const bannerAdId = 'banner';
+const bannerAdId = 'start_b2';
 
-const interstitialAdId = 'interstitial';
-//const interstitialAdId = 'appstart_int';
+//const interstitialAdId = 'interstitial';
+const interstitialAdId = 'appstart_int';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,7 +56,7 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final adParams = AdCreationParams(
         adId: bannerAdId,
-        optimalHeight: 100,
+        optimalHeight: 250,
         optimalWidth: 320,
         adKeyword: null,
         adContentUrl: 'https://www.google.com',
@@ -65,14 +65,12 @@ class MyHomePage extends StatelessWidget {
         customTargeting: {"testKey": "testValue"}
     );
     final adParams2 = AdCreationParams(
-        adId: 'banner2',
-        optimalHeight: 100,
+        adId: 'start_b4',
+        optimalHeight: 250,
         optimalWidth: 320,
         adKeyword: null,
-        adContentUrl: 'https://www.google.com',
         useTestAds: false,
         adIsRelease: false,
-        customTargeting: {"testKey": "testValue"}
     );
 
     return MaterialApp(
