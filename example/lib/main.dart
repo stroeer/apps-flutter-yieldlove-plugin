@@ -57,6 +57,7 @@ class MyHomePage extends StatelessWidget {
     final adParams = AdCreationParams(
         adId: bannerAdId,
         optimalHeight: 100,
+        optimalWidth: 320,
         adKeyword: null,
         adContentUrl: 'https://www.google.com',
         useTestAds: false,
@@ -66,6 +67,7 @@ class MyHomePage extends StatelessWidget {
     final adParams2 = AdCreationParams(
         adId: 'banner2',
         optimalHeight: 100,
+        optimalWidth: 320,
         adKeyword: null,
         adContentUrl: 'https://www.google.com',
         useTestAds: false,

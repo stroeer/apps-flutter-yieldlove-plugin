@@ -58,7 +58,9 @@ class AdCreationParams {
     'm.app.dev.test/start_b1': [AdSize(width: 320, height: 75), AdSize(width: 37, height: 31)]
   };*/
 
-  double getOptimalWidth() => optimalWidth ?? adId.contains('b1') ? 300 : 320;
+  double getOptimalWidth() => optimalWidth != null
+      ? optimalWidth
+      : adId.contains('b1') ? 300 : 320;
 
   double getOptimalHeight() => optimalHeight ?? 250;
 }
