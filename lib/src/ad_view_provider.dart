@@ -90,13 +90,13 @@ class _YieldloveAdViewState extends VisibilityAwareState<YieldloveAdView> {
         key: ValueKey(key),
         onVisibilityChanged: (visibilityInfo) {
           var visiblePercentage = visibilityInfo.visibleFraction * 100;
-          setState(() {
-            final bool isVisible = visiblePercentage > 0;
-            if (showAdIos != isVisible) {
+          final bool isVisible = visiblePercentage > 0;
+          if (showAdIos != isVisible) {
+            setState(() {
               print('showAdIos = $isVisible ($key), $visiblePercentage%');
               showAdIos = isVisible;
-            }
-          });
+            });
+          }
         },
         child: GestureDetector(
           // intercept long press event.

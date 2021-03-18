@@ -145,6 +145,13 @@ class MyHomePage extends StatelessWidget {
                               controller.showAd();
                             }
                         ),
+                        Container(
+                          height: 332,
+                          color: Colors.black26,
+                          child: Center(
+                            child: Text('Placeholder'),
+                          ),
+                        ),
                         _paragraph('And again: native ad with id "${adParams2.adId}"'),
                         YieldloveAdView(
                             adParamsParcel: adParams2,
