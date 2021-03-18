@@ -82,7 +82,7 @@ public class YieldloveView: NSObject, FlutterPlatformView {
     let registrar: FlutterPluginRegistrar
     let frame: CGRect
     let viewId: Int64
-    static var adView = AdView()
+    var adView = AdView()
     var adViewController: AdViewController? = nil
     var adIsRelease: Bool = true
     
@@ -145,7 +145,8 @@ public class YieldloveView: NSObject, FlutterPlatformView {
         adViewController = AdViewController(
             contentUrl: adContentUrl,
             keywords: adCustomTargeting,
-            adIsRelease: adIsRelease
+            adIsRelease: adIsRelease,
+            adView: adView
         )
         Yieldlove.instance.bannerAd(
             AdSlotId: adSlotId!,
@@ -167,7 +168,7 @@ public class YieldloveView: NSObject, FlutterPlatformView {
         //return view
         
         //YieldloveView.adView.center = CGPoint(x: adPositionX, y: 0)
-        return YieldloveView.adView
+        return adView
     }
 }
 
@@ -176,11 +177,13 @@ class AdViewController: UIViewController, YLBannerViewDelegate {
     var contentUrl: String?
     var keywords: [AnyHashable : Any]?
     var adIsRelease: Bool = true
+    var adView: AdView?
     
-    init(contentUrl: String?, keywords: [AnyHashable : Any]?, adIsRelease: Bool) {
+    init(contentUrl: String?, keywords: [AnyHashable : Any]?, adIsRelease: Bool, adView: AdView) {
         self.contentUrl = contentUrl
         self.keywords = keywords
         self.adIsRelease = adIsRelease
+        self.adView = adView
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -193,7 +196,9 @@ class AdViewController: UIViewController, YLBannerViewDelegate {
         if !adIsRelease {
             print("YL: Ad loaded")
         }
-        YieldloveView.adView.addBannerView(bannerView: bannerView.getBannerView())
+        if let adView = adView {
+            adView.addBannerView(bannerView: bannerView.getBannerView())
+        }
         // This line is needed to resize ads that may come from Prebid
         //Yieldlove.instance.resizeBanner(banner: bannerView)
     }
