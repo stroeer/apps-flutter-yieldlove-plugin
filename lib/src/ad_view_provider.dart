@@ -41,7 +41,7 @@ class _YieldloveAdViewState extends VisibilityAwareState<YieldloveAdView> {
   void onVisibilityChanged(WidgetVisibility visibility) {
     switch (visibility) {
       case WidgetVisibility.VISIBLE:
-        if (!widget.placedInsideScrollView) {
+        if (!widget.placedInsideScrollView && !showAdIos) {
           setState(() {
             showAdIos = true;
           });
