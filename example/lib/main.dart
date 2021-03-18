@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:AppsFlutterYieldloveSDK/YieldloveWrapper.dart';
+import 'package:visibility_aware_state/visibility_aware_state.dart';
 
 // example data for yieldlove
 /*const val YIELDLOVE_ACCOUNT_ID = "promoqui"
@@ -34,23 +35,24 @@ Future<void> main() async {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(),
-    );
-  }
+  _MyAppState createState() => _MyAppState();
 }
 
+class _MyAppState extends VisibilityAwareState<MyApp> {
 
-class MyHomePage extends StatelessWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
+  @override
+  void onVisibilityChanged(WidgetVisibility visibility) {
+    switch (visibility) {
+      case WidgetVisibility.VISIBLE:
+        break;
+      default:
+        YieldloveWrapper.instance.clearAdCache();
+    }
+    super.onVisibilityChanged(visibility);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +76,9 @@ class MyHomePage extends StatelessWidget {
     );
 
     return MaterialApp(
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Plugin example app'),
@@ -147,7 +152,7 @@ class MyHomePage extends StatelessWidget {
                           height: 332,
                           color: Colors.black26,
                           child: Center(
-                            child: Text('Placeholder'),
+                            child: Text('Werbung, die begeistert'),
                           ),
                         ),
                         _paragraph('And again: native ad with id "${adParams2.adId}"'),

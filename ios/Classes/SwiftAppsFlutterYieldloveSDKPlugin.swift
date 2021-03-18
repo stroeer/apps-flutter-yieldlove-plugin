@@ -51,6 +51,9 @@ public class SwiftAppsFlutterYieldloveSDKPlugin: NSObject, FlutterPlugin {
                 print("YL: Cannot load interstitial without adId.")
             }
         }
+        if call.method == "clearAdCache" {
+            SwiftAppsFlutterYieldloveSDKPlugin.adViews.removeAll()
+        }
         result(true)
     }
 }
