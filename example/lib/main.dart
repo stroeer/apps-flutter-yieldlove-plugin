@@ -45,6 +45,7 @@ class _MyAppState extends VisibilityAwareState<MyApp> {
 
   @override
   void onVisibilityChanged(WidgetVisibility visibility) {
+    print('onVisibilityChanged: $visibility');
     switch (visibility) {
       case WidgetVisibility.VISIBLE:
         break;
@@ -59,7 +60,7 @@ class _MyAppState extends VisibilityAwareState<MyApp> {
     final adParams = AdCreationParams(
         adId: bannerAdId,
         optimalHeight: 250,
-        optimalWidth: 320,
+        optimalWidth: 300,
         adKeyword: null,
         adContentUrl: 'https://www.google.com',
         useTestAds: false,
@@ -69,7 +70,7 @@ class _MyAppState extends VisibilityAwareState<MyApp> {
     final adParams2 = AdCreationParams(
         adId: 'start_b4',
         optimalHeight: 250,
-        optimalWidth: 320,
+        optimalWidth: 300,
         adKeyword: null,
         useTestAds: false,
         adIsRelease: false,

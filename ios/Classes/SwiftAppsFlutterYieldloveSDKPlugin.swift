@@ -52,6 +52,7 @@ public class SwiftAppsFlutterYieldloveSDKPlugin: NSObject, FlutterPlugin {
             }
         }
         if call.method == "clearAdCache" {
+            print("YL: clearAdCache")
             SwiftAppsFlutterYieldloveSDKPlugin.adViews.removeAll()
         }
         result(true)

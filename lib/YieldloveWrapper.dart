@@ -146,6 +146,7 @@ class YieldloveWrapper {
   /// If you call this on Android platform this method does nothing!
   Future<bool> clearAdCache() async {
     if (Environment.isIOS) {
+      debugPrint('clearAdCache()');
       return await _invokeBooleanMethod("clearAdCache", <String, dynamic>{});
     }
     return true;
