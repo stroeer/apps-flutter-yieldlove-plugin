@@ -6,6 +6,8 @@ import GoogleMobileAds
 public class SwiftAppsFlutterYieldloveSDKPlugin: NSObject, FlutterPlugin {
     static let interstitialHelper = YLInterstitialHelper()
     
+    static var adViews: [String:AdView] = [:]
+    
     public static func register(with registrar: FlutterPluginRegistrar) {
         
         let instance = SwiftAppsFlutterYieldloveSDKPlugin()
@@ -82,7 +84,7 @@ public class YieldloveView: NSObject, FlutterPlatformView {
     let registrar: FlutterPluginRegistrar
     let frame: CGRect
     let viewId: Int64
-    var adView = AdView()
+    var adView: AdView?
     var adViewController: AdViewController? = nil
     var adIsRelease: Bool = true
     
@@ -142,17 +144,31 @@ public class YieldloveView: NSObject, FlutterPlatformView {
         guard adSlotId != nil else {
             return
         }
+        let hasStoredView = SwiftAppsFlutterYieldloveSDKPlugin.adViews[adSlotId!] != nil
+        adView = createAndStoreAdViewIfNecessaryFor(adSlotId: adSlotId!)
         adViewController = AdViewController(
             contentUrl: adContentUrl,
             keywords: adCustomTargeting,
             adIsRelease: adIsRelease,
-            adView: adView
+            adView: adView!
         )
-        Yieldlove.instance.bannerAd(
-            AdSlotId: adSlotId!,
-            UIViewController: adViewController!,
-            Delegate: adViewController!
-        )
+        if !hasStoredView {
+            Yieldlove.instance.bannerAd(
+                AdSlotId: adSlotId!,
+                UIViewController: adViewController!,
+                Delegate: adViewController!
+            )
+        }
+    }
+    
+    private func createAndStoreAdViewIfNecessaryFor(adSlotId: String) -> AdView {
+        let storedAdView = SwiftAppsFlutterYieldloveSDKPlugin.adViews[adSlotId]
+        if storedAdView == nil {
+            let adView = AdView()
+            SwiftAppsFlutterYieldloveSDKPlugin.adViews[adSlotId] = adView
+            return adView
+        }
+        return storedAdView!
     }
     
     public func view() -> UIView {
@@ -164,7 +180,7 @@ public class YieldloveView: NSObject, FlutterPlatformView {
         //return view
         
         //YieldloveView.adView.center = CGPoint(x: adPositionX, y: 0)
-        return adView
+        return adView ?? AdView()
     }
 }
 
