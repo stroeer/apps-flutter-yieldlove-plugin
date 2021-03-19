@@ -27,7 +27,7 @@ public class SwiftAppsFlutterYieldloveSDKPlugin: NSObject, FlutterPlugin {
         registrar.addMethodCallDelegate(instance, channel: channel4)
         let channel5 = FlutterMethodChannel(name: "de.stroeer.plugins/adview_5", binaryMessenger: registrar.messenger())
         registrar.addMethodCallDelegate(instance, channel: channel5)
-        
+
         registrar.register(YieldloveViewFactory(with: registrar), withId: "de.stroeer.plugins/yieldlove_ad_view")
     }
     
@@ -99,6 +99,8 @@ public class YieldloveView: NSObject, FlutterPlatformView {
     let frame: CGRect
     let viewId: Int64
     var adView: AdView?
+    var adContentUrl: String?
+    var adCustomTargeting: [AnyHashable : Any]?
     var adViewController: AdViewController? = nil
     var adIsRelease: Bool = true
     
@@ -124,13 +126,13 @@ public class YieldloveView: NSObject, FlutterPlatformView {
             if let adId = argsAsDictionary["ad_id"] as? String {
                 adSlotId = adId
                 if !adIsRelease {
-                    //print("YL: Using adId '\(adSlotId!)' for banner ad.")
+                    print("YL: Using adId '\(adSlotId!)' for banner ad.")
                 }
             }
         }
         
         // contentUrl
-        var adContentUrl: String? = nil
+        adContentUrl = nil
         if let argsAsDictionary = args as? Dictionary<String, Any> {
             if let contentUrl = argsAsDictionary["ad_content_url"] as? String {
                 adContentUrl = contentUrl
@@ -141,7 +143,7 @@ public class YieldloveView: NSObject, FlutterPlatformView {
         }
         
         // contentUrl
-        var adCustomTargeting: [AnyHashable : Any]? = nil
+        adCustomTargeting = nil
         if let argsAsDictionary = args as? Dictionary<String, Any> {
             if let customTargeting = argsAsDictionary["custom_targeting"] as? [AnyHashable : Any]? {
                 adCustomTargeting = customTargeting
@@ -158,32 +160,27 @@ public class YieldloveView: NSObject, FlutterPlatformView {
         guard adSlotId != nil else {
             return
         }
-        let hasStoredView = SwiftAppsFlutterYieldloveSDKPlugin.adViews[adSlotId!] != nil
         adView = createAndStoreAdViewIfNecessaryFor(adSlotId: adSlotId!)
+    }
+
+    private func createAndStoreAdViewIfNecessaryFor(adSlotId: String) -> AdView {
+        guard SwiftAppsFlutterYieldloveSDKPlugin.adViews[adSlotId] == nil else {
+            return SwiftAppsFlutterYieldloveSDKPlugin.adViews[adSlotId]!
+        }
+        let adView = AdView()
         adViewController = AdViewController(
             contentUrl: adContentUrl,
             keywords: adCustomTargeting,
             adIsRelease: adIsRelease,
-            adView: adView!
+            adView: adView
         )
-        if !hasStoredView {
-            Yieldlove.instance.bannerAd(
-                AdSlotId: adSlotId!,
-                UIViewController: adViewController!,
-                Delegate: adViewController!
-            )
-        }
-    }
-    
-    private func createAndStoreAdViewIfNecessaryFor(adSlotId: String) -> AdView {
-        let storedAdView = SwiftAppsFlutterYieldloveSDKPlugin.adViews[adSlotId]
-        if storedAdView == nil {
-            print("YL: Creating new banner ad view with adId '\(adSlotId)'.")
-            let adView = AdView()
-            SwiftAppsFlutterYieldloveSDKPlugin.adViews[adSlotId] = adView
-            return adView
-        }
-        return storedAdView!
+        SwiftAppsFlutterYieldloveSDKPlugin.adViews[adSlotId] = adView
+        Yieldlove.instance.bannerAd(
+            AdSlotId: adSlotId,
+            UIViewController: adViewController!,
+            Delegate: adViewController!
+        )
+        return adView
     }
     
     public func view() -> UIView {
