@@ -68,7 +68,7 @@ class _YieldloveAdViewState extends VisibilityAwareState<YieldloveAdView> {
   void _startTimeout(bool isVisible, {String key}) {
     //print('_startTimeout($isVisible), key: $key (${_now()})');
     _timer?.cancel();
-    _timer = Timer(Duration(milliseconds: 1500), () {
+    _timer = Timer(Duration(milliseconds: 600), () {
       _handleTimeout(isVisible, key: key);
     });
   }
