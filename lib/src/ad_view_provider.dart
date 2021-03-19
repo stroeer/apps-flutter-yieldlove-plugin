@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:AppsFlutterYieldloveSDK/YieldloveWrapper.dart';
@@ -56,6 +57,32 @@ class _YieldloveAdViewState extends VisibilityAwareState<YieldloveAdView> {
     super.onVisibilityChanged(visibility);
   }
 
+  Timer _timer;
+
+  /*int _now() {
+    return DateTime.now().millisecondsSinceEpoch - 1616167000000;
+  }*/
+
+  void _startTimeout(bool isVisible, {String key}) {
+    //print('_startTimeout($isVisible), key: $key (${_now()})');
+    _timer?.cancel();
+    _timer = Timer(Duration(milliseconds: 1500), () {
+      _handleTimeout(isVisible, key: key);
+    });
+  }
+
+  void _handleTimeout(bool isVisible, {String key}) {
+    //print('_handleTimeout($isVisible), key: $key (${_now()})');
+    _timer?.cancel();
+    _timer = null;
+    if (showAdIos != isVisible) {
+      setState(() {
+        //print('showAdIos = $isVisible');
+        showAdIos = isVisible;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (Platform.isAndroid) {
@@ -92,11 +119,11 @@ class _YieldloveAdViewState extends VisibilityAwareState<YieldloveAdView> {
         onVisibilityChanged: (visibilityInfo) {
           var visiblePercentage = visibilityInfo.visibleFraction * 100;
           final bool isVisible = visiblePercentage > 0;
-          if (showAdIos != isVisible) {
-            setState(() {
-              print('showAdIos = $isVisible ($key), $visiblePercentage%');
-              showAdIos = isVisible;
-            });
+          //print('showAdIos = $isVisible ($key), $visiblePercentage%');
+          if (isVisible) {
+            _handleTimeout(isVisible, key: key);
+          } else {
+            _startTimeout(isVisible, key: key);
           }
         },
         child: GestureDetector(
