@@ -15,8 +15,18 @@ public class SwiftAppsFlutterYieldloveSDKPlugin: NSObject, FlutterPlugin {
         registrar.addMethodCallDelegate(instance, channel: channel)
         
         // dummy stubs to avoid crashing; should be moved to the native view factory or into corresponding native views
-        let channel2 = FlutterMethodChannel(name: "de.stroeer.plugins/adview_0", binaryMessenger: registrar.messenger())
+        let channel0 = FlutterMethodChannel(name: "de.stroeer.plugins/adview_0", binaryMessenger: registrar.messenger())
+        registrar.addMethodCallDelegate(instance, channel: channel0)
+        let channel1 = FlutterMethodChannel(name: "de.stroeer.plugins/adview_1", binaryMessenger: registrar.messenger())
+        registrar.addMethodCallDelegate(instance, channel: channel1)
+        let channel2 = FlutterMethodChannel(name: "de.stroeer.plugins/adview_2", binaryMessenger: registrar.messenger())
         registrar.addMethodCallDelegate(instance, channel: channel2)
+        let channel3 = FlutterMethodChannel(name: "de.stroeer.plugins/adview_3", binaryMessenger: registrar.messenger())
+        registrar.addMethodCallDelegate(instance, channel: channel3)
+        let channel4 = FlutterMethodChannel(name: "de.stroeer.plugins/adview_4", binaryMessenger: registrar.messenger())
+        registrar.addMethodCallDelegate(instance, channel: channel4)
+        let channel5 = FlutterMethodChannel(name: "de.stroeer.plugins/adview_5", binaryMessenger: registrar.messenger())
+        registrar.addMethodCallDelegate(instance, channel: channel5)
         
         registrar.register(YieldloveViewFactory(with: registrar), withId: "de.stroeer.plugins/yieldlove_ad_view")
     }
@@ -114,7 +124,7 @@ public class YieldloveView: NSObject, FlutterPlatformView {
             if let adId = argsAsDictionary["ad_id"] as? String {
                 adSlotId = adId
                 if !adIsRelease {
-                    print("YL: Using adId '\(adSlotId!)' for banner ad.")
+                    //print("YL: Using adId '\(adSlotId!)' for banner ad.")
                 }
             }
         }
@@ -168,6 +178,7 @@ public class YieldloveView: NSObject, FlutterPlatformView {
     private func createAndStoreAdViewIfNecessaryFor(adSlotId: String) -> AdView {
         let storedAdView = SwiftAppsFlutterYieldloveSDKPlugin.adViews[adSlotId]
         if storedAdView == nil {
+            print("YL: Creating new banner ad view with adId '\(adSlotId)'.")
             let adView = AdView()
             SwiftAppsFlutterYieldloveSDKPlugin.adViews[adSlotId] = adView
             return adView
