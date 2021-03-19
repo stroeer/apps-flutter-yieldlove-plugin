@@ -102,12 +102,7 @@ class _YieldloveAdViewState extends VisibilityAwareState<YieldloveAdView> {
                 viewType: 'de.stroeer.plugins/yieldlove_ad_view',
                 onPlatformViewCreated: (int id) {
                   if (widget.onPlatformViewCreated != null) {
-                    int theId = adControllerMap[widget.adParamsParcel?.adId];
-                    if (theId == null) {
-                      adControllerMap[widget.adParamsParcel?.adId] = id;
-                      theId = id;
-                    }
-                    widget.onPlatformViewCreated(YieldloveAdController(theId));
+                    widget.onPlatformViewCreated(YieldloveAdController(id));
                   }
                 },
                 gestureRecognizers: widget.gestureRecognizers,
