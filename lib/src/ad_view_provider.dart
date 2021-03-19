@@ -59,6 +59,8 @@ class _YieldloveAdViewState extends VisibilityAwareState<YieldloveAdView> {
 
   Timer _timer;
 
+  static Map<String, int> adControllerMap = {};
+
   /*int _now() {
     return DateTime.now().millisecondsSinceEpoch - 1616167000000;
   }*/
@@ -100,7 +102,12 @@ class _YieldloveAdViewState extends VisibilityAwareState<YieldloveAdView> {
                 viewType: 'de.stroeer.plugins/yieldlove_ad_view',
                 onPlatformViewCreated: (int id) {
                   if (widget.onPlatformViewCreated != null) {
-                    widget.onPlatformViewCreated(YieldloveAdController(id));
+                    int theId = adControllerMap[widget.adParamsParcel?.adId];
+                    if (theId == null) {
+                      adControllerMap[widget.adParamsParcel?.adId] = id;
+                      theId = id;
+                    }
+                    widget.onPlatformViewCreated(YieldloveAdController(theId));
                   }
                 },
                 gestureRecognizers: widget.gestureRecognizers,
@@ -140,7 +147,12 @@ class _YieldloveAdViewState extends VisibilityAwareState<YieldloveAdView> {
                   viewType: 'de.stroeer.plugins/yieldlove_ad_view',
                   onPlatformViewCreated: (int id) {
                     if (widget.onPlatformViewCreated != null) {
-                      widget.onPlatformViewCreated(YieldloveAdController(id));
+                      int theId = adControllerMap[widget.adParamsParcel?.adId];
+                      if (theId == null) {
+                        adControllerMap[widget.adParamsParcel?.adId] = id;
+                        theId = id;
+                      }
+                      widget.onPlatformViewCreated(YieldloveAdController(theId));
                     }
                   },
                   gestureRecognizers: widget.gestureRecognizers,

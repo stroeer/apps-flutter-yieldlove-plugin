@@ -28,7 +28,7 @@ Future<void> main() async {
       appId: appId,
       analyticsEnabled: false
   ).then((value) {
-    print("app-widget: initialized = $value");
+    //print("app-widget: initialized = $value");
   }).catchError((e) {
     print("app-widget: failed with ${e.error}");
   });
