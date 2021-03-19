@@ -99,6 +99,8 @@ public class YieldloveView: NSObject, FlutterPlatformView {
     let frame: CGRect
     let viewId: Int64
     var adView: AdView?
+    var adContentUrl: String?
+    var adCustomTargeting: [AnyHashable : Any]?
     var adViewController: AdViewController? = nil
     var adIsRelease: Bool = true
     
@@ -130,7 +132,7 @@ public class YieldloveView: NSObject, FlutterPlatformView {
         }
         
         // contentUrl
-        var adContentUrl: String? = nil
+        adContentUrl = nil
         if let argsAsDictionary = args as? Dictionary<String, Any> {
             if let contentUrl = argsAsDictionary["ad_content_url"] as? String {
                 adContentUrl = contentUrl
@@ -141,7 +143,7 @@ public class YieldloveView: NSObject, FlutterPlatformView {
         }
         
         // contentUrl
-        var adCustomTargeting: [AnyHashable : Any]? = nil
+        adCustomTargeting = nil
         if let argsAsDictionary = args as? Dictionary<String, Any> {
             if let customTargeting = argsAsDictionary["custom_targeting"] as? [AnyHashable : Any]? {
                 adCustomTargeting = customTargeting
@@ -158,7 +160,6 @@ public class YieldloveView: NSObject, FlutterPlatformView {
         guard adSlotId != nil else {
             return
         }
-        let hasStoredView = SwiftAppsFlutterYieldloveSDKPlugin.adViews[adSlotId!] != nil
         adView = createAndStoreAdViewIfNecessaryFor(adSlotId: adSlotId!)
     }
 
@@ -171,7 +172,7 @@ public class YieldloveView: NSObject, FlutterPlatformView {
             contentUrl: adContentUrl,
             keywords: adCustomTargeting,
             adIsRelease: adIsRelease,
-            adView: adView!
+            adView: adView
         )
         SwiftAppsFlutterYieldloveSDKPlugin.adViews[adSlotId] = adView
         Yieldlove.instance.bannerAd(
