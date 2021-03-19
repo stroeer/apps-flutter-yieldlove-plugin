@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'AppsFlutterYieldloveSDK'
-  s.version          = '0.9.8'
+  s.version          = '0.9.9'
   s.summary          = 'A flutter plugin for Yieldlove SDK. (iOS podspec file)'
   s.description      = <<-DESC
 A new flutter plugin project.

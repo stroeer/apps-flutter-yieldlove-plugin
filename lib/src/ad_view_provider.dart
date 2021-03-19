@@ -19,7 +19,7 @@ class YieldloveAdView extends StatefulWidget {
     this.gestureRecognizers,
     @required this.adParamsParcel,
     this.onPlatformViewCreated,
-    this.placedInsideScrollView,
+    this.placedInsideScrollView = false,
   }) : super(key: key);
 
   final AdCreationParams adParamsParcel;
@@ -49,9 +49,6 @@ class _YieldloveAdViewState extends VisibilityAwareState<YieldloveAdView> {
         break;
       case WidgetVisibility.GONE:
         YieldloveWrapper.instance.clearAdCache();
-        setState(() {
-          showAdIos = false;
-        });
         break;
       default:
         break;
