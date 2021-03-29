@@ -1,11 +1,15 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:AppsFlutterYieldloveSDK/YieldloveWrapper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:AppsFlutterYieldloveSDK/src/ad_creation_params.dart';
+import 'package:visibility_aware_state/visibility_aware_state.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 export 'package:AppsFlutterYieldloveSDK/src/ad_creation_params.dart';
 
@@ -16,19 +20,70 @@ class YieldloveAdView extends StatefulWidget {
     this.gestureRecognizers,
     @required this.adParamsParcel,
     this.onPlatformViewCreated,
+    this.placedInsideScrollView = false,
   }) : super(key: key);
 
   final AdCreationParams adParamsParcel;
   final Function onPlatformViewCreated;
   final Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers;
+  final bool placedInsideScrollView;
 
   @override
   State<StatefulWidget> createState() => _YieldloveAdViewState();
 
 }
 
-class _YieldloveAdViewState extends State<YieldloveAdView> {
+class _YieldloveAdViewState extends VisibilityAwareState<YieldloveAdView> {
   final UniqueKey _key = UniqueKey();
+
+  bool showAdIos = false;
+
+  @override
+  void onVisibilityChanged(WidgetVisibility visibility) {
+    switch (visibility) {
+      case WidgetVisibility.VISIBLE:
+        if (!widget.placedInsideScrollView && !showAdIos) {
+          setState(() {
+            showAdIos = true;
+          });
+        }
+        break;
+      case WidgetVisibility.GONE:
+        YieldloveWrapper.instance.clearAdCache();
+        break;
+      default:
+        break;
+    }
+    super.onVisibilityChanged(visibility);
+  }
+
+  Timer _timer;
+
+  static Map<String, int> adControllerMap = {};
+
+  /*int _now() {
+    return DateTime.now().millisecondsSinceEpoch - 1616167000000;
+  }*/
+
+  void _startTimeout(bool isVisible, {String key}) {
+    //print('_startTimeout($isVisible), key: $key (${_now()})');
+    _timer?.cancel();
+    _timer = Timer(Duration(milliseconds: 600), () {
+      _handleTimeout(isVisible, key: key);
+    });
+  }
+
+  void _handleTimeout(bool isVisible, {String key}) {
+    //print('_handleTimeout($isVisible), key: $key (${_now()})');
+    _timer?.cancel();
+    _timer = null;
+    if (showAdIos != isVisible) {
+      setState(() {
+        //print('showAdIos = $isVisible');
+        showAdIos = isVisible;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,45 +115,54 @@ class _YieldloveAdViewState extends State<YieldloveAdView> {
         ),
       );
     } else if (Platform.isIOS) {
-      return GestureDetector(
-        // intercept long press event.
-        onLongPress: () {},
-        excludeFromSemantics: true,
-        child: Column(
-          children: [
-            SizedBox(
-              width: double.infinity,
-              height: widget.adParamsParcel?.getOptimalHeight(),
-              child: UiKitView(
-                key: _key,
-                viewType: 'de.stroeer.plugins/yieldlove_ad_view',
-                onPlatformViewCreated: (int id) {
-                  if (widget.onPlatformViewCreated != null) {
-                    widget.onPlatformViewCreated(YieldloveAdController(id));
-                  }
-                },
-                gestureRecognizers: widget.gestureRecognizers,
-                layoutDirection: TextDirection.rtl,
-                creationParams: widget.adParamsParcel?.toMap(),
-                creationParamsCodec: const StandardMessageCodec(),
+      final key = widget.adParamsParcel.adId;
+      return VisibilityDetector(
+        key: ValueKey(key),
+        onVisibilityChanged: (visibilityInfo) {
+          var visiblePercentage = visibilityInfo.visibleFraction * 100;
+          final bool isVisible = visiblePercentage > 0;
+          //print('showAdIos = $isVisible ($key), $visiblePercentage%');
+          if (isVisible) {
+            _handleTimeout(isVisible, key: key);
+          } else {
+            _startTimeout(isVisible, key: key);
+          }
+        },
+        child: GestureDetector(
+          // intercept long press event.
+          onLongPress: () {},
+          excludeFromSemantics: true,
+          child: Column(
+            children: [
+              SizedBox(
+                width: widget.adParamsParcel?.getOptimalWidth(),
+                height: widget.adParamsParcel?.getOptimalHeight(),
+                child: !showAdIos ? Container() : UiKitView(
+                  key: _key,
+                  viewType: 'de.stroeer.plugins/yieldlove_ad_view',
+                  onPlatformViewCreated: (int id) {
+                    if (widget.onPlatformViewCreated != null) {
+                      int theId = adControllerMap[widget.adParamsParcel?.adId];
+                      if (theId == null) {
+                        adControllerMap[widget.adParamsParcel?.adId] = id;
+                        theId = id;
+                      }
+                      widget.onPlatformViewCreated(YieldloveAdController(theId));
+                    }
+                  },
+                  gestureRecognizers: widget.gestureRecognizers,
+                  layoutDirection: TextDirection.ltr,
+                  creationParams: widget.adParamsParcel?.toMap(),
+                  creationParamsCodec: const StandardMessageCodec(),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
     } else {
       throw UnsupportedError("Trying to use the default view implementation for $defaultTargetPlatform but there isn't a default one");
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void didUpdateWidget(YieldloveAdView oldWidget) {
-    super.didUpdateWidget(oldWidget);
   }
 
 }
