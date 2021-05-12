@@ -72,8 +72,10 @@ class AppsFlutterYieldloveSDKPlugin: FlutterPlugin, MethodCallHandler, ActivityA
 
   override fun onAttachedToActivity(binding: ActivityPluginBinding) {
     Log.v(TAG, "onAttachedToActivity")
-    AdPlatformView.activity = binding.activity
-    InterstitialHolder.activity = binding.activity
+    binding.activity?.let {
+      AdPlatformView.activity = it
+      InterstitialHolder.activity = it
+    }
     //MobileAds.initialize(binding.activity)
     // Your plugin is now associated with an Android Activity.
     //
@@ -104,6 +106,10 @@ class AppsFlutterYieldloveSDKPlugin: FlutterPlugin, MethodCallHandler, ActivityA
 
   override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
     Log.v(TAG, "onReattachedToActivityForConfigChanges")
+    binding.activity?.let {
+      AdPlatformView.activity = it
+      InterstitialHolder.activity = it
+    }
     // Your plugin is now associated with a new Activity instance
     // after config changes took place. You may now re-establish
     // a reference to the Activity and associated resources.
