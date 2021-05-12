@@ -107,9 +107,14 @@ class AdPlatformView internal constructor(context: Context?,
 
     private fun showAd(methodCall: MethodCall, result: MethodChannel.Result) {
         // val text = methodCall.arguments as String
-        adView?.loadAd(activity)
-        adView?.show()
-        result.success(true)
+        if (activity != null) {
+            adView?.loadAd(activity!!)
+            adView?.show()
+            result.success(true)
+        } else {
+            result.success(false)
+        }
+
     }
 
     private fun hideAd(methodCall: MethodCall, result: MethodChannel.Result) {
