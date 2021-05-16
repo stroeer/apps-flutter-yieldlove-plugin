@@ -14,7 +14,7 @@ dependencies:
   sourcepoint_cmp:
     git:
       url: https://github.com/0phelia/sourcepoint_cmp.git
-      # ref: fix-hide-ads-if-not-in-visible-area-for-ios
+      ref: fix-occasional-npr-registrar-activity-is-null
 
   http: ">=0.12.2"
   visibility_detector: ^0.1.5
