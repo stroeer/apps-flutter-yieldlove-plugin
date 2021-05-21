@@ -9,11 +9,6 @@ import 'package:flutter/services.dart';
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
 
-import 'package:sourcepoint_cmp/sourcepoint_cmp.dart';
-
-export 'package:sourcepoint_cmp/action_type.dart';
-export 'package:sourcepoint_cmp/gdpr_user_consent.dart';
-
 class YieldloveWrapper {
 
   final MethodChannel _channel;
@@ -27,18 +22,12 @@ class YieldloveWrapper {
 
   String appId;
 
-  SourcepointCmp _sourcepointCmp;
 
   void Function() _onConsentUIReady;
   void Function() _onConsentUIFinished;
-  void Function(ActionType) _onAction;
-  void Function(GDPRUserConsent consent) _onConsentGiven;
   void Function(String errorCode) _onError;
 
-  Future<SourcepointCmp> _loadAdConfig() async {
-    if (_sourcepointCmp != null) {
-      return _sourcepointCmp;
-    }
+  Future<dynamic> _loadAdConfig() async {
 
     /// always the same for Ströer Group
     var sourcepointAccountId = 375;
@@ -64,31 +53,8 @@ class YieldloveWrapper {
       privacyManagerId = sourcePointModule['privacyManagerId'];
     }
 
-    _sourcepointCmp = SourcepointCmp(
-        accountId: sourcepointAccountId,
-        propertyId: propertyId,
-        propertyName: propertyName,
-        pmId: privacyManagerId,
-        onConsentUIReady: () {
-          if (_onConsentUIReady != null) _onConsentUIReady();
-        },
-        onConsentUIFinished: () {
-          if (_onConsentUIFinished != null) _onConsentUIFinished();
-        },
-        onAction: (ActionType actionType) {
-          if (_onAction != null) _onAction(actionType);
-        },
-        onConsentReady: ({GDPRUserConsent consent}) {
-          print('consentReady');
-          if (_onConsentGiven != null) _onConsentGiven(consent);
-        },
-        onError: (String errorCode) {
-          print('consentError: errorCode:$errorCode');
-          if (_onError != null) _onError(errorCode);
-        },
-    );
 
-    return _sourcepointCmp;
+    return null;
   }
 
   Uri _yieldloveConfigUrl() => Uri.parse('https://cdn.stroeerdigitalgroup.de/sdk/live/$appId/config.json');
@@ -96,35 +62,25 @@ class YieldloveWrapper {
   void showConsentDialog({
     void Function() onConsentUIReady,
     void Function() onConsentUIFinished,
-    void Function(ActionType) onAction,
-    void Function(GDPRUserConsent consent) onConsentGiven,
     void Function(String errorCode) onError
   }) async {
     this._onConsentUIReady = onConsentUIReady;
     this._onConsentUIFinished = onConsentUIFinished;
-    this._onAction = onAction;
-    this._onConsentGiven = onConsentGiven;
     this._onError = onError;
 
     await _loadAdConfig();
-    _sourcepointCmp.load();
   }
 
   void showConsentPrivacyManager({
     void Function() onConsentUIReady,
     void Function() onConsentUIFinished,
-    void Function(ActionType) onAction,
-    void Function(GDPRUserConsent consent) onConsentGiven,
     void Function(String errorCode) onError
   }) async {
     this._onConsentUIReady = onConsentUIReady;
     this._onConsentUIFinished = onConsentUIFinished;
-    this._onAction = onAction;
-    this._onConsentGiven = onConsentGiven;
     this._onError = onError;
 
     await _loadAdConfig();
-    _sourcepointCmp.showPM();
   }
 
   Future<bool> initialize(
