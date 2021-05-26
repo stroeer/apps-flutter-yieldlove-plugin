@@ -9,7 +9,6 @@ import 'package:flutter/widgets.dart';
 
 import 'package:AppsFlutterYieldloveSDK/src/ad_creation_params.dart';
 import 'package:visibility_aware_state/visibility_aware_state.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 
 export 'package:AppsFlutterYieldloveSDK/src/ad_creation_params.dart';
 
@@ -36,17 +35,10 @@ class YieldloveAdView extends StatefulWidget {
 class _YieldloveAdViewState extends VisibilityAwareState<YieldloveAdView> {
   final UniqueKey _key = UniqueKey();
 
-  bool showAdIos = false;
-
   @override
   void onVisibilityChanged(WidgetVisibility visibility) {
     switch (visibility) {
       case WidgetVisibility.VISIBLE:
-        if (!widget.placedInsideScrollView && !showAdIos) {
-          setState(() {
-            showAdIos = true;
-          });
-        }
         break;
       case WidgetVisibility.GONE:
         YieldloveWrapper.instance.clearAdCache();
@@ -57,33 +49,7 @@ class _YieldloveAdViewState extends VisibilityAwareState<YieldloveAdView> {
     super.onVisibilityChanged(visibility);
   }
 
-  Timer _timer;
-
   static Map<String, int> adControllerMap = {};
-
-  /*int _now() {
-    return DateTime.now().millisecondsSinceEpoch - 1616167000000;
-  }*/
-
-  void _startTimeout(bool isVisible, {String key}) {
-    //print('_startTimeout($isVisible), key: $key (${_now()})');
-    _timer?.cancel();
-    _timer = Timer(Duration(milliseconds: 600), () {
-      _handleTimeout(isVisible, key: key);
-    });
-  }
-
-  void _handleTimeout(bool isVisible, {String key}) {
-    //print('_handleTimeout($isVisible), key: $key (${_now()})');
-    _timer?.cancel();
-    _timer = null;
-    if (showAdIos != isVisible) {
-      setState(() {
-        //print('showAdIos = $isVisible');
-        showAdIos = isVisible;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,49 +81,35 @@ class _YieldloveAdViewState extends VisibilityAwareState<YieldloveAdView> {
         ),
       );
     } else if (Platform.isIOS) {
-      final key = widget.adParamsParcel.adId;
-      return VisibilityDetector(
-        key: ValueKey(key),
-        onVisibilityChanged: (visibilityInfo) {
-          var visiblePercentage = visibilityInfo.visibleFraction * 100;
-          final bool isVisible = visiblePercentage > 0;
-          //print('showAdIos = $isVisible ($key), $visiblePercentage%');
-          if (isVisible) {
-            _handleTimeout(isVisible, key: key);
-          } else {
-            _startTimeout(isVisible, key: key);
-          }
-        },
-        child: GestureDetector(
-          // intercept long press event.
-          onLongPress: () {},
-          excludeFromSemantics: true,
-          child: Column(
-            children: [
-              SizedBox(
-                width: widget.adParamsParcel?.getOptimalWidth(),
-                height: widget.adParamsParcel?.getOptimalHeight(),
-                child: !showAdIos ? Container() : UiKitView(
-                  key: _key,
-                  viewType: 'de.stroeer.plugins/yieldlove_ad_view',
-                  onPlatformViewCreated: (int id) {
-                    if (widget.onPlatformViewCreated != null) {
-                      int theId = adControllerMap[widget.adParamsParcel?.adId];
-                      if (theId == null) {
-                        adControllerMap[widget.adParamsParcel?.adId] = id;
-                        theId = id;
-                      }
-                      widget.onPlatformViewCreated(YieldloveAdController(theId));
+      return GestureDetector(
+        // intercept long press event.
+        onLongPress: () {},
+        excludeFromSemantics: true,
+        child: Column(
+          children: [
+            SizedBox(
+              width: widget.adParamsParcel?.getOptimalWidth(),
+              height: widget.adParamsParcel?.getOptimalHeight(),
+              child: false ? Container() : UiKitView(
+                key: _key,
+                viewType: 'de.stroeer.plugins/yieldlove_ad_view',
+                onPlatformViewCreated: (int id) {
+                  if (widget.onPlatformViewCreated != null) {
+                    int theId = adControllerMap[widget.adParamsParcel?.adId];
+                    if (theId == null) {
+                      adControllerMap[widget.adParamsParcel?.adId] = id;
+                      theId = id;
                     }
-                  },
-                  gestureRecognizers: widget.gestureRecognizers,
-                  layoutDirection: TextDirection.ltr,
-                  creationParams: widget.adParamsParcel?.toMap(),
-                  creationParamsCodec: const StandardMessageCodec(),
-                ),
+                    widget.onPlatformViewCreated(YieldloveAdController(theId));
+                  }
+                },
+                gestureRecognizers: widget.gestureRecognizers,
+                layoutDirection: TextDirection.ltr,
+                creationParams: widget.adParamsParcel?.toMap(),
+                creationParamsCodec: const StandardMessageCodec(),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
     } else {

@@ -14,7 +14,6 @@ dependencies:
     git:
       url: https://github.com/cschellhas/sourcepoint_cmp
   http: ">=0.12.2"
-  visibility_detector: ^0.1.5
   visibility_aware_state: ^1.0.2
 
 dev_dependencies:
