@@ -135,11 +135,21 @@ class YieldloveWrapper {
 
     this.appId = appId;
 
-    return _invokeBooleanMethod("initialize", <String, dynamic>{
+    return await _invokeBooleanMethod("initialize", <String, dynamic>{
       'appId': appId,
       'trackingId': trackingId,
       'analyticsEnabled': analyticsEnabled,
     });
+  }
+
+  /// This is only required for iOS clients.
+  /// If you call this on Android platform this method does nothing!
+  Future<bool> clearAdCache() async {
+    if (Environment.isIOS) {
+      debugPrint('clearAdCache()');
+      return await _invokeBooleanMethod("clearAdCache", <String, dynamic>{});
+    }
+    return true;
   }
 
   Future<bool> showInterstitial(
