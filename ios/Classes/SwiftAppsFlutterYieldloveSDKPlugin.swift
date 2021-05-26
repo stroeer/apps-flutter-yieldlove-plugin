@@ -4,8 +4,7 @@ import YieldloveAdIntegration
 import GoogleMobileAds
 
 public class SwiftAppsFlutterYieldloveSDKPlugin: NSObject, FlutterPlugin {
-    static let interstitialHelper = YLInterstitialHelper()
-    
+
     static var adViews: [String:AdView] = [:]
     
     public static func register(with registrar: FlutterPluginRegistrar) {
@@ -53,9 +52,15 @@ public class SwiftAppsFlutterYieldloveSDKPlugin: NSObject, FlutterPlugin {
             if (adSlotId != nil) {
                 print("YL: loading interstitial with adId '"+adSlotId!+"'.")
                 Yieldlove.instance.interstitialAd(
-                    AdSlotId: adSlotId!,
-                    UIViewController: viewController,
-                    Delegate: SwiftAppsFlutterYieldloveSDKPlugin.interstitialHelper
+                    adSlotId: adSlotId!,
+                    completion: { (interstitial, error) in
+                        if let error = error {
+                            print("YL: Failed to load interstitial. Error: \(error.localizedDescription)")
+                            return
+                        }
+                        let viewController = UIApplication.shared.windows.first!.rootViewController ?? UIViewController()
+                        interstitial?.present(fromRootViewController: viewController)
+                    }
                 )
             } else {
                 print("YL: Cannot load interstitial without adId.")
@@ -100,7 +105,7 @@ public class YieldloveView: NSObject, FlutterPlatformView {
     let viewId: Int64
     var adView: AdView?
     var adContentUrl: String?
-    var adCustomTargeting: [AnyHashable : Any]?
+    var adCustomTargeting: [String : String]?
     var adViewController: AdViewController? = nil
     var adIsRelease: Bool = true
     
@@ -145,7 +150,7 @@ public class YieldloveView: NSObject, FlutterPlatformView {
         // contentUrl
         adCustomTargeting = nil
         if let argsAsDictionary = args as? Dictionary<String, Any> {
-            if let customTargeting = argsAsDictionary["custom_targeting"] as? [AnyHashable : Any]? {
+            if let customTargeting = argsAsDictionary["custom_targeting"] as? [String : String]? {
                 adCustomTargeting = customTargeting
                 if !adIsRelease {
                     //print("YL: Using this key-value map for banner ad: \(customTargeting!)")
@@ -199,11 +204,11 @@ public class YieldloveView: NSObject, FlutterPlatformView {
 class AdViewController: UIViewController, YLBannerViewDelegate {
     
     var contentUrl: String?
-    var keywords: [AnyHashable : Any]?
+    var keywords: [String : String]?
     var adIsRelease: Bool = true
     var adView: AdView?
     
-    init(contentUrl: String?, keywords: [AnyHashable : Any]?, adIsRelease: Bool, adView: AdView) {
+    init(contentUrl: String?, keywords: [String : String]?, adIsRelease: Bool, adView: AdView) {
         self.contentUrl = contentUrl
         self.keywords = keywords
         self.adIsRelease = adIsRelease
@@ -216,7 +221,7 @@ class AdViewController: UIViewController, YLBannerViewDelegate {
         super.init(coder: aDecoder)
     }
     
-    public func adViewDidReceiveAd(_ bannerView: YLBannerView) {
+    public func bannerViewDidReceiveAd(_ bannerView: YLBannerView) {
         if !adIsRelease {
             //print("YL: Ad loaded")
         }
@@ -227,15 +232,15 @@ class AdViewController: UIViewController, YLBannerViewDelegate {
         //Yieldlove.instance.resizeBanner(banner: bannerView)
     }
     
-    public func adView(
+    public func bannerView(
         _ bannerView: YLBannerView,
-        didFailToReceiveAdWithError error: YieldloveRequestError
+        didFailToReceiveAdWithError error: Error
     ) {
         print("YL: Ad error: \(error)")
     }
     
-    func getDfpRequest() -> DFPRequest {
-        let request = DFPRequest()
+    func getGAMRequest() -> GAMRequest {
+        let request = GAMRequest()
         if contentUrl != nil {
             request.contentURL = contentUrl
         }
@@ -246,18 +251,20 @@ class AdViewController: UIViewController, YLBannerViewDelegate {
     }
 }
 
-class YLInterstitialHelper: YLInterstitialDelegate {
-    public func interstitialDidReceiveAd(_ ad: YLInterstitial) {
-        if (ad.getInterstitial().isReady) {
-            let viewController = UIApplication.shared.windows.first!.rootViewController ?? UIViewController()
-            ad.getInterstitial().present(fromRootViewController: viewController)
-        }
-    }
-    
-    public func interstitial(_ interstitial: YLInterstitial, didFailToReceiveAdWithError error: YieldloveRequestError) {
-        print("YL: Failed to load interstitial. Error: \(error.description)")
-    }
-}
+// YLInterstitialDelegate removed in 5.0.0. See release notes: https://stroeerdigitalgroup.atlassian.net/wiki/spaces/SDGPUBLIC/pages/1890713878/iOS+integration+documentation#Change-log
+//class YLInterstitialHelper: YLInterstitialDelegate {
+//    public func interstitialDidReceiveAd(_ ad: YLInterstitial) {   // error: cannot find type 'YLInterstitial' in scope
+//        if (ad.getInterstitial().isReady) {
+//            let viewController = UIApplication.shared.windows.first!.rootViewController ?? UIViewController()
+//            ad.getInterstitial().present(fromRootViewController: viewController)
+//        }
+//    }
+//
+//    // cannot find type 'YLInterstitial' in scope
+//    public func interstitial(_ interstitial: YLInterstitial, didFailToReceiveAdWithError error: YieldloveRequestError) {  // cannot find type 'YieldloveRequestError' in scope
+//        print("YL: Failed to load interstitial. Error: \(error.description)")
+//    }
+//}
 
 class AdView: UIView {
     
