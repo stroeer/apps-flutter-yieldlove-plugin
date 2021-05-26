@@ -164,24 +164,24 @@ class YieldloveAdController {
 
   static const Map<String, YieldAdEvent> _methodToMobileAdEvent =
   <String, YieldAdEvent>{
-    'onAdInit': YieldAdEvent.init,
     'onAdLoaded': YieldAdEvent.loaded,
     'onAdRequestBuild': YieldAdEvent.requestBuild,
     'onAdFailedToLoad': YieldAdEvent.failedToLoad,
     'onAdOpened': YieldAdEvent.opened,
-    'onAdLeftApplication': YieldAdEvent.leftApplication,
     'onAdClosed': YieldAdEvent.closed,
+    'onAdClicked': YieldAdEvent.clicked,
+    'onAdImpression': YieldAdEvent.impression,
   };
 }
 
 enum YieldAdEvent {
-  init,
   loaded,
   requestBuild,
   failedToLoad,
   opened,
-  leftApplication,
   closed,
+  clicked,
+  impression,
 }
 
 typedef void AdEventListener(YieldAdEvent event);

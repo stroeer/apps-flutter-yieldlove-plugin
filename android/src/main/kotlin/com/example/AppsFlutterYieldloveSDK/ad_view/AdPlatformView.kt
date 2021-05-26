@@ -140,11 +140,11 @@ class AdPlatformView internal constructor(context: Context?,
 }
 
 sealed class YieldAdEvent(val name: String) {
-    class OnAdInit(): YieldAdEvent("onAdInit")
-    class OnAdLeftApplication(): YieldAdEvent("onAdLeftApplication")
     class OnAdRequestBuild(): YieldAdEvent("onAdRequestBuild")
     class OnAdFailedToLoad(val message: String): YieldAdEvent("onAdFailedToLoad")
     class OnAdLoaded(): YieldAdEvent("onAdLoaded")
     class OnAdOpened(): YieldAdEvent("onAdOpened")
+    class OnAdClicked(): YieldAdEvent("onAdClicked")
+    class OnAdImpression(): YieldAdEvent("onAdImpression")
     class OnAdClosed(): YieldAdEvent("onAdClosed")
 }

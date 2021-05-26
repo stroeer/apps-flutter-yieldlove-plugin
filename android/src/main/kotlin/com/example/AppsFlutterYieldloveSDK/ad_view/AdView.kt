@@ -15,7 +15,8 @@ import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.ads.mediation.admob.AdMobAdapter
 import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.doubleclick.PublisherAdRequest
+import com.google.android.gms.ads.admanager.AdManagerAdView
+import com.google.android.gms.ads.admanager.AdManagerAdRequest
 import com.google.android.material.snackbar.Snackbar
 import com.yieldlove.adIntegration.AdFormats.YieldloveBannerAd
 import com.yieldlove.adIntegration.AdFormats.YieldloveBannerAdListener
@@ -92,7 +93,7 @@ class AdView : ConstraintLayout, AdLongClickListener {
         }
 
         try {
-            val builder = PublisherAdRequest.Builder()
+            val builder = AdManagerAdRequest.Builder()
 
             if (adKeyword != null) {
                 builder.addCustomTargeting("keywords", adKeyword)
@@ -117,7 +118,7 @@ class AdView : ConstraintLayout, AdLongClickListener {
             if (contentUrl != null) {
                 builder.setContentUrl(contentUrl)
             }
-            Yieldlove.getInstance().publisherAdRequestBuilder = builder
+            Yieldlove.getInstance().adManagerAdRequestBuilder = builder
 
             if (!isRelease) {
                 val randomValuesForPrint = "random-session = ${SessionValuesProvider.sessionRandom}, random-pi = ${SessionValuesProvider.screenRandom}, pi-counter = $pageViewCounter"
@@ -133,21 +134,23 @@ class AdView : ConstraintLayout, AdLongClickListener {
             // publisherCallString is something like start_b2
             val ad = YieldloveBannerAd(activityContext)
             ad.load(adUnitId, object: YieldloveBannerAdListener {
-                override fun onAdInit(banner: YieldloveBannerAdView?) {
-                    adView?.addView(banner?.adView)
-                    adEventListener?.invoke(YieldAdEvent.OnAdInit())
-                }
+                //override fun onAdInit(banner: YieldloveBannerAdView?) { // deprecated in v5.0.0
+                //    adView?.addView(banner?.adView)
+                //    adEventListener?.invoke(YieldAdEvent.OnAdInit())
+                //}
 
-                override fun onAdLeftApplication(banner: YieldloveBannerAdView?) {
-                    adEventListener?.invoke(YieldAdEvent.OnAdLeftApplication())
-                }
+                //override fun onAdLeftApplication(banner: YieldloveBannerAdView?) { // deprecated in v5.0.0
+                //    adEventListener?.invoke(YieldAdEvent.OnAdLeftApplication())
+                //}
 
-                override fun onAdRequestBuild(): PublisherAdRequest.Builder? {
+                override fun onAdRequestBuild(): AdManagerAdRequest.Builder? {
                     adEventListener?.invoke(YieldAdEvent.OnAdRequestBuild())
                     val extras = Bundle().apply {
                         putString("npa", "1")
                     }
-                    return PublisherAdRequest.Builder().addNetworkExtrasBundle(AdMobAdapter::class.java, extras)
+                    return AdManagerAdRequest.Builder().apply {
+                        addNetworkExtrasBundle(AdMobAdapter::class.java, extras)
+                    }
                 }
 
                 override fun onAdFailedToLoad(banner: YieldloveBannerAdView?, error: YieldloveException?) {
@@ -158,6 +161,7 @@ class AdView : ConstraintLayout, AdLongClickListener {
 
                 override fun onAdLoaded(banner: YieldloveBannerAdView?) {
                     adEventListener?.invoke(YieldAdEvent.OnAdLoaded())
+                    adView?.addView(banner?.adView)
                     show()
                 }
 
@@ -168,6 +172,15 @@ class AdView : ConstraintLayout, AdLongClickListener {
                 override fun onAdClosed(banner: YieldloveBannerAdView?) {
                     adEventListener?.invoke(YieldAdEvent.OnAdClosed())
                 }
+
+                override fun onAdClicked(banner: YieldloveBannerAdView?) {
+                    adEventListener?.invoke(YieldAdEvent.OnAdClicked())
+                }
+
+                override fun onAdImpression(banner: YieldloveBannerAdView?) {
+                    adEventListener?.invoke(YieldAdEvent.OnAdImpression())
+                }
+
             })
         } catch (e: YieldloveException) {
             e.printStackTrace()

@@ -60,8 +60,8 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
     // ads
-    implementation "com.google.android.gms:play-services-ads:19.7.0" // required lib for new Stroeer Wrapper SDK
-    implementation 'com.yieldlove.adIntegration:yieldlove:4.2.0'
+    implementation "com.google.android.gms:play-services-ads:20.1.0" // required lib for new Stroeer Wrapper SDK
+    implementation 'com.yieldlove.adIntegration:yieldlove:5.2.2'
     implementation 'com.yieldlove.adIntegration:cmp:1.2.0'
     implementation 'org.prebid:prebid-mobile-sdk:1.8'
     implementation 'com.google.code.gson:gson:2.8.6'
