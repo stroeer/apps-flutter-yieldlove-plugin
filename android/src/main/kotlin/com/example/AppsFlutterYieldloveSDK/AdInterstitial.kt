@@ -23,7 +23,7 @@ object InterstitialHolder {
     fun delegateMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "loadInterstitialAd" -> {
-                if (loadError || wasAlreadyShown) {
+                if (loadError || wasAlreadyShown || activity == null) {
                     result.success(false)
                     return
                 }
