@@ -107,9 +107,13 @@ class AdPlatformView internal constructor(context: Context?,
 
     private fun showAd(methodCall: MethodCall, result: MethodChannel.Result) {
         // val text = methodCall.arguments as String
-        adView?.loadAd(activity)
-        adView?.show()
-        result.success(true)
+        if (activity != null) {
+            adView?.loadAd(activity!!)
+            adView?.show()
+            result.success(true)
+        } else {
+            result.success(false)
+        }
     }
 
     private fun hideAd(methodCall: MethodCall, result: MethodChannel.Result) {
@@ -136,11 +140,11 @@ class AdPlatformView internal constructor(context: Context?,
 }
 
 sealed class YieldAdEvent(val name: String) {
-    class OnAdInit(): YieldAdEvent("onAdInit")
-    class OnAdLeftApplication(): YieldAdEvent("onAdLeftApplication")
     class OnAdRequestBuild(): YieldAdEvent("onAdRequestBuild")
     class OnAdFailedToLoad(val message: String): YieldAdEvent("onAdFailedToLoad")
     class OnAdLoaded(): YieldAdEvent("onAdLoaded")
     class OnAdOpened(): YieldAdEvent("onAdOpened")
+    class OnAdClicked(): YieldAdEvent("onAdClicked")
+    class OnAdImpression(): YieldAdEvent("onAdImpression")
     class OnAdClosed(): YieldAdEvent("onAdClosed")
 }

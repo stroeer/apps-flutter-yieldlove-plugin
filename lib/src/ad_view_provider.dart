@@ -1,11 +1,14 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:AppsFlutterYieldloveSDK/YieldloveWrapper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:AppsFlutterYieldloveSDK/src/ad_creation_params.dart';
+import 'package:visibility_aware_state/visibility_aware_state.dart';
 
 export 'package:AppsFlutterYieldloveSDK/src/ad_creation_params.dart';
 
@@ -16,19 +19,37 @@ class YieldloveAdView extends StatefulWidget {
     this.gestureRecognizers,
     @required this.adParamsParcel,
     this.onPlatformViewCreated,
+    this.placedInsideScrollView = false,
   }) : super(key: key);
 
   final AdCreationParams adParamsParcel;
   final Function onPlatformViewCreated;
   final Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers;
+  final bool placedInsideScrollView;
 
   @override
   State<StatefulWidget> createState() => _YieldloveAdViewState();
 
 }
 
-class _YieldloveAdViewState extends State<YieldloveAdView> {
+class _YieldloveAdViewState extends VisibilityAwareState<YieldloveAdView> {
   final UniqueKey _key = UniqueKey();
+
+  @override
+  void onVisibilityChanged(WidgetVisibility visibility) {
+    switch (visibility) {
+      case WidgetVisibility.VISIBLE:
+        break;
+      case WidgetVisibility.GONE:
+        YieldloveWrapper.instance.clearAdCache();
+        break;
+      default:
+        break;
+    }
+    super.onVisibilityChanged(visibility);
+  }
+
+  static Map<String, int> adControllerMap = {};
 
   @override
   Widget build(BuildContext context) {
@@ -67,18 +88,23 @@ class _YieldloveAdViewState extends State<YieldloveAdView> {
         child: Column(
           children: [
             SizedBox(
-              width: double.infinity,
+              width: widget.adParamsParcel?.getOptimalWidth(),
               height: widget.adParamsParcel?.getOptimalHeight(),
-              child: UiKitView(
+              child: false ? Container() : UiKitView(
                 key: _key,
                 viewType: 'de.stroeer.plugins/yieldlove_ad_view',
                 onPlatformViewCreated: (int id) {
                   if (widget.onPlatformViewCreated != null) {
-                    widget.onPlatformViewCreated(YieldloveAdController(id));
+                    int theId = adControllerMap[widget.adParamsParcel?.adId];
+                    if (theId == null) {
+                      adControllerMap[widget.adParamsParcel?.adId] = id;
+                      theId = id;
+                    }
+                    widget.onPlatformViewCreated(YieldloveAdController(theId));
                   }
                 },
                 gestureRecognizers: widget.gestureRecognizers,
-                layoutDirection: TextDirection.rtl,
+                layoutDirection: TextDirection.ltr,
                 creationParams: widget.adParamsParcel?.toMap(),
                 creationParamsCodec: const StandardMessageCodec(),
               ),
@@ -89,16 +115,6 @@ class _YieldloveAdViewState extends State<YieldloveAdView> {
     } else {
       throw UnsupportedError("Trying to use the default view implementation for $defaultTargetPlatform but there isn't a default one");
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void didUpdateWidget(YieldloveAdView oldWidget) {
-    super.didUpdateWidget(oldWidget);
   }
 
 }
@@ -148,24 +164,24 @@ class YieldloveAdController {
 
   static const Map<String, YieldAdEvent> _methodToMobileAdEvent =
   <String, YieldAdEvent>{
-    'onAdInit': YieldAdEvent.init,
     'onAdLoaded': YieldAdEvent.loaded,
     'onAdRequestBuild': YieldAdEvent.requestBuild,
     'onAdFailedToLoad': YieldAdEvent.failedToLoad,
     'onAdOpened': YieldAdEvent.opened,
-    'onAdLeftApplication': YieldAdEvent.leftApplication,
     'onAdClosed': YieldAdEvent.closed,
+    'onAdClicked': YieldAdEvent.clicked,
+    'onAdImpression': YieldAdEvent.impression,
   };
 }
 
 enum YieldAdEvent {
-  init,
   loaded,
   requestBuild,
   failedToLoad,
   opened,
-  leftApplication,
   closed,
+  clicked,
+  impression,
 }
 
 typedef void AdEventListener(YieldAdEvent event);
