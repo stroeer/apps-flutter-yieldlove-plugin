@@ -43,11 +43,11 @@ class YieldloveWrapper {
     /// always the same for Ströer Group
     var sourcepointAccountId = 375;
 
-    var propertyId = 10452;
+    var propertyId = Environment.isAndroid ? 17391 : 17390;
 
-    var propertyName = 'android.app.wetter.info';
+    var propertyName =  Environment.isAndroid ? 'android.app.new.wetter.info' : 'ios.app.new.wetter.info';
 
-    var privacyManagerId = '305923';
+    var privacyManagerId = Environment.isAndroid? '503921' : '503924';
 
     var response = await http.get(_yieldloveConfigUrl());
     if (response.statusCode == 200) {
