@@ -15,8 +15,8 @@ A new flutter plugin project.
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.dependency 'YieldloveAdIntegration', '5.3.2'
-  s.dependency 'YieldloveConsent', '3.0.3'
+  s.dependency 'YieldloveAdIntegration', '5.7.0'
+  s.dependency 'YieldloveConsent', '3.2.1'
   s.static_framework = true
   s.ios.deployment_target = '10.0'
 

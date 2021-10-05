@@ -20,7 +20,7 @@ const appId = 't-online_wetter_flutter';
 const bannerAdId = 'start_b2';
 
 //const interstitialAdId = 'interstitial';
-const interstitialAdId = 'appstart_int';
+const interstitialAdId = '/appstart_int';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
