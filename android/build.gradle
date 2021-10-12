@@ -8,6 +8,7 @@ buildscript {
         google()
         jcenter()
         maven { url "https://maven.google.com" }
+        maven { url 'https://slabs-yieldlove-ad-integration.s3.eu-central-1.amazonaws.com/android' }
     }
 
     dependencies {
@@ -22,6 +23,7 @@ rootProject.allprojects {
         google()
         jcenter()
         maven { url "https://maven.google.com" }
+        maven { url 'https://slabs-yieldlove-ad-integration.s3.eu-central-1.amazonaws.com/android' }
     }
 }
 
@@ -61,8 +63,8 @@ dependencies {
 
     // ads
     implementation "com.google.android.gms:play-services-ads:20.4.0" // required lib for new Stroeer Wrapper SDK
-    implementation 'com.yieldlove.adIntegration:yieldlove:5.8.1'
-    implementation 'com.yieldlove.adIntegration:cmp:2.1.0'
+    implementation 'com.yieldlove.adIntegration:yieldlove:5.9.0'
+    implementation 'com.yieldlove.adIntegration:cmp:2.3.0'
     implementation 'org.prebid:prebid-mobile-sdk:1.12'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.squareup.okhttp3:okhttp:4.9.0'

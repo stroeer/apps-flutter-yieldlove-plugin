@@ -27,19 +27,15 @@ class YieldloveWrapper {
 
   String appId;
 
-  SourcepointCmp _sourcepointCmp;
+  //SourcepointCmp _sourcepointCmp;
 
   void Function() _onConsentUIReady;
   void Function() _onConsentUIFinished;
   void Function(ActionType) _onAction;
-  void Function(GDPRUserConsent consent) _onConsentGiven;
+  void Function(GDPRUserConsent consent) _onConsentReady;
   void Function(String errorCode) _onError;
 
   Future<SourcepointCmp> _loadAdConfig() async {
-    if (_sourcepointCmp != null) {
-      return _sourcepointCmp;
-    }
-
     /// always the same for Ströer Group
     var sourcepointAccountId = 375;
 
@@ -64,31 +60,7 @@ class YieldloveWrapper {
       privacyManagerId = sourcePointModule['privacyManagerId'];
     }
 
-    _sourcepointCmp = SourcepointCmp(
-        accountId: sourcepointAccountId,
-        propertyId: propertyId,
-        propertyName: propertyName,
-        pmId: privacyManagerId,
-        onConsentUIReady: () {
-          if (_onConsentUIReady != null) _onConsentUIReady();
-        },
-        onConsentUIFinished: () {
-          if (_onConsentUIFinished != null) _onConsentUIFinished();
-        },
-        onAction: (ActionType actionType) {
-          if (_onAction != null) _onAction(actionType);
-        },
-        onConsentReady: ({GDPRUserConsent consent}) {
-          print('consentReady');
-          if (_onConsentGiven != null) _onConsentGiven(consent);
-        },
-        onError: (String errorCode) {
-          print('consentError: errorCode:$errorCode');
-          if (_onError != null) _onError(errorCode);
-        },
-    );
-
-    return _sourcepointCmp;
+    return null;
   }
 
   Uri _yieldloveConfigUrl() => Uri.parse('https://cdn.stroeerdigitalgroup.de/sdk/live/$appId/config.json');
@@ -98,18 +70,61 @@ class YieldloveWrapper {
     void Function() onConsentUIFinished,
     void Function(ActionType) onAction,
     void Function(GDPRUserConsent consent) onConsentGiven,
-    void Function(String errorCode) onError
+    void Function(String errorCode) onError,
+    String authId,
   }) async {
     this._onConsentUIReady = onConsentUIReady;
     this._onConsentUIFinished = onConsentUIFinished;
     this._onAction = onAction;
-    this._onConsentGiven = onConsentGiven;
+    this._onConsentReady = onConsentGiven;
     this._onError = onError;
 
     await _loadAdConfig();
-    _sourcepointCmp.load();
+
+    _channel.setMethodCallHandler(_handleEvent);
+    await _channel.invokeMethod('showConsent', <String, dynamic>{
+      'authId': authId,
+      //'accountId': accountId,
+      //'propertyId': propertyId,
+      //'propertyName': propertyName,
+      //'pmId': pmId
+    });
   }
 
+
+  /// Handles returned events
+  Future<dynamic> _handleEvent(MethodCall call) {
+    switch (call.method) {
+      case 'onConsentUIReady':
+        this._onConsentUIReady();
+        break;
+      case 'onConsentUIFinished':
+        this._onConsentUIFinished();
+        break;
+      case 'onConsentReady':
+        GDPRUserConsent consent = GDPRUserConsent(
+          consentString: call.arguments['consentString'],
+          acceptedVendors: _castDynamicList(call.arguments['acceptedVendors']),
+          acceptedCategories: _castDynamicList(call.arguments['acceptedCategories']),
+          legIntCategories: _castDynamicList(call.arguments['legIntCategories']),
+          specialFeatures: _castDynamicList(call.arguments['specialFeatures']),
+        );
+        this._onConsentReady(consent);
+        break;
+      case 'onError':
+        var debugDescription = call.arguments as String;
+        this._onError(debugDescription);
+        break;
+    }
+    return null;
+  }
+
+  List<String> _castDynamicList(List<dynamic> list) {
+    if (list == null) return [];
+
+    return List<String>.from(list.map((value) => value as String));
+  }
+  
   void showConsentPrivacyManager({
     void Function() onConsentUIReady,
     void Function() onConsentUIFinished,
@@ -120,11 +135,18 @@ class YieldloveWrapper {
     this._onConsentUIReady = onConsentUIReady;
     this._onConsentUIFinished = onConsentUIFinished;
     this._onAction = onAction;
-    this._onConsentGiven = onConsentGiven;
+    this._onConsentReady = onConsentGiven;
     this._onError = onError;
 
     await _loadAdConfig();
-    _sourcepointCmp.showPM();
+    _channel.setMethodCallHandler(_handleEvent);
+
+    await _channel.invokeMethod('showPrivacyManager', <String, dynamic>{
+      //'accountId': accountId,
+      //'propertyId': propertyId,
+      //'propertyName': propertyName,
+      //'pmId': pmId
+    });
   }
 
   Future<bool> initialize(

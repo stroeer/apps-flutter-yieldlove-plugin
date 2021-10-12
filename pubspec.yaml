@@ -12,7 +12,7 @@ dependencies:
     sdk: flutter
   sourcepoint_cmp:
     git:
-      url: https://github.com/0phelia/sourcepoint_cmp
+      url: https://github.com/stroeer/apps-flutter-sourcepoint_cmp-plugin
   http: ">=0.12.2"
   visibility_aware_state: ^1.0.2
 

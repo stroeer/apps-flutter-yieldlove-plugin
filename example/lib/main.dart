@@ -16,6 +16,7 @@ import 'package:visibility_aware_state/visibility_aware_state.dart';
 const appId = 't-online_wetter_flutter';
 //const appId = 't-online_wetter';
 
+
 //const bannerAdId = 'banner';
 const bannerAdId = 'start_b2';
 
@@ -88,13 +89,25 @@ class MyApp extends StatelessWidget {
                             'cmp features relying on the Sourcepoint SDK (not '
                             'the Yieldlove wrapper SDK beyond).',
                         ),
-                        ElevatedButton(
-                            onPressed: () {
-                              YieldloveWrapper.instance.showConsentDialog();
-                            },
-                            child: Text("Show consent dialog")
-                        ),
-                        ElevatedButton(
+                            ElevatedButton(
+                                onPressed: () {
+                                  YieldloveWrapper.instance.showConsentDialog(
+                                      // authId: "<auth id>",
+                                      onConsentUIReady: () {
+                                        print("slacker: onConsentUIReady");
+                                      },
+                                      onConsentUIFinished: () {
+                                        print("slacker: onConsentUIFinished");
+                                      },
+                                      onConsentGiven: (GDPRUserConsent consent) {
+                                        print("slacker: onConsentGiven $consent");
+                                      },
+                                      onError: (error) {
+                                        print("slacker: error $error");
+                                      });
+                                },
+                                child: Text("Show consent dialog")),
+                            ElevatedButton(
                             onPressed: () {
                               YieldloveWrapper.instance.showConsentPrivacyManager();
                             },
