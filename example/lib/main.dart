@@ -97,7 +97,7 @@ class MyApp extends StatelessWidget {
                                         print("slacker: onConsentUIReady");
                                       },
                                       onConsentUIFinished: () {
-                                        print("slacker: onConsentUIReady");
+                                        print("slacker: onConsentUIFinished");
                                       },
                                       onConsentGiven: (GDPRUserConsent consent) {
                                         print("slacker: onConsentGiven $consent");
