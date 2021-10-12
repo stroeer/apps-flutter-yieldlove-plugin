@@ -1,6 +1,6 @@
 PODS:
   - Alamofire (5.4.4)
-  - AppsFlutterYieldloveSDK (0.9.9):
+  - AppsFlutterYieldloveSDK (1.0.0):
     - Flutter
     - YieldloveAdIntegration (= 5.7.0)
     - YieldloveConsent (= 3.2.1)
@@ -105,9 +105,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Alamofire: f3b09a368f1582ab751b3fff5460276e0d2cf5c9
-  AppsFlutterYieldloveSDK: b95f3bde8c31dce2f21226c6ec342908ca6be8b8
+  AppsFlutterYieldloveSDK: eeecc13a61051a1878a9690a4ac057ae0beb0b67
   ConsentViewController: 7b4a44c1d19687fee1e423d59b175e1858017c3e
-  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   Google-Mobile-Ads-SDK: e242f463fdb8564ac3f11847a30215a0e042c934
   GoogleAppMeasurement: 5ba1164e3c844ba84272555e916d0a6d3d977e91
   GoogleUserMessagingPlatform: ab890ce5f6620f293a21b6bdd82e416a2c73aeca
