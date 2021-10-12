@@ -185,13 +185,6 @@ open class ConsentListener(
   }
 
   override fun OnConsentReady(consent: GDPRUserConsent) {
-    //Config.USER_GAVE_CONSENT = consent.acceptedCategories.isNotEmpty()
-    //val oldConsentString = Config.USER_CONSENT_STRING
-    //if (oldConsentString == null || !Config.USER_CONSENT_STRING.equals(consent.consentString)) {
-    //  Config.USER_CONSENT_STRING = consent.consentString
-    //  TomoTracker.trackEvent(ConsentAcceptEvent())
-    //  onAcceptClicked()
-    //}
     val map: HashMap<String, Any> = hashMapOf<String, Any>(
       "consentString" to consent.consentString,
       "acceptedVendors" to consent.acceptedVendors,
