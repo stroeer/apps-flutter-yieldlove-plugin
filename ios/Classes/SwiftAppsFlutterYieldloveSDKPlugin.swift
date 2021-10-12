@@ -1,17 +1,20 @@
 import Flutter
 import UIKit
 import YieldloveAdIntegration
+import YieldloveConsent
+import ConsentViewController
 import GoogleMobileAds
 
 public class SwiftAppsFlutterYieldloveSDKPlugin: NSObject, FlutterPlugin {
 
     static var adViews: [String:AdView] = [:]
+    private static var channel: FlutterMethodChannel?
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         
         let instance = SwiftAppsFlutterYieldloveSDKPlugin()
-        let channel = FlutterMethodChannel(name: "AppsFlutterYieldloveSDK", binaryMessenger: registrar.messenger())
-        registrar.addMethodCallDelegate(instance, channel: channel)
+        channel = FlutterMethodChannel(name: "AppsFlutterYieldloveSDK", binaryMessenger: registrar.messenger())
+        registrar.addMethodCallDelegate(instance, channel: channel!)
         
         // dummy stubs to avoid crashing; should be moved to the native view factory or into corresponding native views
         let channel0 = FlutterMethodChannel(name: "de.stroeer.plugins/adview_0", binaryMessenger: registrar.messenger())
@@ -70,7 +73,59 @@ public class SwiftAppsFlutterYieldloveSDKPlugin: NSObject, FlutterPlugin {
             print("YL: clearAdCache")
             SwiftAppsFlutterYieldloveSDKPlugin.adViews.removeAll()
         }
+        
+        if call.method == "showPrivacyManager" {
+            showPrivacyManager()
+        }
+        
+        if call.method == "showConsent" {
+            var authID: String? = nil
+            if let args = call.arguments as? Dictionary<String, Any> {
+                authID = args["authId"] as? String
+            }
+            showConsent(authID: authID)
+        }
+
         result(true)
+    }
+    
+    
+    private func showPrivacyManager() {
+        let viewController = UIApplication.shared.windows.first!.rootViewController ?? UIViewController()
+        YieldloveConsent.instance.showPrivacyManager(viewController: viewController, delegate: self)
+    }
+    
+    private func showConsent(authID: String?) {
+        let viewController = UIApplication.shared.windows.first!.rootViewController ?? UIViewController()
+        if let authID = authID {
+            YieldloveConsent.instance.collect(viewController: viewController, delegate: self, authId: authID)
+        } else {
+            YieldloveConsent.instance.collect(viewController: viewController, delegate: self)
+        }
+    }
+}
+
+extension SwiftAppsFlutterYieldloveSDKPlugin: ConsentDelegate {
+    public func onConsentReady(gdprUUID: GDPRUUID, userConsent: GDPRUserConsent) {
+        var dict: [String: Any] = [:]
+        dict["consentString"] = userConsent.euconsent
+        dict["acceptedVendors"] = userConsent.acceptedVendors
+        dict["acceptedCategories"] = userConsent.acceptedCategories
+        dict["legIntCategories"] = userConsent.legitimateInterestCategories
+        dict["specialFeatures"] = userConsent.specialFeatures
+        SwiftAppsFlutterYieldloveSDKPlugin.channel?.invokeMethod("onConsentReady", arguments: dict)
+    }
+    
+    public func consentUIDidDisappear() {
+        SwiftAppsFlutterYieldloveSDKPlugin.channel?.invokeMethod("onConsentUIFinished", arguments: nil)
+    }
+
+    public func onError(error: YieldloveConsentError) {
+        SwiftAppsFlutterYieldloveSDKPlugin.channel?.invokeMethod("onError", arguments: error.errorDescription)
+    }
+    
+    public func gdprConsentUIWillShow() {
+        SwiftAppsFlutterYieldloveSDKPlugin.channel?.invokeMethod("onConsentUIReady", arguments: nil)
     }
 }
 
