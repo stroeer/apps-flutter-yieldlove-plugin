@@ -99,7 +99,7 @@ class MyApp extends StatelessWidget {
                                       onConsentUIFinished: () {
                                         print("slacker: onConsentUIFinished");
                                       },
-                                      onConsentGiven: (GDPRUserConsent consent) {
+                                      onConsentGiven: (consent) {
                                         print("slacker: onConsentGiven $consent");
                                       },
                                       onError: (error) {
