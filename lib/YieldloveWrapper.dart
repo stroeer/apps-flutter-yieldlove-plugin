@@ -6,14 +6,6 @@ import 'package:AppsFlutterYieldloveSDK/src/extensions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-import 'dart:convert' as convert;
-import 'package:http/http.dart' as http;
-
-import 'package:sourcepoint_cmp/sourcepoint_cmp.dart';
-
-export 'package:sourcepoint_cmp/action_type.dart';
-export 'package:sourcepoint_cmp/gdpr_user_consent.dart';
-
 class YieldloveWrapper {
 
   final MethodChannel _channel;
@@ -35,35 +27,34 @@ class YieldloveWrapper {
   void Function(GDPRUserConsent consent) _onConsentReady;
   void Function(String errorCode) _onError;
 
-  Future<SourcepointCmp> _loadAdConfig() async {
-    /// always the same for Ströer Group
-    var sourcepointAccountId = 375;
+  //Future<SourcepointCmp> _loadAdConfig() async {
+  //  /// always the same for Ströer Group
+  //  var sourcepointAccountId = 375;
+  //
+  //  var propertyId = Environment.isAndroid ? 17391 : 17390;
+  //
+  //  var propertyName =  Environment.isAndroid ? 'android.app.new.wetter.info' : 'ios.app.new.wetter.info';
+  //
+  //  var privacyManagerId = Environment.isAndroid? '503921' : '503924';
+  //
+  //  var response = await http.get(_yieldloveConfigUrl());
+  //  if (response.statusCode == 200) {
+  //    final jsonResponse = convert.jsonDecode(response.body);
+  //    final modules = jsonResponse['modules'];
+  //    final configKey = Environment.isAndroid
+  //        ? 'SOURCEPOINT'
+  //        : 'iOSSOURCEPOINT';
+  //    final sourcePointModule = modules[1][configKey];
+  //
+  //    sourcepointAccountId = int.parse(sourcePointModule['sourcepointAccountId']);
+  //    propertyId = int.parse(sourcePointModule['propertyId']);
+  //    propertyName = sourcePointModule['propertyName'];
+  //    privacyManagerId = sourcePointModule['privacyManagerId'];
+  //  }
+  //  return null;
+  //}
 
-    var propertyId = Environment.isAndroid ? 17391 : 17390;
-
-    var propertyName =  Environment.isAndroid ? 'android.app.new.wetter.info' : 'ios.app.new.wetter.info';
-
-    var privacyManagerId = Environment.isAndroid? '503921' : '503924';
-
-    var response = await http.get(_yieldloveConfigUrl());
-    if (response.statusCode == 200) {
-      final jsonResponse = convert.jsonDecode(response.body);
-      final modules = jsonResponse['modules'];
-      final configKey = Environment.isAndroid
-          ? 'SOURCEPOINT'
-          : 'iOSSOURCEPOINT';
-      final sourcePointModule = modules[1][configKey];
-
-      sourcepointAccountId = int.parse(sourcePointModule['sourcepointAccountId']);
-      propertyId = int.parse(sourcePointModule['propertyId']);
-      propertyName = sourcePointModule['propertyName'];
-      privacyManagerId = sourcePointModule['privacyManagerId'];
-    }
-
-    return null;
-  }
-
-  Uri _yieldloveConfigUrl() => Uri.parse('https://cdn.stroeerdigitalgroup.de/sdk/live/$appId/config.json');
+  //Uri _yieldloveConfigUrl() => Uri.parse('https://cdn.stroeerdigitalgroup.de/sdk/live/$appId/config.json');
 
   void showConsentDialog({
     void Function() onConsentUIReady,
@@ -78,8 +69,6 @@ class YieldloveWrapper {
     this._onAction = onAction;
     this._onConsentReady = onConsentGiven;
     this._onError = onError;
-
-    await _loadAdConfig();
 
     _channel.setMethodCallHandler(_handleEvent);
     await _channel.invokeMethod('showConsent', <String, dynamic>{
@@ -138,7 +127,6 @@ class YieldloveWrapper {
     this._onConsentReady = onConsentGiven;
     this._onError = onError;
 
-    await _loadAdConfig();
     _channel.setMethodCallHandler(_handleEvent);
 
     await _channel.invokeMethod('showPrivacyManager', <String, dynamic>{
@@ -196,3 +184,48 @@ Future<bool> _invokeBooleanMethod(String method, [dynamic arguments]) async {
 }
 
 
+class GDPRUserConsent {
+
+  const GDPRUserConsent({
+    this.consentString,
+    this.acceptedVendors,
+    this.acceptedCategories,
+    this.legIntCategories,
+    this.specialFeatures
+  });
+
+  final String consentString;
+
+  final List<String> acceptedVendors;
+
+  final List<String> acceptedCategories;
+
+  final List<String> legIntCategories;
+
+  final List<String> specialFeatures;
+}
+
+
+enum ActionType {
+  SHOW_OPTIONS,
+  REJECT_ALL,
+  ACCEPT_ALL,
+  MSG_CANCEL,
+  SAVE_AND_EXIT,
+  PM_DISMISS
+}
+
+ActionType actionTypeFromCode(int code) {
+  if (code == null) return null;
+
+  switch (code) {
+    case 12: return ActionType.SHOW_OPTIONS;
+    case 13: return ActionType.REJECT_ALL;
+    case 11: return ActionType.ACCEPT_ALL;
+    case 15: return ActionType.MSG_CANCEL;
+    case 1: return ActionType.SAVE_AND_EXIT;
+    case 2: return ActionType.PM_DISMISS;
+  }
+
+  throw UnsupportedError('Unknown actionCode $code');
+}

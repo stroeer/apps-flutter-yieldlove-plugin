@@ -1,6 +1,6 @@
 PODS:
   - Alamofire (5.4.4)
-  - AppsFlutterYieldloveSDK (1.0.0):
+  - AppsFlutterYieldloveSDK (1.0.1):
     - Flutter
     - YieldloveAdIntegration (= 5.7.0)
     - YieldloveConsent (= 3.2.1)
