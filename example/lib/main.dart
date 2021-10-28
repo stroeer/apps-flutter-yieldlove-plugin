@@ -118,8 +118,14 @@ class MyApp extends StatelessWidget {
                         _paragraph('Load interstitial ad with id "$interstitialAdId":'),
                         ElevatedButton(
                           onPressed: () {
-                            YieldloveWrapper.instance
-                                .showInterstitial(adUnitId: interstitialAdId);
+                            YieldloveWrapper.instance.showInterstitial(
+                              adUnitId: interstitialAdId,
+                              onInterstitialDidShow: () {
+                                print("slacker: onInterstitialDidShow");
+                              },
+                              onInterstitialError: (errorMessage) {
+                                print("slacker: onInterstitialError $errorMessage}");
+                              });
                           },
                           child: Text("Show interstitial"),
                         ),

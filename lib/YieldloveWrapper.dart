@@ -26,6 +26,8 @@ class YieldloveWrapper {
   void Function(ActionType) _onAction;
   void Function(GDPRUserConsent consent) _onConsentReady;
   void Function(String errorCode) _onError;
+  void Function(String errorMessage) _onInterstitialError;
+  void Function() _onInterstitialDidShow;
 
   //Future<SourcepointCmp> _loadAdConfig() async {
   //  /// always the same for Ströer Group
@@ -70,7 +72,7 @@ class YieldloveWrapper {
     this._onConsentReady = onConsentGiven;
     this._onError = onError;
 
-    _channel.setMethodCallHandler(_handleEvent);
+    //_channel.setMethodCallHandler(_handleEvent);
     await _channel.invokeMethod('showConsent', <String, dynamic>{
       'authId': authId,
       //'accountId': accountId,
@@ -101,11 +103,11 @@ class YieldloveWrapper {
         this._onConsentReady(consent);
         break;
       case 'didShowInterstitial':
-        debugPrint("Showing Interstitial");
+        this._onInterstitialDidShow();
         break;
       case 'showInterstitialError':
         final errorMessage = call.arguments['errorMessage'];
-        debugPrint("Error showing interstitial: ${errorMessage}");
+        this._onInterstitialError(errorMessage);
         break;
       case 'onError':
         var debugDescription = call.arguments as String;
@@ -134,7 +136,7 @@ class YieldloveWrapper {
     this._onConsentReady = onConsentGiven;
     this._onError = onError;
 
-    _channel.setMethodCallHandler(_handleEvent);
+    //_channel.setMethodCallHandler(_handleEvent);
 
     await _channel.invokeMethod('showPrivacyManager', <String, dynamic>{
       //'accountId': accountId,
@@ -151,6 +153,7 @@ class YieldloveWrapper {
     assert(appId.isNotEmpty);
 
     this.appId = appId;
+    _channel.setMethodCallHandler(_handleEvent);
 
     return await _invokeBooleanMethod("initialize", <String, dynamic>{
       'appId': appId,
@@ -169,12 +172,17 @@ class YieldloveWrapper {
     return true;
   }
 
-  Future<bool> showInterstitial(
-      {@required String adUnitId,
-        String trackingId,
-        bool analyticsEnabled = false}) {
+  Future<bool> showInterstitial({
+    void Function() onInterstitialDidShow,
+    void Function(String errorMessage) onInterstitialError,
+    @required String adUnitId,
+    String trackingId,
+    bool analyticsEnabled = false})
+  {
+    this._onInterstitialDidShow = onInterstitialDidShow;
+    this._onInterstitialError = onInterstitialError;
+    
     assert(adUnitId.isNotEmpty);
-    _channel.setMethodCallHandler(_handleEvent);
     return _invokeBooleanMethod("loadInterstitialAd", <String, dynamic>{
       'ad_unit_id': adUnitId,
     });
