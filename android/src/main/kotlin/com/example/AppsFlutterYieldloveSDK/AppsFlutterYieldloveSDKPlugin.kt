@@ -76,7 +76,7 @@ class AppsFlutterYieldloveSDKPlugin: FlutterPlugin, MethodCallHandler, ActivityA
   }
 
   private fun callInterstitialLoad(call: MethodCall, result: MethodChannel.Result) {
-    InterstitialHolder.delegateMethodCall(call, result)
+    InterstitialHolder.delegateMethodCall(call, result, channel)
   }
 
   override fun onAttachedToEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {

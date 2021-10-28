@@ -59,10 +59,14 @@ public class SwiftAppsFlutterYieldloveSDKPlugin: NSObject, FlutterPlugin {
                     completion: { (interstitial, error) in
                         if let error = error {
                             print("YL: Failed to load interstitial. Error: \(error.localizedDescription)")
+                            var dict: [String: Any] = [:]
+                            dict["errorMessage"] = error.localizedDescription
+                            SwiftAppsFlutterYieldloveSDKPlugin.channel?.invokeMethod("showInterstitialError", arguments: dict)
                             return
                         }
                         let viewController = UIApplication.shared.windows.first!.rootViewController ?? UIViewController()
                         interstitial?.present(fromRootViewController: viewController)
+                        SwiftAppsFlutterYieldloveSDKPlugin.channel?.invokeMethod("didShowInterstitial", arguments: nil)
                     }
                 )
             } else {

@@ -16,20 +16,21 @@ import com.yieldlove.adIntegration.exceptions.YieldloveException
 @SuppressLint("StaticFieldLeak")
 object InterstitialHolder {
 
-    var interstitialView: YieldloveInterstitialAdView? = null
     var activity: Activity? = null
-    var wasAlreadyShown = false
-    var loadError = false
 
-    fun delegateMethodCall(call: MethodCall, result: MethodChannel.Result) {
+    fun delegateMethodCall(call: MethodCall, result: MethodChannel.Result, channel: MethodChannel) {
         when (call.method) {
             "loadInterstitialAd" -> {
-                if (loadError || wasAlreadyShown || activity == null) {
+                if (activity == null) {
+                    val map: HashMap<String, Any> = hashMapOf<String, Any>(
+                            "errorMessage" to "Activity was null"
+                    )
+                    channel?.invokeMethod("showInterstitialError", map)
                     result.success(false)
                     return
                 }
                 val adUnitId = call.argument<String>("ad_unit_id")
-                val adUnit = YieldloveAdUnit(adUnitId, "23935")
+                //val adUnit = YieldloveAdUnit(adUnitId, "23935")
                 val interstitialAd = YieldloveInterstitialAd(activity)
                 interstitialAd.load(adUnitId, object : YieldloveInterstitialAdListener {
                     //override fun onAdInit(interstitial: YieldloveInterstitialAdView?) {
@@ -46,15 +47,16 @@ object InterstitialHolder {
                     }
 
                     override fun onAdFailedToLoad(interstitial: YieldloveInterstitialAdView?, exception: YieldloveException?) {
-                        loadError = true
+                        val map: HashMap<String, Any> = hashMapOf<String, Any>(
+                                "errorMessage" to exception.toString()
+                        )
+                        channel?.invokeMethod("showInterstitialError", map)
                         result.success(false)
                     }
 
                     override fun onAdLoaded(interstitial: YieldloveInterstitialAdView?) {
-                        loadError = false
-                        interstitialView = interstitial // before GAM 20 introduction: called in onAdInit()
-                        interstitialView?.show() // before GAM 20 introduction: called in onAdInit()
-                        wasAlreadyShown = true
+                        interstitial?.show()
+                        channel?.invokeMethod("didShowInterstitial", null)
                         result.success(true)
                     }
 
