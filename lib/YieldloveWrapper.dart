@@ -100,6 +100,13 @@ class YieldloveWrapper {
         );
         this._onConsentReady(consent);
         break;
+      case 'didShowInterstitial':
+        debugPrint("Showing Interstitial");
+        break;
+      case 'showInterstitialError':
+        final errorMessage = call.arguments['errorMessage'];
+        debugPrint("Error showing interstitial: ${errorMessage}");
+        break;
       case 'onError':
         var debugDescription = call.arguments as String;
         this._onError(debugDescription);
@@ -167,6 +174,7 @@ class YieldloveWrapper {
         String trackingId,
         bool analyticsEnabled = false}) {
     assert(adUnitId.isNotEmpty);
+    _channel.setMethodCallHandler(_handleEvent);
     return _invokeBooleanMethod("loadInterstitialAd", <String, dynamic>{
       'ad_unit_id': adUnitId,
     });
