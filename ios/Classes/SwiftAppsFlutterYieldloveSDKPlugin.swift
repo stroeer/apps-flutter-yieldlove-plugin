@@ -38,7 +38,7 @@ public class SwiftAppsFlutterYieldloveSDKPlugin: NSObject, FlutterPlugin {
         //Yieldlove.instance.interstitialAd(AdUnit: "example_ios_interstitial_1", UIViewController: self)
         if let args = call.arguments as? Dictionary<String, Any> {
             if let appId = args["appId"] as? String {
-                Yieldlove.instance.setAppName(appName: appId)
+                Yieldlove.setup(appName: appId)
             }
         }
         if call.method == "loadInterstitialAd" {
@@ -110,14 +110,26 @@ public class SwiftAppsFlutterYieldloveSDKPlugin: NSObject, FlutterPlugin {
 }
 
 extension SwiftAppsFlutterYieldloveSDKPlugin: ConsentDelegate {
-    public func onConsentReady(gdprUUID: GDPRUUID, userConsent: GDPRUserConsent) {
-        var dict: [String: Any] = [:]
-        dict["consentString"] = userConsent.euconsent
-        dict["acceptedVendors"] = userConsent.acceptedVendors
-        dict["acceptedCategories"] = userConsent.acceptedCategories
-        dict["legIntCategories"] = userConsent.legitimateInterestCategories
-        dict["specialFeatures"] = userConsent.specialFeatures
-        SwiftAppsFlutterYieldloveSDKPlugin.channel?.invokeMethod("onConsentReady", arguments: dict)
+    
+    public func onConsentReady(consents: SPUserData) {
+        if let userConsent = consents.gdpr?.consents {
+            
+            var acceptedVendors: [String] = []
+            let vendorGrants = userConsent.vendorGrants
+            for key in vendorGrants.keys {
+                if vendorGrants[key]?.granted ?? false {
+                    acceptedVendors.append(key)
+                }
+            }
+            
+            var dict: [String: Any] = [:]
+            dict["consentString"] = userConsent.euconsent
+            dict["acceptedVendors"] = acceptedVendors
+            dict["acceptedCategories"] = userConsent.acceptedCategories
+            //dict["legIntCategories"] = userConsent.acceptedCategories
+            //dict["specialFeatures"] = userConsent.specialFeatures
+            SwiftAppsFlutterYieldloveSDKPlugin.channel?.invokeMethod("onConsentReady", arguments: dict)
+        }
     }
     
     public func consentUIDidDisappear() {
@@ -240,9 +252,9 @@ public class YieldloveView: NSObject, FlutterPlatformView {
         )
         SwiftAppsFlutterYieldloveSDKPlugin.adViews[adSlotId] = adView
         Yieldlove.instance.bannerAd(
-            AdSlotId: adSlotId,
-            UIViewController: adViewController!,
-            Delegate: adViewController!
+            adSlotId: adSlotId,
+            viewController: adViewController!,
+            delegate: adViewController!
         )
         return adView
     }

@@ -97,8 +97,8 @@ class YieldloveWrapper {
           consentString: call.arguments['consentString'],
           acceptedVendors: _castDynamicList(call.arguments['acceptedVendors']),
           acceptedCategories: _castDynamicList(call.arguments['acceptedCategories']),
-          legIntCategories: _castDynamicList(call.arguments['legIntCategories']),
-          specialFeatures: _castDynamicList(call.arguments['specialFeatures']),
+          //legIntCategories: _castDynamicList(call.arguments['legIntCategories']),
+          //specialFeatures: _castDynamicList(call.arguments['specialFeatures']),
         );
         this._onConsentReady(consent);
         break;
@@ -122,6 +122,10 @@ class YieldloveWrapper {
 
     return List<String>.from(list.map((value) => value as String));
   }
+
+  /*Map<String, > _castDynamicMap(Map<dynamic, dynamic> map) {
+
+  }*/
   
   void showConsentPrivacyManager({
     void Function() onConsentUIReady,
@@ -206,8 +210,8 @@ class GDPRUserConsent {
     this.consentString,
     this.acceptedVendors,
     this.acceptedCategories,
-    this.legIntCategories,
-    this.specialFeatures
+    //this.legIntCategories,
+    //this.specialFeatures
   });
 
   final String consentString;
@@ -216,9 +220,9 @@ class GDPRUserConsent {
 
   final List<String> acceptedCategories;
 
-  final List<String> legIntCategories;
+  //final List<String> legIntCategories;
 
-  final List<String> specialFeatures;
+  //final List<String> specialFeatures;
 }
 
 
