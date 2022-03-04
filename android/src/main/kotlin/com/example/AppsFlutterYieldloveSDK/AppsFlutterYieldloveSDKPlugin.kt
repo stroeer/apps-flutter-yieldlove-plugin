@@ -163,8 +163,8 @@ open class ConsentListener(
   private val channel: MethodChannel?
 ) : YieldloveConsentListener {
 
-  override fun onAction(p0: View, p1: ConsentAction): ConsentAction {
-    TODO("Not yet implemented")
+  override fun onAction(consentView: View, consentAction: ConsentAction): ConsentAction {
+    return consentAction
   }
 
   override fun OnConsentUIReady(consentView: View) {
