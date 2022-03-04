@@ -4,13 +4,13 @@ import android.R
 import android.app.Activity
 import android.util.Log
 import android.view.View
-import com.sourcepoint.gdpr_cmplibrary.GDPRUserConsent
 import com.yieldlove.adIntegration.YieldloveConsent
 import android.view.ViewGroup
-import com.sourcepoint.gdpr_cmplibrary.ConsentLibException
 
 import androidx.annotation.NonNull
 import com.example.AppsFlutterYieldloveSDK.ad_view.NativeAdViewFactory
+import com.sourcepoint.cmplibrary.model.ConsentAction
+import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.yieldlove.adIntegration.Yieldlove
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -163,8 +163,8 @@ open class ConsentListener(
   private val channel: MethodChannel?
 ) : YieldloveConsentListener {
 
-  override fun OnError(error: ConsentLibException?) {
-    channel?.invokeMethod("onError", error?.consentLibErrorMessage)
+  override fun onAction(p0: View, p1: ConsentAction): ConsentAction {
+    TODO("Not yet implemented")
   }
 
   override fun OnConsentUIReady(consentView: View) {
@@ -184,14 +184,26 @@ open class ConsentListener(
     channel?.invokeMethod("onConsentUIFinished", null)
   }
 
-  override fun OnConsentReady(consent: GDPRUserConsent) {
-    val map: HashMap<String, Any> = hashMapOf<String, Any>(
-      "consentString" to consent.consentString,
-      "acceptedVendors" to consent.acceptedVendors,
-      "acceptedCategories" to consent.acceptedCategories,
-      "legIntCategories" to consent.legIntCategories,
-      "specialFeatures" to consent.specialFeatures
-    )
-    channel?.invokeMethod("onConsentReady", map)
+  override fun OnConsentReady(consent: SPConsents) {
+    consent.gdpr?.consent?.let { gdprConsent ->
+      val acceptedVendors = mutableListOf<String>()
+
+      gdprConsent.grants.forEach {
+        if (it.value.granted) {
+          acceptedVendors.add(it.key)
+        }
+      }
+
+      val map: HashMap<String, Any> = hashMapOf<String, Any>(
+              "consentString" to gdprConsent.euconsent,
+              "acceptedVendors" to acceptedVendors,
+              "acceptedCategories" to gdprConsent.acceptedCategories,
+      )
+      channel?.invokeMethod("onConsentReady", map)
+    }
+  }
+
+  override fun OnError(p0: Throwable?) {
+    channel?.invokeMethod("onError", p0?.message?:"")
   }
 }
