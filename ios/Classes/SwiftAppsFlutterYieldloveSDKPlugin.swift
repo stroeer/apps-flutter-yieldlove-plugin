@@ -132,7 +132,7 @@ extension SwiftAppsFlutterYieldloveSDKPlugin: ConsentDelegate {
         }
     }
     
-    public func consentUIDidDisappear() {
+    public func onSPUIFinished() {
         SwiftAppsFlutterYieldloveSDKPlugin.channel?.invokeMethod("onConsentUIFinished", arguments: nil)
     }
 
@@ -140,8 +140,12 @@ extension SwiftAppsFlutterYieldloveSDKPlugin: ConsentDelegate {
         SwiftAppsFlutterYieldloveSDKPlugin.channel?.invokeMethod("onError", arguments: error.errorDescription)
     }
     
-    public func gdprConsentUIWillShow() {
+    public func onSPUIReady() {
         SwiftAppsFlutterYieldloveSDKPlugin.channel?.invokeMethod("onConsentUIReady", arguments: nil)
+    }
+    
+    public func onAction(action: SPAction) {
+        // TODO
     }
 }
 

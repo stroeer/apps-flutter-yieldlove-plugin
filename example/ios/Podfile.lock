@@ -1,6 +1,6 @@
 PODS:
   - Alamofire (5.4.4)
-  - AppsFlutterYieldloveSDK (1.0.3):
+  - AppsFlutterYieldloveSDK (1.0.5):
     - Flutter
     - YieldloveAdIntegration (= 7.1.6)
     - YieldloveConsent (= 4.6.1)
@@ -104,7 +104,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Alamofire: f3b09a368f1582ab751b3fff5460276e0d2cf5c9
-  AppsFlutterYieldloveSDK: c8fba30e1753ac0e994b1d37bb8bb5d3d011e39a
+  AppsFlutterYieldloveSDK: 25d67de44e80353c6afb386d72348dee71a3d146
   ConsentViewController: ef75912e9475ca1c7d2c27aff6680f1df699d1d3
   CriteoPublisherSdk: f789cccc222f1a9f6f5feec6af6f12da5d4c225a
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
@@ -120,6 +120,6 @@ SPEC CHECKSUMS:
   YieldloveExternalConfiguration: 9429b97694870293ab7734ec5cf6d6b989cfe24d
   YieldlovePrebidMobile: 385e94d46676ed0ae53c1ef10d1af57fce469ea6
 
-PODFILE CHECKSUM: 4c7bb95b73934a14286f52cfdb415d6751222a16
+PODFILE CHECKSUM: aab8ee10747ec013642e9d2f1c4d48976190b7a1
 
 COCOAPODS: 1.11.2
