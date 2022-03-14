@@ -204,6 +204,6 @@ open class ConsentListener(
   }
 
   override fun OnError(p0: Throwable?) {
-    channel?.invokeMethod("onError", p0?.message?:"")
+    //channel?.invokeMethod("onError", p0?.message?:"")
   }
 }
