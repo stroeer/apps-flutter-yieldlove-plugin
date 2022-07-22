@@ -1,5 +1,5 @@
 PODS:
-  - AppsFlutterYieldloveSDK (1.0.6):
+  - AppsFlutterYieldloveSDK (1.0.7):
     - Flutter
     - YieldloveAdIntegration (= 8.0.0)
     - YieldloveConsent (= 5.1.0)
@@ -99,7 +99,7 @@ EXTERNAL SOURCES:
     :path: Flutter
 
 SPEC CHECKSUMS:
-  AppsFlutterYieldloveSDK: 507c2bf7937b6c4869656aa80578e6046c345ff8
+  AppsFlutterYieldloveSDK: 9dc06cc47fcc2ca6584d9b11a4229a0ba9814f4d
   ConsentViewController: ef75912e9475ca1c7d2c27aff6680f1df699d1d3
   CriteoPublisherSdk: f789cccc222f1a9f6f5feec6af6f12da5d4c225a
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a

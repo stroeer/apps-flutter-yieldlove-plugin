@@ -96,15 +96,15 @@ public class SwiftAppsFlutterYieldloveSDKPlugin: NSObject, FlutterPlugin {
     
     private func showPrivacyManager() {
         let viewController = UIApplication.shared.windows.first!.rootViewController ?? UIViewController()
-        YieldloveConsent.instance.showPrivacyManager(viewController: viewController, delegate: self)
+        YLConsent.instance.showPrivacyManager(viewController: viewController, delegate: self)
     }
     
     private func showConsent(authID: String?) {
         let viewController = UIApplication.shared.windows.first!.rootViewController ?? UIViewController()
         if let authID = authID {
-            YieldloveConsent.instance.collect(viewController: viewController, delegate: self, authId: authID)
+            YLConsent.instance.collect(viewController: viewController, delegate: self, authId: authID)
         } else {
-            YieldloveConsent.instance.collect(viewController: viewController, delegate: self)
+            YLConsent.instance.collect(viewController: viewController, delegate: self)
         }
     }
 }
