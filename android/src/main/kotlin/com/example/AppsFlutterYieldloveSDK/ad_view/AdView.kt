@@ -96,13 +96,13 @@ class AdView : ConstraintLayout, AdLongClickListener {
             val builder = AdManagerAdRequest.Builder()
 
             if (adKeyword != null) {
-                builder.addCustomTargeting("keywords", adKeyword)
+                builder.addCustomTargeting("keywords", adKeyword!!)
             }
 
             if (customTargeting != null) {
                 for (key in customTargeting!!.keys) {
                     val value = customTargeting!![key]
-                    builder.addCustomTargeting(key, value)
+                    builder.addCustomTargeting(key, value!!)
                 }
             }
 
@@ -116,7 +116,7 @@ class AdView : ConstraintLayout, AdLongClickListener {
             }
 
             if (contentUrl != null) {
-                builder.setContentUrl(contentUrl)
+                builder.setContentUrl(contentUrl!!)
             }
             Yieldlove.getInstance().adManagerAdRequestBuilder = builder
 
