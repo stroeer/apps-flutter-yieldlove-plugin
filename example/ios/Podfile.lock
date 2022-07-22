@@ -1,37 +1,36 @@
 PODS:
-  - Alamofire (5.4.4)
-  - AppsFlutterYieldloveSDK (1.0.5):
+  - AppsFlutterYieldloveSDK (1.0.6):
     - Flutter
-    - YieldloveAdIntegration (= 7.1.6)
-    - YieldloveConsent (= 4.6.1)
+    - YieldloveAdIntegration (= 8.0.0)
+    - YieldloveConsent (= 5.1.0)
   - ConsentViewController (6.3.1)
   - CriteoPublisherSdk (4.4.0):
     - CriteoPublisherSdk/Sdk (= 4.4.0)
   - CriteoPublisherSdk/Sdk (4.4.0)
   - Flutter (1.0.0)
-  - Google-Mobile-Ads-SDK (8.13.0):
-    - GoogleAppMeasurement (< 9.0, >= 7.0)
+  - Google-Mobile-Ads-SDK (9.7.0):
+    - GoogleAppMeasurement (< 10.0, >= 7.0)
     - GoogleUserMessagingPlatform (>= 1.1)
-  - GoogleAppMeasurement (8.12.0):
-    - GoogleAppMeasurement/AdIdSupport (= 8.12.0)
+  - GoogleAppMeasurement (9.3.0):
+    - GoogleAppMeasurement/AdIdSupport (= 9.3.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.7)
     - GoogleUtilities/MethodSwizzler (~> 7.7)
     - GoogleUtilities/Network (~> 7.7)
     - "GoogleUtilities/NSData+zlib (~> 7.7)"
-    - nanopb (~> 2.30908.0)
-  - GoogleAppMeasurement/AdIdSupport (8.12.0):
-    - GoogleAppMeasurement/WithoutAdIdSupport (= 8.12.0)
+    - nanopb (< 2.30910.0, >= 2.30908.0)
+  - GoogleAppMeasurement/AdIdSupport (9.3.0):
+    - GoogleAppMeasurement/WithoutAdIdSupport (= 9.3.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.7)
     - GoogleUtilities/MethodSwizzler (~> 7.7)
     - GoogleUtilities/Network (~> 7.7)
     - "GoogleUtilities/NSData+zlib (~> 7.7)"
-    - nanopb (~> 2.30908.0)
-  - GoogleAppMeasurement/WithoutAdIdSupport (8.12.0):
+    - nanopb (< 2.30910.0, >= 2.30908.0)
+  - GoogleAppMeasurement/WithoutAdIdSupport (9.3.0):
     - GoogleUtilities/AppDelegateSwizzler (~> 7.7)
     - GoogleUtilities/MethodSwizzler (~> 7.7)
     - GoogleUtilities/Network (~> 7.7)
     - "GoogleUtilities/NSData+zlib (~> 7.7)"
-    - nanopb (~> 2.30908.0)
+    - nanopb (< 2.30910.0, >= 2.30908.0)
   - GoogleUserMessagingPlatform (2.0.0)
   - GoogleUtilities/AppDelegateSwizzler (7.7.0):
     - GoogleUtilities/Environment
@@ -50,30 +49,28 @@ PODS:
   - "GoogleUtilities/NSData+zlib (7.7.0)"
   - GoogleUtilities/Reachability (7.7.0):
     - GoogleUtilities/Logger
-  - nanopb (2.30908.0):
-    - nanopb/decode (= 2.30908.0)
-    - nanopb/encode (= 2.30908.0)
-  - nanopb/decode (2.30908.0)
-  - nanopb/encode (2.30908.0)
+  - nanopb (2.30909.0):
+    - nanopb/decode (= 2.30909.0)
+    - nanopb/encode (= 2.30909.0)
+  - nanopb/decode (2.30909.0)
+  - nanopb/encode (2.30909.0)
+  - PrebidMobile (2.0.2):
+    - PrebidMobile/core (= 2.0.2)
+  - PrebidMobile/core (2.0.2)
   - PromiseKit/CorePromise (6.15.3)
-  - PromisesObjC (2.0.0)
-  - YieldloveAdIntegration (7.1.6):
-    - Alamofire (~> 5.4.4)
+  - PromisesObjC (2.1.1)
+  - YieldloveAdIntegration (8.0.0):
     - CriteoPublisherSdk (~> 4.4.0)
-    - Google-Mobile-Ads-SDK (~> 8.13.0)
+    - Google-Mobile-Ads-SDK (~> 9.7.0)
+    - PrebidMobile (~> 2.0.1)
     - PromiseKit/CorePromise (~> 6.15.3)
-    - YieldloveExternalConfiguration (~> 0.10.1)
-    - YieldlovePrebidMobile (~> 2.2.0)
-  - YieldloveConsent (4.6.1):
+    - YieldloveExternalConfiguration (~> 0.15.1)
+  - YieldloveConsent (5.1.0):
     - ConsentViewController (~> 6.3.1)
     - PromiseKit/CorePromise (~> 6.15.3)
-    - YieldloveExternalConfiguration (~> 0.10.1)
-  - YieldloveExternalConfiguration (0.10.1):
-    - Alamofire (~> 5.4.4)
+    - YieldloveExternalConfiguration (~> 0.15.1)
+  - YieldloveExternalConfiguration (0.15.1):
     - PromiseKit/CorePromise (~> 6.15.3)
-  - YieldlovePrebidMobile (2.2.0):
-    - YieldlovePrebidMobile/core (= 2.2.0)
-  - YieldlovePrebidMobile/core (2.2.0)
 
 DEPENDENCIES:
   - AppsFlutterYieldloveSDK (from `.symlinks/plugins/AppsFlutterYieldloveSDK/ios`)
@@ -81,7 +78,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - Alamofire
     - ConsentViewController
     - CriteoPublisherSdk
     - Google-Mobile-Ads-SDK
@@ -89,12 +85,12 @@ SPEC REPOS:
     - GoogleUserMessagingPlatform
     - GoogleUtilities
     - nanopb
+    - PrebidMobile
     - PromiseKit
     - PromisesObjC
     - YieldloveAdIntegration
     - YieldloveConsent
     - YieldloveExternalConfiguration
-    - YieldlovePrebidMobile
 
 EXTERNAL SOURCES:
   AppsFlutterYieldloveSDK:
@@ -103,23 +99,22 @@ EXTERNAL SOURCES:
     :path: Flutter
 
 SPEC CHECKSUMS:
-  Alamofire: f3b09a368f1582ab751b3fff5460276e0d2cf5c9
-  AppsFlutterYieldloveSDK: 25d67de44e80353c6afb386d72348dee71a3d146
+  AppsFlutterYieldloveSDK: 507c2bf7937b6c4869656aa80578e6046c345ff8
   ConsentViewController: ef75912e9475ca1c7d2c27aff6680f1df699d1d3
   CriteoPublisherSdk: f789cccc222f1a9f6f5feec6af6f12da5d4c225a
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
-  Google-Mobile-Ads-SDK: 05e5d68bb42a61b2e5bef336a52789785605aa22
-  GoogleAppMeasurement: ae033c3aad67e68294369373056b4d74cc8ae0d6
+  Google-Mobile-Ads-SDK: 2685d6b3374b26de8a71f535614396e57cf80b13
+  GoogleAppMeasurement: b907bdad775b6975a8108762345b2cfbf1a93c37
   GoogleUserMessagingPlatform: ab890ce5f6620f293a21b6bdd82e416a2c73aeca
   GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
-  nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
+  nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
+  PrebidMobile: 0bd01e4c19cefe0039e4d8d2fd645d7e131ef752
   PromiseKit: 3b2b6995e51a954c46dbc550ce3da44fbfb563c5
-  PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
-  YieldloveAdIntegration: 371f470db53befb7b38c7cca81616e04d2da3924
-  YieldloveConsent: a2af4bdb51c88f5e04447e4bebf8df15b93eb942
-  YieldloveExternalConfiguration: 9429b97694870293ab7734ec5cf6d6b989cfe24d
-  YieldlovePrebidMobile: 385e94d46676ed0ae53c1ef10d1af57fce469ea6
+  PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
+  YieldloveAdIntegration: 97f82c9c346d1894582cbf1fb0ba6a9a2fbe6c92
+  YieldloveConsent: 954e515fb14a3508d92379160e5348ef3df3a294
+  YieldloveExternalConfiguration: b2a00e45f5714a45366fedf7646295b69158a0b0
 
 PODFILE CHECKSUM: aab8ee10747ec013642e9d2f1c4d48976190b7a1
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.11.3
