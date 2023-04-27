@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'AppsFlutterYieldloveSDK'
-  s.version          = '1.0.8'
+  s.version          = '1.0.11'
   s.summary          = 'A flutter plugin for Yieldlove SDK. (iOS podspec file)'
   s.description      = <<-DESC
 A new flutter plugin project.
@@ -15,8 +15,8 @@ A new flutter plugin project.
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.dependency 'YieldloveAdIntegration', '7.1.6'
-  s.dependency 'YieldloveConsent', '4.6.1'
+  s.dependency 'YieldloveAdIntegration', '7.8.0'
+  s.dependency 'YieldloveConsent', '5.1.0'
   s.static_framework = true
   s.ios.deployment_target = '11.0'
 

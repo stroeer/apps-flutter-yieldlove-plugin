@@ -1,6 +1,6 @@
 name: AppsFlutterYieldloveSDK
 description: A flutter plugin for Yieldlove SDK with Sourcepoint consent integration.
-version: 1.0.10
+version: 1.0.11
 homepage: https://github.com/stroeer/apps-flutter-yieldlove-plugin
 
 environment:
