@@ -62,7 +62,7 @@ dependencies {
 
     // ads
     implementation 'com.google.android.gms:play-services-ads:21.3.0'
-    implementation 'com.yieldlove.adIntegration:yieldlove:6.16.2'
+    implementation 'com.yieldlove.adIntegration:yieldlove:6.16.5'
     implementation 'com.yieldlove.adIntegration:cmp:4.4.0'
     implementation 'com.google.code.gson:gson:2.8.9'
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
