@@ -1,5 +1,5 @@
 group 'com.example.AppsFlutterYieldloveSDK'
-version '1.0.9'
+version '1.0.15'
 
 buildscript {
     ext.kotlin_version = '1.4.21'
@@ -28,7 +28,6 @@ rootProject.allprojects {
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 31
